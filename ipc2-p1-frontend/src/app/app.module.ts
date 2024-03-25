@@ -13,6 +13,7 @@ import { HomeRecepComponent } from './components/recep/home-recep/home-recep.com
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { HomeAdminComponent } from './components/admin/home-admin/home-admin.component';
 import { HomeOperComponent } from './components/oper/home-oper/home-oper.component';
+import { PackageEntryComponent } from './components/recep/package-entry/package-entry.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { HomeOperComponent } from './components/oper/home-oper/home-oper.compone
     HomeRecepComponent,
     NavbarComponent,
     HomeAdminComponent,
-    HomeOperComponent
+    HomeOperComponent,
+    PackageEntryComponent
   ],
   imports: [
     BrowserModule,

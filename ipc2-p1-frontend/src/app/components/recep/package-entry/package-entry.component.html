@@ -1,0 +1,61 @@
+<div class="container mt-2 col-md-6">
+    <div class="card my-5">
+        <div class="card text-center">
+            <div class="card-header">
+                <h3>Ingresar Paquete</h3>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="container mb-2">
+                <form [formGroup]="packageEntryForm">
+                    <div class="mb-3">
+                        <label name="nit" class="form-label">NIT del cliente:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="nit" formControlName="nit"
+                                placeholder="Número de 7 dígitos">
+                            <button class="btn btn-success" type="button" id="button-addon2">Verificar</button>
+                        </div>
+                    </div>
+                    <div class="errors-container"
+                        *ngIf="nitControl.invalid && (nitControl.touched || nitControl.dirty)">
+                        <p class="error-msg" *ngIf="nitControl.hasError('required')">
+                            El campo es obligatorio
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label name="destination" class="form-label">Destino:</label>
+                        <select class="form-select" name="destination" formControlName="destination">
+                            <option [selected]="destinationControl.value === 'valInicial'">Seleccione un destino:</option>
+                        </select>
+                    </div>
+                    <div class="errors-container"
+                        *ngIf="destinationControl.value === 'valInicial' && (destinationControl.touched || destinationControl.dirty)">
+                        <p class="error-msg">
+                            Por favor eliga un destino valido
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label name="weight" class="form-label">Peso:</label>
+                        <input type="text" class="form-control" name="weight" formControlName="weight"
+                            placeholder="En libras (lb)">
+                    </div>
+                    <div class="errors-container"
+                        *ngIf="weightControl.invalid && (weightControl.touched || weightControl.dirty)">
+                        <p class="error-msg" *ngIf="weightControl.hasError('required')">
+                            El campo es obligatorio
+                        </p>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary mt-2 me-4">Enviar Paquete</button>
+                        <button type="button" class="btn btn-secondary mt-2">Agregar Paquete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p>{{packageEntryForm.value | json}}</p>

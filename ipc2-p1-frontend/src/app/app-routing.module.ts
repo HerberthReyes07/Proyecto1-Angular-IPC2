@@ -7,6 +7,7 @@ import { HomeRecepComponent } from './components/recep/home-recep/home-recep.com
 import { IsLoggedInGuard } from './guard/is-logged-in.guard';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { ManagerHomepageComponent } from './components/manager-homepage/manager-homepage.component';
+import { PackageEntryComponent } from './components/recep/package-entry/package-entry.component';
 
 const routes: Routes = [
   {
@@ -35,6 +36,11 @@ const routes: Routes = [
   {
     path: 'recep/home',
     component: HomeRecepComponent,
+    canActivate: [IsLoggedInGuard]
+  },
+  {
+    path: 'recep/paquete/entrada',
+    component: PackageEntryComponent,
     canActivate: [IsLoggedInGuard]
   },
   {

@@ -1,1 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
+.errors-container {
+    font-size: 0.75rem;
+    color: #bd0c0c;
+    margin-top: -8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.ng-touched.ng-invalid:is(input, textarea),
+.ng-dirty.ng-invalid:is(input, textarea) {
+    outline: 2px solid #bd0c0c;
+}
