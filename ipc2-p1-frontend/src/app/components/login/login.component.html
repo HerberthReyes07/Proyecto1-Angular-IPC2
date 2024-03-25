@@ -1,0 +1,69 @@
+<!-- <div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand">Paqueteria Web</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+</div>
+<br><br><br><br> -->
+<br><br><br>
+<div class="container-fluid h-custom">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-md-9 col-lg-6 col-xl-5">
+            <img src="/assets/logo.svg" class="img-fluid" alt="logo">
+        </div>
+        <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+            <form [formGroup]="loginForm">
+                <h3>Inicio de sesión</h3>
+                <br>
+                <!-- Username input -->
+                <div class="form-outline mb-3">
+                    <label class="form-label" for="form3Example3">Nombre de usuario:</label>
+                    <input type="text" name="username" formControlName="username" autocomplete="off"
+                        class="form-control form-control-lg" />
+                </div>
+
+                <div class="errors-container"
+                    *ngIf="usernameControl.invalid && (usernameControl.touched || usernameControl.dirty)">
+                    <p class="error-msg" *ngIf="usernameControl.hasError('required')">
+                        El campo es obligatorio
+                    </p>
+                </div>
+
+                <!-- Password input -->
+                <div class="form-outline mb-3">
+                    <label class="form-label" for="form3Example4">Contraseña:</label>
+                    <input type="password" name="password" formControlName="password"
+                        class="form-control form-control-lg" />
+                </div>
+
+                <div class="errors-container"
+                    *ngIf="passwordControl.invalid && (passwordControl.touched || passwordControl.dirty)">
+                    <p class="error-msg" *ngIf="passwordControl.hasError('required')">
+                        El campo es obligatorio
+                    </p>
+                </div>
+
+                <!-- Error alert -->
+                <div *ngIf="hasError" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Login fallido!</strong> Credenciales incorrectas
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <!-- Login button -->
+                <div class="text-center text-lg-start mt-4 pt-2">
+                    <button (click)="signIn()" type="submit" class="btn btn-primary btn-lg"
+                        style="padding-left: 2.5rem; padding-right: 2.5rem;">Iniciar sesión</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- <p> {{usernameControl.value | json}} </p> -->

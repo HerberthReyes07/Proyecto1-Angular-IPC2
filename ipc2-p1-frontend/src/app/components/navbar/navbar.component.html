@@ -1,0 +1,57 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" routerLink="homepage">Paqueteria Web</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <ng-container *ngIf="userLoggedIn()">
+            <ng-container [ngSwitch]="getUserType()">
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <ng-container *ngSwitchCase="'ADMINISTRATOR'">
+                            <li class="nav-item">
+                                <a class="nav-link" routerLink="students">nav-item-admin</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" routerLink="otro/one">nav-item-admin</a>
+                            </li>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'OPERATOR'">
+                            <li class="nav-item">
+                                <a class="nav-link" routerLink="students">nav-item-oper</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" routerLink="otro/one">nav-item-oper</a>
+                            </li>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'RECEPTIONIST'">
+                            <li class="nav-item">
+                                <a class="nav-link" routerLink="students">nav-item-recep</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" routerLink="otro/one">nav-item-recep</a>
+                            </li>
+                        </ng-container>
+                    </ul>
+                </div>
+            </ng-container>
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav2">
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle"></i>
+                            {{getUserName()}}
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                            <li><a class="dropdown-item" (click)="logOut()">Cerrar sesion</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </ng-container>
+    </div>
+</nav>

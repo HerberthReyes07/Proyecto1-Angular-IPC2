@@ -1,0 +1,5 @@
+export enum TypeUser {
+    ADMINISTRATOR = 'ADMINISTRATOR',
+    OPERATOR = 'OPERATOR',
+    RECEPTIONIST = 'RECEPTIONIST'
+}
