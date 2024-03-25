@@ -23,7 +23,7 @@ export class NavbarComponent {
 
   getUserName() {
     let user: User = this.userService.getLocalStorageItem();
-    return user ? user.name : '';
+    return user ? user.username : '';
   }
 
   logOut() {
