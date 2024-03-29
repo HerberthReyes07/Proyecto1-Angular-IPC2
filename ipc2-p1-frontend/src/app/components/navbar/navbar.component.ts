@@ -16,7 +16,6 @@ export class NavbarComponent {
   }
 
   getUserType() {
-    console.log("GET USER TYPE");
     let user: User = this.userService.getLocalStorageItem();
     return user.typeUser;
   }

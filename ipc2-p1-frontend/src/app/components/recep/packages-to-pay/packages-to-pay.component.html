@@ -1,0 +1,75 @@
+<div id="clientModal" tabindex="-1" aria-labelledby="clientModalLabel" class="modal fade show" style="display: block;"
+    aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">Paquetes a Pagar</h5>
+                <button type="button" (click)="closeModal()"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="modal-body">
+
+                <div *ngIf="isPaymentMade" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill" style="margin-right: 10px;"></i><strong>Pago realizado
+                        exitosamente! </strong>
+                    Para tener un control del paquete, el cliente deberá recordar el número de factura emitido:
+                    {{invoiceNo}} <br> {{message}}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <h4 style="text-align: right;">No. Factura: <strong>{{ invoiceNo }}</strong></h4>
+
+                <ng-container *ngIf="!isPaymentMade">
+                    <div class="row">
+                        <div class="col">
+                            <div class="card my-4">
+                                <div class="card-header">
+                                    <h5 class="modal-title">Listado de paquetes a enviar</h5>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-hover table-sm" cellspacing="0" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Nit</th>
+                                                <th>Peso (lb)</th>
+                                                <th>Destino</th>
+                                                <th>Cuota Destino</th>
+                                                <th>Costo Envio</th>
+                                                <th>Accion</th>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let p of packages$ | async; let i = index">
+                                                <td>{{i + 1}}</td>
+                                                <td>{{customerNit}}</td>
+                                                <td>{{p.weight | number: "1.2-2"}}</td>
+                                                <td>{{getDestinationById(p.destinationId).name}}</td>
+                                                <td>{{getDestinationById(p.destinationId).destinationFee | number:
+                                                    "1.2-2"}}
+                                                    Q</td>
+                                                <td><strong>{{p.shippingCost | number: "1.2-2"}} Q</strong></td>
+                                                <td><button *ngIf="!isPaymentMade" type="button"
+                                                        class="btn btn-danger btn-sm"
+                                                        (click)="deletePackage(p)">Quitar</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h6>Precio por libra: {{pricePerPound | number: "1.2-2"}} Q</h6>
+                    <h6>Calculo del costo de envio = (Peso * Precio por libra) + cuota de destino</h6>
+                    <h4>Total a Pagar: {{ total$ | async | number: "1.2-2" }} Q</h4>
+                </ng-container>
+            </div>
+            <ng-container *ngIf="!isPaymentMade">
+                <div class="modal-footer">
+                    <div class="d-grid gap-2 col-4 mx-auto">
+                        <button [disabled]="!isPaymentAllowed" type="submit" (click)="pay()"
+                            class="btn btn-success">Pagar</button>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

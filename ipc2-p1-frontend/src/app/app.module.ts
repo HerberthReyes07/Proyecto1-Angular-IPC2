@@ -14,6 +14,8 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { HomeAdminComponent } from './components/admin/home-admin/home-admin.component';
 import { HomeOperComponent } from './components/oper/home-oper/home-oper.component';
 import { PackageEntryComponent } from './components/recep/package-entry/package-entry.component';
+import { CustomerFormComponent } from './components/recep/customer-form/customer-form.component';
+import { PackagesToPayComponent } from './components/recep/packages-to-pay/packages-to-pay.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import { PackageEntryComponent } from './components/recep/package-entry/package-
     NavbarComponent,
     HomeAdminComponent,
     HomeOperComponent,
-    PackageEntryComponent
+    PackageEntryComponent,
+    CustomerFormComponent,
+    PackagesToPayComponent,
   ],
   imports: [
     BrowserModule,

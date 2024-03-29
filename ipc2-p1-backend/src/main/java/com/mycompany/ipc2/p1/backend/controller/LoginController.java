@@ -30,24 +30,24 @@ public class LoginController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
-        User user = gsonUser.readFromJson(req, User.class);
+        User user = gsonUser.readFromJson(request, User.class);
         
         System.out.println("Usuario enviado: " + user.toString());
         
         if (user.getUsername().equals("") || user.getPassword().equals("")) {
-            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        User userFromDB = userService.read(user.getUsername(), user.getPassword());
+        User userFromDB = userService.getUserByLoginCredentials(user.getUsername(), user.getPassword());
 
         if(userFromDB == null){
-            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         } else {
-            resp.setStatus(HttpServletResponse.SC_OK);
-            gsonUser.sendAsJson(resp, userFromDB);
+            response.setStatus(HttpServletResponse.SC_OK);
+            gsonUser.sendAsJson(response, userFromDB);
         }
     }
 }

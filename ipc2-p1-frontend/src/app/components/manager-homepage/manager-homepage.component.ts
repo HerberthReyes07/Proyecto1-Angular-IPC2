@@ -17,13 +17,11 @@ export class ManagerHomepageComponent {
     let user: User = this.userService.getLocalStorageItem();
 
     if (user) {
-      console.log("existe el usuario");
       if(user.typeUser == TypeUser.ADMINISTRATOR){
         this.router.navigate(['/admin/home']);
       } else if(user.typeUser == TypeUser.OPERATOR){
         this.router.navigate(['/oper/home']);
       } else {
-        console.log("tipo de usuario: " + user.typeUser);
         this.router.navigate(['/recep/home']);
       }      
     }

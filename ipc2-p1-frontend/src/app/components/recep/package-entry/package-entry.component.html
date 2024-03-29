@@ -1,5 +1,17 @@
 <div class="container mt-2 col-md-6">
     <div class="card my-5">
+
+        <div *ngIf="packageCreated" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill" style="margin-right: 10px;"></i><strong>Paquete enviado
+                exitosamente!</strong> You should check in on some of those fields below.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div *ngIf="hasError" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle-fill" style="margin-right: 10px;"></i><strong>{{message}}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
         <div class="card text-center">
             <div class="card-header">
                 <h3>Ingresar Paquete</h3>
@@ -13,7 +25,11 @@
                         <div class="input-group">
                             <input type="text" class="form-control" name="nit" formControlName="nit"
                                 placeholder="Número de 7 dígitos">
-                            <button class="btn btn-success" type="button" id="button-addon2">Verificar</button>
+                            <button (click)="verifyNitToSend()" class="btn btn-success" type="button"
+                                [disabled]="nitControl.invalid">
+                                <i class="bi bi-person-fill-check"></i> Verificar/Registrar
+                            </button>
+
                         </div>
                     </div>
                     <div class="errors-container"
@@ -21,16 +37,23 @@
                         <p class="error-msg" *ngIf="nitControl.hasError('required')">
                             El campo es obligatorio
                         </p>
+                        <p class="error-msg"
+                            *ngIf="nitControl.hasError('minlength') || nitControl.hasError('maxlength')">
+                            La longitud del NIT debe ser de 7
+                        </p>
                     </div>
 
                     <div class="mb-3">
                         <label name="destination" class="form-label">Destino:</label>
                         <select class="form-select" name="destination" formControlName="destination">
-                            <option [selected]="destinationControl.value === 'valInicial'">Seleccione un destino:</option>
+                            <option value="valInicial" selected>Seleccione un destino:</option>
+                            <ng-container *ngFor="let destination of destinations">
+                                <option value="{{destination.id}}">{{destination.name}}</option>
+                            </ng-container>
                         </select>
                     </div>
                     <div class="errors-container"
-                        *ngIf="destinationControl.value === 'valInicial' && (destinationControl.touched || destinationControl.dirty)">
+                        *ngIf="destinationControl.value === 'valInicial' && destinationControl.touched">
                         <p class="error-msg">
                             Por favor eliga un destino valido
                         </p>
@@ -49,8 +72,10 @@
                     </div>
 
                     <div class="text-center">
-                        <button type="submit" class="btn btn-primary mt-2 me-4">Enviar Paquete</button>
-                        <button type="button" class="btn btn-secondary mt-2">Agregar Paquete</button>
+                        <button (click)="addPackage()" type="button" class="btn btn-primary mt-2 me-4">Agregar Paquete</button>
+                        <button (click)="togglePayModalVisibility()" [disabled]="isPaymentDisabled" type="button" 
+                            class="btn btn-success mt-2 me-4">Pagar Envio</button>
+                        <button (click)="clearInfo()" [disabled]="isPaymentDisabled" type="button" class="btn btn-danger mt-2 me-4">Cancelar Envio</button>
                     </div>
                 </form>
             </div>
@@ -58,4 +83,12 @@
     </div>
 </div>
 
-<p>{{packageEntryForm.value | json}}</p>
+<div class="modal-background" *ngIf="isCustomerFormOpened">
+    <app-customer-form [nitValue]="this.nitControl.value"
+        (toggleFormVisibility)="toggleCustomerFormVisibility()"></app-customer-form>
+</div>
+
+<div class="modal-background" *ngIf="isPaymentModalOpened">
+    <app-packages-to-pay [customerNit]="this.nitControl.value" [destinations]="destinations" [pricePerPound]="pricePerPound"
+        [invoiceNo]="invoiceNo" (togglePayModalVisibility)="togglePayModalVisibility()" (paymentMade)="clearInfo()"></app-packages-to-pay>
+</div>

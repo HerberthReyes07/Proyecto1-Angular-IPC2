@@ -1,0 +1,58 @@
+<div id="clientModal" tabindex="-1" aria-labelledby="clientModalLabel" class="modal fade show" style="display: block;" aria-modal="true" role="dialog">
+    
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="clientModalLabel">Verificar / Registrar Cliente</h5>
+                <button type="button" (click)="closeForm()"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="modal-body">
+
+                <div *ngIf="customerCreated" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill" style="margin-right: 10px;"></i><strong>Cliente registrado exitosamente!</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div *ngIf="hasError" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-circle-fill" style="margin-right: 10px;"></i><strong>{{message}}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <form [formGroup]="customerForm">
+                    <div class="mb-3">
+                        <label name="nit" class="form-label">Nit:</label>
+                        <input type="text" class="form-control" name="nit" value={{nitValue}} disabled>
+                    </div>
+    
+                    <div class="mb-3">
+                        <label name="name" class="form-label">Nombre: </label>
+                        <input type="text" class="form-control" name="name" formControlName="name">
+                    </div>
+                    <div class="errors-container" *ngIf="nameControl.invalid && (nameControl.touched || nameControl.dirty)">
+                        <p class="error-msg" *ngIf="nameControl.hasError('required')">
+                            El campo es obligatorio
+                        </p>
+                    </div>
+    
+                    <div class="mb-3">
+                        <label name="sex" class="form-label">Sexo:</label>
+                        <select class="form-select" name="sex" formControlName="sex">
+                            <option value="valInicial" [selected]="sexControl.value === 'valInicial'">Seleccione una opción: </option>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Femenino">Femenino</option>
+                        </select>
+                    </div>
+                    
+                    <div class="errors-container"
+                        *ngIf="sexControl.value === 'valInicial' && (sexControl.touched || sexControl.dirty)">
+                        <p class="error-msg">
+                            Por favor eliga una opción válida
+                        </p>
+                    </div>
+                </form>
+            </div>
+            <div *ngIf="!onlyView" class="modal-footer">
+                <button type="submit" (click)="sendCustomer()" class="btn btn-primary">Registrar</button>
+            </div>
+        </div>
+    </div>
+</div>
