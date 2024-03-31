@@ -16,6 +16,7 @@ import { HomeOperComponent } from './components/oper/home-oper/home-oper.compone
 import { PackageEntryComponent } from './components/recep/package-entry/package-entry.component';
 import { CustomerFormComponent } from './components/recep/customer-form/customer-form.component';
 import { PackagesToPayComponent } from './components/recep/packages-to-pay/packages-to-pay.component';
+import { PickUpPackageComponent } from './components/recep/pick-up-package/pick-up-package.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { PackagesToPayComponent } from './components/recep/packages-to-pay/packa
     PackageEntryComponent,
     CustomerFormComponent,
     PackagesToPayComponent,
+    PickUpPackageComponent,
   ],
   imports: [
     BrowserModule,

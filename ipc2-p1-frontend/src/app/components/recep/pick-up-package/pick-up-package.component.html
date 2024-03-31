@@ -1,0 +1,66 @@
+<div class="container mt-2 col-md-8">
+    <div class="card my-5">
+
+        <div *ngIf="pickedUpPackage" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill" style="margin-right: 10px;"></i><strong>Paquete retirado exitosamente!</strong>
+            <button type="button" (click)="changePickedUpPackageValue()" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="card text-center">
+            <div class="card-header">
+                <h3>Retirar Paquete</h3>
+            </div>
+        </div>
+        <div class="card-body">
+            <form [formGroup]="searchForm">
+                <div class="mb-3">
+                    <label name="buscarPor" class="form-label">Ingrese un No. Factura o Nit para realizar la búsqueda:</label>
+                    <input type="text" (input)="search()" class="form-control" formControlName="searchByControl" placeholder="Ingrese un No. Factura o Nit">
+                </div>
+                <div class="errors-container"
+                    *ngIf="searchByControl.invalid && (searchByControl.touched || searchByControl.dirty)">
+                    <p class="error-msg" *ngIf="searchByControl.hasError('required')">
+                        Para realizar una búsqueda, el campo debe ser válido
+                    </p>
+                </div>
+            </form>
+            <div class="row">
+                <div class="col">
+                    <div class="card my-4">
+                        <div class="card-header">
+                            <h5 class="modal-title">Listado de paquetes en espera a ser retirados</h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-hover table-sm" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>No. Factura</th>
+                                        <th>Nit</th>
+                                        <th>Nombre</th>
+                                        <th>Peso (lb)</th>
+                                        <th>Costo Envio</th>
+                                        <th>Destino</th>
+                                        <th>Accion</th>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let p of filteredPackages; let i = index">
+                                        <td>{{i + 1}}</td>
+                                        <td>{{p.invoiceNo}}</td>
+                                        <td>{{getCustomerById(p.customerId).nit}}</td>
+                                        <td>{{getCustomerById(p.customerId).name}}</td>
+                                        <td>{{p.weight | number: "1.2-2"}}</td>
+                                        <td>{{p.shippingCost | number: "1.2-2"}} Q</td>
+                                        <td>{{getDestinationById(p.destinationId).name}}</td>
+                                        <td><button type="button" class="btn btn-danger btn-sm"
+                                                (click)="pickUpPackage(p)">Retirar</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

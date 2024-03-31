@@ -14,6 +14,8 @@ export class RecepService {
   url: string = 'http://localhost:8080/ipc2-p1-backend/recep';
 
   private packages = new BehaviorSubject<Package[]>([]);
+  //private packagesOnStandby = new BehaviorSubject<Package[]>([]);
+
   packages$ = this.packages.asObservable();
 
   constructor(private http: HttpClient) { }
@@ -50,6 +52,18 @@ export class RecepService {
     return this.http.get<Parameter>(`${this.url}/getParameters`);
   }
 
+  getAllCustomers(){
+    return this.http.get<Customer[]>(`${this.url}/getAllCustomers`);
+  }
+
+  getAllPackagesOnStandby(){
+    return this.http.get<Package[]>(`${this.url}/getAllPackagesOnStandby`);
+  }
+
+  filterPackagesOnStandby(filter : string){
+    return this.http.get<Package[]>(`${this.url}/filterPackagesOnStandby/${filter}`);
+  }
+
   createCustomer(customer : Customer){
     return this.http.post<Customer>(`${this.url}/createCustomer`, customer);
   }
@@ -58,8 +72,16 @@ export class RecepService {
     return this.http.post<Package>(`${this.url}/createPackage`, packageS);
   }
 
+  updatePackage(packageS : Package){
+    return this.http.put<Package>(`${this.url}/updatePackage`, packageS);
+  }
+
   calculateDestinationFee(destination: Destination, packageS : Package, parameter : Parameter){
     return (packageS.weight * parameter.pricePerPound) + destination.destinationFee;
+  }
+
+  isNumber(str: string): boolean {
+    return /^\d+$/.test(str);
   }
 
 }

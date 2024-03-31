@@ -9,6 +9,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,7 +44,27 @@ public class CustomerDB {
         }
         return Optional.ofNullable(customer);
     }
-    
+
+    public List<Customer> getAllCustomers() {
+        String query = "SELECT * FROM cliente;";
+        List<Customer> customers = new ArrayList<>();
+
+        try (Statement stmt = connection.createStatement(); ResultSet resultSet = stmt.executeQuery(query)) {
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("nombre");
+                String nit = resultSet.getString("nit");
+                String sex = resultSet.getString("sexo");
+
+                Customer customer = new Customer(id, name, nit, sex);
+                customers.add(customer);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar 'getAllCustomers': " + e);
+        }
+        return customers;
+    }
+
     public void create(Customer customer) {
         String query = "INSERT INTO cliente (nombre, nit, sexo) VALUES (?, ?, ?);";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -49,7 +72,7 @@ public class CustomerDB {
             preparedStatement.setString(2, customer.getNit());
             preparedStatement.setString(3, customer.getSex());
             preparedStatement.executeUpdate();
-            
+
             System.out.println("cliente creado");
         } catch (SQLException e) {
             System.out.println("Error al crear cliente: " + e);

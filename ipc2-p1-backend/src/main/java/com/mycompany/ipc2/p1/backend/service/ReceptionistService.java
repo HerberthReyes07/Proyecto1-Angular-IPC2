@@ -85,6 +85,18 @@ public class ReceptionistService {
     public int getPackageCreatedId() {
         return packageDB.getPackageCreatedId();
     }
+    
+    public List<Customer> getAllCustomers(){
+        return customerDB.getAllCustomers();
+    }
+    
+    public List<Package> getAllPackagesOnStandby() {
+        return packageDB.getAllPackagesOnStandby();
+    }
+    
+    public List<Package> filterPackagesOnStandby(String filter) {
+        return packageDB.filterPackagesOnStandby(filter);
+    }
 
     public void createCustomer(Customer customer) {
         customerDB.create(customer);
@@ -100,6 +112,10 @@ public class ReceptionistService {
 
     public void updateControlPoint(ControlPoint controlPoint) {
         controlPointDB.update(controlPoint);
+    }
+    
+    public void updatePackage(Package packageSent){
+        packageDB.update(packageSent);
     }
 
 }

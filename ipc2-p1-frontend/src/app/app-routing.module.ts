@@ -8,6 +8,7 @@ import { IsLoggedInGuard } from './guard/is-logged-in.guard';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { ManagerHomepageComponent } from './components/manager-homepage/manager-homepage.component';
 import { PackageEntryComponent } from './components/recep/package-entry/package-entry.component';
+import { PickUpPackageComponent } from './components/recep/pick-up-package/pick-up-package.component';
 
 const routes: Routes = [
   {
@@ -41,6 +42,11 @@ const routes: Routes = [
   {
     path: 'recep/paquete/entrada',
     component: PackageEntryComponent,
+    canActivate: [IsLoggedInGuard]
+  },
+  {
+    path: 'recep/paquete/retiro',
+    component: PickUpPackageComponent,
     canActivate: [IsLoggedInGuard]
   },
   {

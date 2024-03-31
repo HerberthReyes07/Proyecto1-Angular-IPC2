@@ -6,10 +6,14 @@ package com.mycompany.ipc2.p1.backend.data;
 
 import java.sql.Connection;
 import com.mycompany.ipc2.p1.backend.model.Package;
+import com.mycompany.ipc2.p1.backend.model.PackageStatus;
 import com.mycompany.ipc2.p1.backend.utils.GeneralUtils;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -25,7 +29,6 @@ public class PackageDB {
 
     public void create(Package packageSent) {
         String query = "INSERT INTO paquete (peso, costo_envio, estado, no_factura, cliente_id, destino_id) VALUES (?, ?, ?, ?, ?, ?);";
-        //Package packageS = null;
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setDouble(1, packageSent.getWeight());
             preparedStatement.setDouble(2, packageSent.getShippingCost());
@@ -34,20 +37,36 @@ public class PackageDB {
             preparedStatement.setInt(5, packageSent.getCustomerId());
             preparedStatement.setInt(6, packageSent.getDestinationId());
             preparedStatement.executeUpdate();
-            
+
             System.out.println("Paquete creado");
-            //return packageSent;
         } catch (SQLException e) {
             System.out.println("Error al crear paquete: " + e);
         }
-        //return packageSent;
     }
 
-    public int getPackageCreatedId(){
+    public void update(Package packageSent) {
+        String query = "UPDATE paquete SET peso = ?, costo_envio = ?, estado = ?, no_factura = ?, cliente_id = ?, destino_id = ? WHERE id = ?;";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setDouble(1, packageSent.getWeight());
+            preparedStatement.setDouble(2, packageSent.getShippingCost());
+            preparedStatement.setInt(3, gu.getStatusPackageCode(packageSent.getStatus()));
+            preparedStatement.setInt(4, packageSent.getInvoiceNo());
+            preparedStatement.setInt(5, packageSent.getCustomerId());
+            preparedStatement.setInt(6, packageSent.getDestinationId());
+            preparedStatement.setInt(7, packageSent.getId());
+            preparedStatement.executeUpdate();
+
+            System.out.println("Paquete actualizado");
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar paquete: " + e);
+        }
+    }
+
+    public int getPackageCreatedId() {
         String query = "SELECT id FROM paquete ORDER BY id DESC LIMIT 1;";
         int id = -1;
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        try (Statement stmt = connection.createStatement()) {
+            try (ResultSet resultSet = stmt.executeQuery(query)) {
                 if (resultSet.next()) {
                     id = resultSet.getInt("id");
                 }
@@ -57,12 +76,12 @@ public class PackageDB {
         }
         return id;
     }
-    
+
     public int getLastInvoiceNo() {
         String query = "SELECT no_factura FROM paquete ORDER BY no_factura DESC LIMIT 1;";
         int lastInvoiceNo = -1;
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        try (Statement stmt = connection.createStatement()) {
+            try (ResultSet resultSet = stmt.executeQuery(query)) {
                 if (resultSet.next()) {
                     lastInvoiceNo = resultSet.getInt("no_factura");
                 }
@@ -71,6 +90,54 @@ public class PackageDB {
             System.out.println("Error al consultar 'getLastInvoiceNo': " + e);
         }
         return lastInvoiceNo;
+    }
+
+    public List<Package> getAllPackagesOnStandby() {
+        String query = "SELECT * FROM paquete WHERE estado = 3;";
+        List<Package> packages = new ArrayList<>();
+
+        try (Statement stmt = connection.createStatement(); ResultSet resultSet = stmt.executeQuery(query)) {
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                double weight = resultSet.getDouble("peso");
+                double shippingCost = resultSet.getDouble("costo_envio");
+                int invoiceNo = resultSet.getInt("no_factura");
+                int customerId = resultSet.getInt("cliente_id");
+                int destinationId = resultSet.getInt("destino_id");
+
+                Package packageToAdd = new Package(id, customerId, destinationId, weight, shippingCost, PackageStatus.EN_ESPERA_RETIRO, invoiceNo);
+                packages.add(packageToAdd);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar 'getPackagesOnStandby': " + e);
+        }
+        return packages;
+    }
+
+    public List<Package> filterPackagesOnStandby(String filter) {/*'%?%'*/
+        String query = "SELECT p.* FROM paquete p JOIN cliente c ON p.cliente_id = c.id WHERE (c.nit LIKE ? OR p.no_factura LIKE ?) AND estado = 3;";
+        List<Package> packages = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, "%" + filter + "%");
+            preparedStatement.setString(2, "%" + filter + "%");
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    double weight = resultSet.getDouble("peso");
+                    double shippingCost = resultSet.getDouble("costo_envio");
+                    int invoiceNo = resultSet.getInt("no_factura");
+                    int customerId = resultSet.getInt("cliente_id");
+                    int destinationId = resultSet.getInt("destino_id");
+
+                    Package packageToAdd = new Package(id, customerId, destinationId, weight, shippingCost, PackageStatus.EN_ESPERA_RETIRO, invoiceNo);
+                    packages.add(packageToAdd);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar 'filterPackagesOnStandby': " + e);
+        }
+        return packages;
     }
 
 }

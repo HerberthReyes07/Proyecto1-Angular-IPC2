@@ -20,7 +20,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,7 +31,6 @@ public class ReceptionistController extends HttpServlet {
 
     private final GsonUtils<Destination> gsonDestination;
     private final GsonUtils<Package> gsonPackage;
-    private final GsonUtils<List<Package>> gsonPackageS;
     private final GsonUtils<Customer> gsonCustomer;
     private final GsonUtils<Parameter> gsonParameter;
     private final ReceptionistService receptionistService;
@@ -41,7 +39,6 @@ public class ReceptionistController extends HttpServlet {
     public ReceptionistController() {
         gsonDestination = new GsonUtils<>();
         gsonPackage = new GsonUtils<>();
-        gsonPackageS = new GsonUtils<>();
         gsonCustomer = new GsonUtils<>();
         gsonParameter = new GsonUtils<>();
         receptionistService = new ReceptionistService();
@@ -51,7 +48,7 @@ public class ReceptionistController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        System.out.println("DO GET /RECEP");
+        System.out.println("DO GET / RECEP");
         String pathInfo = request.getPathInfo();
         System.out.println("PATH INFO: " + pathInfo);
 
@@ -73,7 +70,6 @@ public class ReceptionistController extends HttpServlet {
             //List<Destination> destinations = receptionistService.readAllDestinations();
             //List<Route> routes = receptionistService.getAllRoutes();
             List<Destination> validDestinations = receptionistService.getValidDestinations();
-
             response.setStatus(HttpServletResponse.SC_OK);
             gsonDestination.sendAsJson(response, validDestinations);
         } else if (action.equals("getCustomerByNit")) {
@@ -102,13 +98,32 @@ public class ReceptionistController extends HttpServlet {
             int invoice = receptionistService.getLastInvoiceNo() + 1;
             response.setStatus(HttpServletResponse.SC_OK);
             gsonPackage.sendAsJson(response, new Package(invoice));
+        } else if (action.equals("getAllCustomers")) {
+            List<Customer> customersFromDB = receptionistService.getAllCustomers();
+            response.setStatus(HttpServletResponse.SC_OK);
+            gsonCustomer.sendAsJson(response, customersFromDB);
+        } else if (action.equals("getAllPackagesOnStandby")) {
+            List<Package> packagesOnStandby = receptionistService.getAllPackagesOnStandby();
+            response.setStatus(HttpServletResponse.SC_OK);
+            gsonPackage.sendAsJson(response, packagesOnStandby);
+        } else if (action.equals("filterPackagesOnStandby")) {
+            String filter;
+            try {
+                filter = splits[2];
+            } catch (Exception e) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+            List<Package> filterPackagesOnStandby = receptionistService.filterPackagesOnStandby(filter);
+            response.setStatus(HttpServletResponse.SC_OK);
+            gsonPackage.sendAsJson(response, filterPackagesOnStandby);
         }
 
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("DO POST /RECEP");
+        System.out.println("DO POST / RECEP");
 
         String pathInfo = request.getPathInfo();
         String[] splits = pathInfo.split("/");
@@ -116,7 +131,7 @@ public class ReceptionistController extends HttpServlet {
         System.out.println("ACCION: " + action);
 
         if (action.equals("createPackage")) {
-            
+
             Package packageFromJson;
             try {
                 packageFromJson = gsonPackage.readFromJson(request, Package.class);
@@ -162,4 +177,36 @@ public class ReceptionistController extends HttpServlet {
 
     }
 
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        System.out.println("DO PUT / RECEP");
+        String pathInfo = request.getPathInfo();
+        System.out.println("PATH INFO: " + pathInfo);
+        
+        if (pathInfo == null || pathInfo.equals("/")) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
+        String[] splits = pathInfo.split("/");
+        if (splits.length < 2) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        
+        String action = splits[1];
+        System.out.println("ACCION: " + action);
+        
+        if (action.equals("updatePackage")) {
+            
+            Package packageFromJson = gsonPackage.readFromJson(request, Package.class);
+            packageFromJson.setStatus(PackageStatus.RETIRADO);
+            receptionistService.updatePackage(packageFromJson);
+            response.setStatus(HttpServletResponse.SC_OK);
+            gsonPackage.sendAsJson(response, packageFromJson);
+        }
+    }
+
+    
 }

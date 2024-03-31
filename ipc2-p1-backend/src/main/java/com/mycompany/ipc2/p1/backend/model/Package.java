@@ -20,9 +20,9 @@ public class Package {
     public Package() {
     }
 
-    public Package(int id, int clientId, int destinationId, double weight, double shippingCost, PackageStatus status, int invoiceNo) {
+    public Package(int id, int customerId, int destinationId, double weight, double shippingCost, PackageStatus status, int invoiceNo) {
         this.id = id;
-        this.customerId = clientId;
+        this.customerId = customerId;
         this.destinationId = destinationId;
         this.weight = weight;
         this.shippingCost = shippingCost;
