@@ -8,6 +8,7 @@ import java.sql.Connection;
 import com.mycompany.ipc2.p1.backend.model.Package;
 import com.mycompany.ipc2.p1.backend.model.PackageStatus;
 import com.mycompany.ipc2.p1.backend.utils.GeneralUtils;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,14 +29,15 @@ public class PackageDB {
     }
 
     public void create(Package packageSent) {
-        String query = "INSERT INTO paquete (peso, costo_envio, estado, no_factura, cliente_id, destino_id) VALUES (?, ?, ?, ?, ?, ?);";
+        String query = "INSERT INTO paquete (peso, costo_envio, estado, no_factura, fecha_ingreso, cliente_id, destino_id) VALUES (?, ?, ?, ?, ?, ?, ?);";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setDouble(1, packageSent.getWeight());
             preparedStatement.setDouble(2, packageSent.getShippingCost());
             preparedStatement.setInt(3, gu.getStatusPackageCode(packageSent.getStatus()));
             preparedStatement.setInt(4, packageSent.getInvoiceNo());
-            preparedStatement.setInt(5, packageSent.getCustomerId());
-            preparedStatement.setInt(6, packageSent.getDestinationId());
+            preparedStatement.setDate(5, Date.valueOf(packageSent.getEntryDate()));
+            preparedStatement.setInt(6, packageSent.getCustomerId());
+            preparedStatement.setInt(7, packageSent.getDestinationId());
             preparedStatement.executeUpdate();
 
             System.out.println("Paquete creado");
@@ -45,21 +47,46 @@ public class PackageDB {
     }
 
     public void update(Package packageSent) {
-        String query = "UPDATE paquete SET peso = ?, costo_envio = ?, estado = ?, no_factura = ?, cliente_id = ?, destino_id = ? WHERE id = ?;";
+        String query = "UPDATE paquete SET peso = ?, costo_envio = ?, estado = ?, no_factura = ?, fecha_ingreso = ?, cliente_id = ?, destino_id = ? WHERE id = ?;";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setDouble(1, packageSent.getWeight());
             preparedStatement.setDouble(2, packageSent.getShippingCost());
             preparedStatement.setInt(3, gu.getStatusPackageCode(packageSent.getStatus()));
             preparedStatement.setInt(4, packageSent.getInvoiceNo());
-            preparedStatement.setInt(5, packageSent.getCustomerId());
-            preparedStatement.setInt(6, packageSent.getDestinationId());
-            preparedStatement.setInt(7, packageSent.getId());
+            preparedStatement.setDate(5, Date.valueOf(packageSent.getEntryDate()));
+            preparedStatement.setInt(6, packageSent.getCustomerId());
+            preparedStatement.setInt(7, packageSent.getDestinationId());
+            preparedStatement.setInt(8, packageSent.getId());
             preparedStatement.executeUpdate();
 
             System.out.println("Paquete actualizado");
         } catch (SQLException e) {
             System.out.println("Error al actualizar paquete: " + e);
         }
+    }
+
+    public Package getPackageById(int id) {
+        String query = "SELECT * FROM paquete WHERE id = ?";
+        Package packageToSend = null;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, id);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    double weight = resultSet.getDouble("peso");
+                    double shippingCost = resultSet.getDouble("costo_envio");
+                    int status = resultSet.getInt("estado");
+                    int invoiceNo = resultSet.getInt("no_factura");
+                    String entryDate = resultSet.getDate("fecha_entrada").toString();
+                    int customerId = resultSet.getInt("cliente_id");
+                    int destinationId = resultSet.getInt("destino_id");
+                    packageToSend = new Package(id, customerId, destinationId, weight, shippingCost, gu.getPackageStatus(status), invoiceNo, entryDate);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar 'getPackageById': " + e);
+        }
+        return packageToSend;
     }
 
     public int getPackageCreatedId() {
@@ -102,10 +129,11 @@ public class PackageDB {
                 double weight = resultSet.getDouble("peso");
                 double shippingCost = resultSet.getDouble("costo_envio");
                 int invoiceNo = resultSet.getInt("no_factura");
+                String entryDate = resultSet.getDate("fecha_entrada").toString();
                 int customerId = resultSet.getInt("cliente_id");
                 int destinationId = resultSet.getInt("destino_id");
 
-                Package packageToAdd = new Package(id, customerId, destinationId, weight, shippingCost, PackageStatus.EN_ESPERA_RETIRO, invoiceNo);
+                Package packageToAdd = new Package(id, customerId, destinationId, weight, shippingCost, PackageStatus.EN_ESPERA_RETIRO, invoiceNo, entryDate);
                 packages.add(packageToAdd);
             }
         } catch (SQLException e) {
@@ -127,10 +155,11 @@ public class PackageDB {
                     double weight = resultSet.getDouble("peso");
                     double shippingCost = resultSet.getDouble("costo_envio");
                     int invoiceNo = resultSet.getInt("no_factura");
+                    String entryDate = resultSet.getDate("fecha_entrada").toString();
                     int customerId = resultSet.getInt("cliente_id");
                     int destinationId = resultSet.getInt("destino_id");
 
-                    Package packageToAdd = new Package(id, customerId, destinationId, weight, shippingCost, PackageStatus.EN_ESPERA_RETIRO, invoiceNo);
+                    Package packageToAdd = new Package(id, customerId, destinationId, weight, shippingCost, PackageStatus.EN_ESPERA_RETIRO, invoiceNo, entryDate);
                     packages.add(packageToAdd);
                 }
             }

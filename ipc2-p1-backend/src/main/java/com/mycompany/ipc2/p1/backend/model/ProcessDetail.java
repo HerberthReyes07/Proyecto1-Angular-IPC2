@@ -8,21 +8,24 @@ package com.mycompany.ipc2.p1.backend.model;
  *
  * @author herberthreyes
  */
-public class PackageProcess {
+public class ProcessDetail {
     private int id;
     private int time;
     private double costProcess;
-    private int controlPointId;
+    private String processDate;
+    private int processId;
 
-    public PackageProcess() {
+    public ProcessDetail() {
     }
 
-    public PackageProcess(int id, int time, double costProcess, int controlPointId) {
+    public ProcessDetail(int id, int time, double costProcess, String processDate, int processId) {
         this.id = id;
         this.time = time;
         this.costProcess = costProcess;
-        this.controlPointId = controlPointId;
+        this.processDate = processDate;
+        this.processId = processId;
     }
+
 
     public int getId() {
         return id;
@@ -48,17 +51,25 @@ public class PackageProcess {
         this.costProcess = costProcess;
     }
 
-    public int getControlPointId() {
-        return controlPointId;
+    public String getProcessDate() {
+        return processDate;
     }
 
-    public void setControlPointId(int controlPointId) {
-        this.controlPointId = controlPointId;
+    public void setProcessDate(String processDate) {
+        this.processDate = processDate;
+    }
+
+    public int getProcessId() {
+        return processId;
+    }
+
+    public void setProcessId(int processId) {
+        this.processId = processId;
     }
 
     @Override
     public String toString() {
-        return "PackageProcess{" + "id=" + id + ", time=" + time + ", costProcess=" + costProcess + ", controlPointId=" + controlPointId + '}';
+        return "ProcessDetail{" + "id=" + id + ", time=" + time + ", costProcess=" + costProcess + ", processDate=" + processDate + ", processId=" + processId + '}';
     }
     
 }

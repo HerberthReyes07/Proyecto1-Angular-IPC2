@@ -7,7 +7,7 @@ package com.mycompany.ipc2.p1.backend.service;
 import com.mycompany.ipc2.p1.backend.data.ControlPointDB;
 import com.mycompany.ipc2.p1.backend.data.CustomerDB;
 import com.mycompany.ipc2.p1.backend.data.DestinationDB;
-import com.mycompany.ipc2.p1.backend.data.PackageControlPointDB;
+import com.mycompany.ipc2.p1.backend.data.ProcessDB;
 import com.mycompany.ipc2.p1.backend.data.PackageDB;
 import com.mycompany.ipc2.p1.backend.data.ParameterDB;
 import com.mycompany.ipc2.p1.backend.data.RouteDB;
@@ -15,6 +15,7 @@ import com.mycompany.ipc2.p1.backend.model.ControlPoint;
 import com.mycompany.ipc2.p1.backend.model.Package;
 import com.mycompany.ipc2.p1.backend.model.Customer;
 import com.mycompany.ipc2.p1.backend.model.Destination;
+import com.mycompany.ipc2.p1.backend.model.Process;
 import com.mycompany.ipc2.p1.backend.model.Parameter;
 import com.mycompany.ipc2.p1.backend.model.Route;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class ReceptionistService {
     private final CustomerDB customerDB;
     private final PackageDB packageDB;
     private final ControlPointDB controlPointDB;
-    private final PackageControlPointDB packageControlPointDB;
+    private final ProcessDB packageControlPointDB;
     private final ParameterDB parameterDB;
 
     public ReceptionistService() {
@@ -40,7 +41,7 @@ public class ReceptionistService {
         this.customerDB = new CustomerDB();
         this.packageDB = new PackageDB();
         this.controlPointDB = new ControlPointDB();
-        this.packageControlPointDB = new PackageControlPointDB();
+        this.packageControlPointDB = new ProcessDB();
         this.parameterDB = new ParameterDB();
     }
 
@@ -90,6 +91,10 @@ public class ReceptionistService {
         return customerDB.getAllCustomers();
     }
     
+    public Package getPackageById(int id){
+        return packageDB.getPackageById(id);
+    }
+    
     public List<Package> getAllPackagesOnStandby() {
         return packageDB.getAllPackagesOnStandby();
     }
@@ -106,8 +111,8 @@ public class ReceptionistService {
         packageDB.create(packageSent);
     }
 
-    public void createPackageControlPoint(int packageId, int controlPointId) {
-        packageControlPointDB.create(packageId, controlPointId);
+    public void createProcess(Process process) {
+        packageControlPointDB.create(process);
     }
 
     public void updateControlPoint(ControlPoint controlPoint) {

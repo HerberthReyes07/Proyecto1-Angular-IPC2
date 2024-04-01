@@ -4,17 +4,22 @@
  */
 package com.mycompany.ipc2.p1.backend.data;
 
+import com.mycompany.ipc2.p1.backend.model.ProcessDetail;
 import java.sql.Connection;
 
 /**
  *
  * @author herberthreyes
  */
-public class PackageProcessDB {
+public class ProcessDetailDB {
 
     private Connection connection = ConnectionDB.getConnection();
 
-    public PackageProcessDB() {
+    public ProcessDetailDB() {
+    }
+    
+    public void create(ProcessDetail processDetail){
+    
     }
 
 }

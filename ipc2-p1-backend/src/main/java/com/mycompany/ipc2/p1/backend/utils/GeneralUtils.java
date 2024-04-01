@@ -30,6 +30,22 @@ public class GeneralUtils {
         return null;
     }
     
+    public PackageStatus getPackageStatus(int statusCode) {
+        switch (statusCode) {
+            case 1:
+                return PackageStatus.EN_BODEGA;
+            case 2:
+                return PackageStatus.EN_PUNTO_CONTROL;
+            case 3:
+                return PackageStatus.EN_ESPERA_RETIRO;
+            case 4:
+                return PackageStatus.RETIRADO;
+            default:
+                System.out.println("ESTADO DEL PAQUETE NO ENCONTRADO");
+        }
+        return null;
+    }
+    
     public int getStatusPackageCode(PackageStatus ps) {
         switch (ps) {
             case EN_BODEGA:

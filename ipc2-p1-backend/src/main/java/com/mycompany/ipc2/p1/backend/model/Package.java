@@ -16,11 +16,12 @@ public class Package {
     private double shippingCost;
     private PackageStatus status;
     private int invoiceNo;
+    private String entryDate;
 
     public Package() {
     }
 
-    public Package(int id, int customerId, int destinationId, double weight, double shippingCost, PackageStatus status, int invoiceNo) {
+    public Package(int id, int customerId, int destinationId, double weight, double shippingCost, PackageStatus status, int invoiceNo, String entryDate) {
         this.id = id;
         this.customerId = customerId;
         this.destinationId = destinationId;
@@ -28,6 +29,7 @@ public class Package {
         this.shippingCost = shippingCost;
         this.status = status;
         this.invoiceNo = invoiceNo;
+        this.entryDate = entryDate;
     }
 
     public Package(int invoiceNo) {
@@ -90,9 +92,17 @@ public class Package {
         this.invoiceNo = invoiceNo;
     }
 
+    public String getEntryDate() {
+        return entryDate;
+    }
+
+    public void setEntryDate(String entryDate) {
+        this.entryDate = entryDate;
+    }
+
     @Override
     public String toString() {
-        return "Package{" + "id=" + id + ", clientId=" + customerId + ", destinationId=" + destinationId + ", weight=" + weight + ", shippingCost=" + shippingCost + ", status=" + status + ", invoiceNo=" + invoiceNo + '}';
+        return "Package{" + "id=" + id + ", customerId=" + customerId + ", destinationId=" + destinationId + ", weight=" + weight + ", shippingCost=" + shippingCost + ", status=" + status + ", invoiceNo=" + invoiceNo + ", entryDate=" + entryDate + '}';
     }
     
 }

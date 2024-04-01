@@ -8,6 +8,7 @@ import com.mycompany.ipc2.p1.backend.model.ControlPoint;
 import com.mycompany.ipc2.p1.backend.model.Customer;
 import com.mycompany.ipc2.p1.backend.model.Package;
 import com.mycompany.ipc2.p1.backend.model.Destination;
+import com.mycompany.ipc2.p1.backend.model.Process;
 import com.mycompany.ipc2.p1.backend.model.PackageStatus;
 import com.mycompany.ipc2.p1.backend.model.Parameter;
 import com.mycompany.ipc2.p1.backend.model.Route;
@@ -48,6 +49,7 @@ public class ReceptionistController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+        System.out.println("----------");
         System.out.println("DO GET / RECEP");
         String pathInfo = request.getPathInfo();
         System.out.println("PATH INFO: " + pathInfo);
@@ -56,69 +58,69 @@ public class ReceptionistController extends HttpServlet {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
+        //response.setStatus(HttpServletResponse.SC_OK);//
 
         String[] splits = pathInfo.split("/");
-        if (splits.length < 2) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        System.out.println("----------");
+        for (int i = 1; i < splits.length; i++) {
+            System.out.println(splits[i]);
+        }
+        System.out.println("----------");
+
+        if ((splits.length - 1) == 1) {
+            if (pathInfo.equals("/destinations")) {
+                List<Destination> validDestinations = receptionistService.getValidDestinations();
+                response.setStatus(HttpServletResponse.SC_OK);
+                gsonDestination.sendAsJson(response, validDestinations);
+            } else if (pathInfo.equals("/parameters")) {
+                Parameter parameterFromDB = receptionistService.getParameters();
+                response.setStatus(HttpServletResponse.SC_OK);
+                gsonParameter.sendAsJson(response, parameterFromDB);
+            } else if (pathInfo.equals("/customers")) {
+                List<Customer> customersFromDB = receptionistService.getAllCustomers();
+                response.setStatus(HttpServletResponse.SC_OK);
+                gsonCustomer.sendAsJson(response, customersFromDB);
+            }
+        } else if ((splits.length - 1) == 2) {
+            if (pathInfo.equals("/customers/" + splits[2])) {
+                String customerNit = splits[2];
+                try {
+                    Integer.parseInt(customerNit);
+                } catch (NumberFormatException e) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                    return;
+                }
+
+                Customer customerFromDB = receptionistService.getCustomerByNit(customerNit);
+                if (customerFromDB == null) {
+                    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                } else {
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    gsonCustomer.sendAsJson(response, customerFromDB);
+                }
+            } else if (pathInfo.equals("/customers/InvoiceNo")) {
+                int invoice = receptionistService.getLastInvoiceNo() + 1;
+                response.setStatus(HttpServletResponse.SC_OK);
+                gsonPackage.sendAsJson(response, new Package(invoice));
+            } else if (pathInfo.equals("/packages/on-standby")) {
+                List<Package> packagesOnStandby = receptionistService.getAllPackagesOnStandby();
+                response.setStatus(HttpServletResponse.SC_OK);
+                gsonPackage.sendAsJson(response, packagesOnStandby);
+            }
+        } else if ((splits.length - 1) == 3) {
+            if (pathInfo.equals("/packages/standby/" + splits[3])) {
+                String filter = splits[3];
+                List<Package> filterPackagesOnStandby = receptionistService.filterPackagesOnStandby(filter);
+                response.setStatus(HttpServletResponse.SC_OK);
+                gsonPackage.sendAsJson(response, filterPackagesOnStandby);
+            }
+        } else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
-        String action = splits[1];
-        System.out.println("ACCION: " + action);
-
-        if (action.equals("readAllDestinations")) {
-            //List<Destination> destinations = receptionistService.readAllDestinations();
-            //List<Route> routes = receptionistService.getAllRoutes();
-            List<Destination> validDestinations = receptionistService.getValidDestinations();
-            response.setStatus(HttpServletResponse.SC_OK);
-            gsonDestination.sendAsJson(response, validDestinations);
-        } else if (action.equals("getCustomerByNit")) {
-
-            String customerNit;
-            try {
-                customerNit = splits[2];
-                Integer.parseInt(customerNit);
-            } catch (Exception e) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                return;
-            }
-
-            Customer customerFromDB = receptionistService.getCustomerByNit(customerNit);
-            if (customerFromDB == null) {
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            } else {
-                response.setStatus(HttpServletResponse.SC_OK);
-                gsonCustomer.sendAsJson(response, customerFromDB);
-            }
-        } else if (action.equals("getParameters")) {
-            Parameter parameterFromDB = receptionistService.getParameters();
-            response.setStatus(HttpServletResponse.SC_OK);
-            gsonParameter.sendAsJson(response, parameterFromDB);
-        } else if (action.equals("getInvoiceNo")) {
-            int invoice = receptionistService.getLastInvoiceNo() + 1;
-            response.setStatus(HttpServletResponse.SC_OK);
-            gsonPackage.sendAsJson(response, new Package(invoice));
-        } else if (action.equals("getAllCustomers")) {
-            List<Customer> customersFromDB = receptionistService.getAllCustomers();
-            response.setStatus(HttpServletResponse.SC_OK);
-            gsonCustomer.sendAsJson(response, customersFromDB);
-        } else if (action.equals("getAllPackagesOnStandby")) {
-            List<Package> packagesOnStandby = receptionistService.getAllPackagesOnStandby();
-            response.setStatus(HttpServletResponse.SC_OK);
-            gsonPackage.sendAsJson(response, packagesOnStandby);
-        } else if (action.equals("filterPackagesOnStandby")) {
-            String filter;
-            try {
-                filter = splits[2];
-            } catch (Exception e) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                return;
-            }
-            List<Package> filterPackagesOnStandby = receptionistService.filterPackagesOnStandby(filter);
-            response.setStatus(HttpServletResponse.SC_OK);
-            gsonPackage.sendAsJson(response, filterPackagesOnStandby);
-        }
-
+        String resource = splits[1];
+        System.out.println("RESOURCE: " + resource);
     }
 
     @Override
@@ -126,11 +128,14 @@ public class ReceptionistController extends HttpServlet {
         System.out.println("DO POST / RECEP");
 
         String pathInfo = request.getPathInfo();
+        System.out.println("PATH INFO: " + pathInfo);
+        //response.setStatus(HttpServletResponse.SC_OK);//
+
         String[] splits = pathInfo.split("/");
         String action = splits[1];
         System.out.println("ACCION: " + action);
 
-        if (action.equals("createPackage")) {
+        if (action.equals("packages")) {//createPackage
 
             Package packageFromJson;
             try {
@@ -160,12 +165,12 @@ public class ReceptionistController extends HttpServlet {
                 controlPoint.setQueueCapacity(originalQueueCapacity - 1);
                 receptionistService.updateControlPoint(controlPoint);
 
-                receptionistService.createPackageControlPoint(receptionistService.getPackageCreatedId(), controlPoint.getId());
+                receptionistService.createProcess(new Process(receptionistService.getPackageCreatedId(), controlPoint.getId()));
             }
             response.setStatus(HttpServletResponse.SC_OK);
             gsonPackage.sendAsJson(response, packageFromJson);
 
-        } else if (action.equals("createCustomer")) {
+        } else if (action.equals("customers")) {//createCustomer
 
             Customer customerFromJson = gsonCustomer.readFromJson(request, Customer.class);
             System.out.println("Cliente enviado: " + customerFromJson.toString());
@@ -174,7 +179,6 @@ public class ReceptionistController extends HttpServlet {
             gsonCustomer.sendAsJson(response, customerFromJson);
             response.setStatus(HttpServletResponse.SC_OK);
         }
-
     }
 
     @Override
@@ -183,30 +187,37 @@ public class ReceptionistController extends HttpServlet {
         System.out.println("DO PUT / RECEP");
         String pathInfo = request.getPathInfo();
         System.out.println("PATH INFO: " + pathInfo);
-        
+
         if (pathInfo == null || pathInfo.equals("/")) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
+        //response.setStatus(HttpServletResponse.SC_OK);//
         String[] splits = pathInfo.split("/");
-        if (splits.length < 2) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+
+        if ((splits.length - 1) == 2) {
+            if (pathInfo.equals("/packages/" + splits[2])) {
+                String idPackage = splits[2];
+                try {
+                    Integer.parseInt(idPackage);
+                } catch (NumberFormatException e) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                    return;
+                }
+                Package packageFromDB = receptionistService.getPackageById(Integer.parseInt(idPackage));
+                packageFromDB.setStatus(PackageStatus.RETIRADO);
+                receptionistService.updatePackage(packageFromDB);
+                response.setStatus(HttpServletResponse.SC_OK);
+                gsonPackage.sendAsJson(response, packageFromDB);
+            }
+
+        } else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-        
         String action = splits[1];
         System.out.println("ACCION: " + action);
-        
-        if (action.equals("updatePackage")) {
-            
-            Package packageFromJson = gsonPackage.readFromJson(request, Package.class);
-            packageFromJson.setStatus(PackageStatus.RETIRADO);
-            receptionistService.updatePackage(packageFromJson);
-            response.setStatus(HttpServletResponse.SC_OK);
-            gsonPackage.sendAsJson(response, packageFromJson);
-        }
     }
 
-    
 }
