@@ -24,6 +24,24 @@ public class ControlPointDB {
     public ControlPointDB() {
     }
 
+    public void update(ControlPoint controlPoint) {
+        String query = "UPDATE punto_control SET no_orden = ?, nombre = ?, capacidad_cola = ?, tarifa_operacion_local = ?, ruta_id = ?, usuario_operador_id = ? WHERE id = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, controlPoint.getOrderNo());
+            preparedStatement.setString(2, controlPoint.getName());
+            preparedStatement.setInt(3, controlPoint.getQueueCapacity());
+            preparedStatement.setDouble(4, controlPoint.getLocalOperationFee());
+            preparedStatement.setInt(5, controlPoint.getRouteId());
+            preparedStatement.setInt(6, controlPoint.getOperatorId());
+            preparedStatement.setInt(7, controlPoint.getId());
+            preparedStatement.executeUpdate();
+            System.out.println("Punto de control actualizado");
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar Punto de control: " + e);
+        }
+    }
+
     public List<ControlPoint> getFirstControlPoints() {
         String query = "SELECT * FROM punto_control WHERE no_orden = 1 ORDER BY capacidad_cola DESC;";
         List<ControlPoint> controlPoints = new ArrayList<>();
@@ -66,22 +84,77 @@ public class ControlPointDB {
         return totalQueueCapacity;
     }
 
-    public void update(ControlPoint controlPoint) {
-        String query = "UPDATE punto_control SET no_orden = ?, nombre = ?, capacidad_cola = ?, tarifa_operacion_local = ?, ruta_id = ?, usuario_operador_id = ? WHERE id = ?";
+    public List<ControlPoint> getControlPointsByOperatorId(int operatorId) {
+        String query = "SELECT * FROM punto_control WHERE usuario_operador_id = ?";
+        List<ControlPoint> controlPoints = new ArrayList<>();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setInt(1, controlPoint.getOrderNo());
-            preparedStatement.setString(2, controlPoint.getName());
-            preparedStatement.setInt(3, controlPoint.getQueueCapacity());
-            preparedStatement.setDouble(4, controlPoint.getLocalOperationFee());
-            preparedStatement.setInt(5, controlPoint.getRouteId());
-            preparedStatement.setInt(6, controlPoint.getOperatorId());
-            preparedStatement.setInt(7, controlPoint.getId());
-            preparedStatement.executeUpdate();
-            System.out.println("Punto de control actualizado");
+            preparedStatement.setInt(1, operatorId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    int orderNo = resultSet.getInt("no_orden");
+                    String name = resultSet.getString("nombre");
+                    int queueCapacity = resultSet.getInt("capacidad_cola");
+                    double localOperationFee = resultSet.getDouble("tarifa_operacion_local");
+                    int routeId = resultSet.getInt("ruta_id");
+
+                    ControlPoint controlPoint = new ControlPoint(id, orderNo, name, queueCapacity, localOperationFee, routeId, operatorId);
+                    controlPoints.add(controlPoint);
+                }
+            }
         } catch (SQLException e) {
-            System.out.println("Error al actualizar Punto de control: " + e);
+            System.out.println("Error al consultar 'getControlPointsByOperatorId': " + e);
         }
+        return controlPoints;
     }
 
+    public ControlPoint getControlPointById(int id) {
+        String query = "SELECT * FROM punto_control WHERE id = ?";
+        ControlPoint controlPoint = null;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, id);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int orderNo = resultSet.getInt("no_orden");
+                    String name = resultSet.getString("nombre");
+                    int queueCapacity = resultSet.getInt("capacidad_cola");
+                    double localOperationFee = resultSet.getDouble("tarifa_operacion_local");
+                    int routeId = resultSet.getInt("ruta_id");
+                    int operatorId = resultSet.getInt("usuario_operador_id");
+
+                    controlPoint = new ControlPoint(id, orderNo, name, queueCapacity, localOperationFee, routeId, operatorId);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar 'getControlPointById': " + e);
+        }
+        return controlPoint;
+    }
+
+    public ControlPoint getNextControlPointByRouteId(int nextOrderNo, int routeId) {
+        String query = "SELECT * FROM punto_control WHERE no_orden = ? AND ruta_id = ?";
+        ControlPoint controlPoint = null;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, nextOrderNo);
+            preparedStatement.setInt(2, routeId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    String name = resultSet.getString("nombre");
+                    int queueCapacity = resultSet.getInt("capacidad_cola");
+                    double localOperationFee = resultSet.getDouble("tarifa_operacion_local");
+                    int operatorId = resultSet.getInt("usuario_operador_id");
+
+                    controlPoint = new ControlPoint(id, nextOrderNo, name, queueCapacity, localOperationFee, routeId, operatorId);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar 'getNextControlPointByRouteId': " + e);
+        }
+        return controlPoint;
+    }
 }

@@ -77,7 +77,7 @@ public class PackageDB {
                     double shippingCost = resultSet.getDouble("costo_envio");
                     int status = resultSet.getInt("estado");
                     int invoiceNo = resultSet.getInt("no_factura");
-                    String entryDate = resultSet.getDate("fecha_entrada").toString();
+                    String entryDate = resultSet.getDate("fecha_ingreso").toString();
                     int customerId = resultSet.getInt("cliente_id");
                     int destinationId = resultSet.getInt("destino_id");
                     packageToSend = new Package(id, customerId, destinationId, weight, shippingCost, gu.getPackageStatus(status), invoiceNo, entryDate);
@@ -129,7 +129,7 @@ public class PackageDB {
                 double weight = resultSet.getDouble("peso");
                 double shippingCost = resultSet.getDouble("costo_envio");
                 int invoiceNo = resultSet.getInt("no_factura");
-                String entryDate = resultSet.getDate("fecha_entrada").toString();
+                String entryDate = resultSet.getDate("fecha_ingreso").toString();
                 int customerId = resultSet.getInt("cliente_id");
                 int destinationId = resultSet.getInt("destino_id");
 
@@ -140,6 +140,32 @@ public class PackageDB {
             System.out.println("Error al consultar 'getPackagesOnStandby': " + e);
         }
         return packages;
+    }
+    
+    public Package getPackageInWarehouseByDestinationId(int destinationId/*, int currentPackageId*/) {
+        //String query = "SELECT * FROM paquete WHERE estado = 1 AND destino_id = ? AND NOT id = ? LIMIT 1";
+        String query = "SELECT * FROM paquete WHERE estado = 1 AND destino_id = ? LIMIT 1";
+        Package packageToSend = null;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, destinationId);
+            //preparedStatement.setInt(2, currentPackageId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    double weight = resultSet.getDouble("peso");
+                    double shippingCost = resultSet.getDouble("costo_envio");
+                    int invoiceNo = resultSet.getInt("no_factura");
+                    String entryDate = resultSet.getDate("fecha_ingreso").toString();
+                    int customerId = resultSet.getInt("cliente_id");
+                    
+                    packageToSend = new Package(id, customerId, destinationId, weight, shippingCost, PackageStatus.EN_BODEGA, invoiceNo, entryDate);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar 'getPackageInWarehouseByDestinationId': " + e);
+        }
+        return packageToSend;
     }
 
     public List<Package> filterPackagesOnStandby(String filter) {/*'%?%'*/
@@ -155,7 +181,7 @@ public class PackageDB {
                     double weight = resultSet.getDouble("peso");
                     double shippingCost = resultSet.getDouble("costo_envio");
                     int invoiceNo = resultSet.getInt("no_factura");
-                    String entryDate = resultSet.getDate("fecha_entrada").toString();
+                    String entryDate = resultSet.getDate("fecha_ingreso").toString();
                     int customerId = resultSet.getInt("cliente_id");
                     int destinationId = resultSet.getInt("destino_id");
 

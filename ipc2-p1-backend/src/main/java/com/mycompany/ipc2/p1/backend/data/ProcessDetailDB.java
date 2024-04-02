@@ -6,6 +6,9 @@ package com.mycompany.ipc2.p1.backend.data;
 
 import com.mycompany.ipc2.p1.backend.model.ProcessDetail;
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
  *
@@ -17,9 +20,20 @@ public class ProcessDetailDB {
 
     public ProcessDetailDB() {
     }
-    
-    public void create(ProcessDetail processDetail){
-    
+
+    public void create(ProcessDetail processDetail) {
+        String query = "INSERT INTO detalle_proceso (tiempo, costo_proceso, fecha_proceso, proceso_id) VALUES (?, ?, ?, ?);";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, processDetail.getTime());
+            preparedStatement.setDouble(2, processDetail.getCostProcess());
+            preparedStatement.setDate(3, Date.valueOf(processDetail.getProcessDate()));
+            preparedStatement.setInt(4, processDetail.getProcessId());
+            preparedStatement.executeUpdate();
+
+            System.out.println("Detalle Proceso creado");
+        } catch (SQLException e) {
+            System.out.println("Error al crear Detalle Proceso: " + e);
+        }
     }
 
 }

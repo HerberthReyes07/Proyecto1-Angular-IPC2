@@ -9,6 +9,7 @@ package com.mycompany.ipc2.p1.backend.model;
  * @author herberthreyes
  */
 public class ProcessDetail {
+
     private int id;
     private int time;
     private double costProcess;
@@ -25,7 +26,6 @@ public class ProcessDetail {
         this.processDate = processDate;
         this.processId = processId;
     }
-
 
     public int getId() {
         return id;
@@ -71,5 +71,5 @@ public class ProcessDetail {
     public String toString() {
         return "ProcessDetail{" + "id=" + id + ", time=" + time + ", costProcess=" + costProcess + ", processDate=" + processDate + ", processId=" + processId + '}';
     }
-    
+
 }

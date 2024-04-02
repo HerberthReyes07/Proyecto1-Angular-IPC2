@@ -32,7 +32,7 @@ public class ReceptionistService {
     private final CustomerDB customerDB;
     private final PackageDB packageDB;
     private final ControlPointDB controlPointDB;
-    private final ProcessDB packageControlPointDB;
+    private final ProcessDB processDB;
     private final ParameterDB parameterDB;
 
     public ReceptionistService() {
@@ -41,7 +41,7 @@ public class ReceptionistService {
         this.customerDB = new CustomerDB();
         this.packageDB = new PackageDB();
         this.controlPointDB = new ControlPointDB();
-        this.packageControlPointDB = new ProcessDB();
+        this.processDB = new ProcessDB();
         this.parameterDB = new ParameterDB();
     }
 
@@ -112,7 +112,7 @@ public class ReceptionistService {
     }
 
     public void createProcess(Process process) {
-        packageControlPointDB.create(process);
+        processDB.create(process);
     }
 
     public void updateControlPoint(ControlPoint controlPoint) {

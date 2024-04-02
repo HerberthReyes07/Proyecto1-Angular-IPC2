@@ -108,7 +108,7 @@ public class ReceptionistController extends HttpServlet {
                 gsonPackage.sendAsJson(response, packagesOnStandby);
             }
         } else if ((splits.length - 1) == 3) {
-            if (pathInfo.equals("/packages/standby/" + splits[3])) {
+            if (pathInfo.equals("/packages/on-standby/" + splits[3])) {
                 String filter = splits[3];
                 List<Package> filterPackagesOnStandby = receptionistService.filterPackagesOnStandby(filter);
                 response.setStatus(HttpServletResponse.SC_OK);

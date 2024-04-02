@@ -10,6 +10,7 @@ package com.mycompany.ipc2.p1.backend.model;
  */
 public class Process {
     
+    private int id;
     private boolean done;
     private int packageId;
     private int controlPointId;
@@ -17,7 +18,8 @@ public class Process {
     public Process() {
     }
 
-    public Process(boolean done, int packageId, int controlPointId) {
+    public Process(int id, boolean done, int packageId, int controlPointId) {
+        this.id = id;
         this.done = done;
         this.packageId = packageId;
         this.controlPointId = controlPointId;
@@ -26,6 +28,14 @@ public class Process {
     public Process(int packageId, int controlPointId) {
         this.packageId = packageId;
         this.controlPointId = controlPointId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
     
     public boolean isDone() {
@@ -50,6 +60,11 @@ public class Process {
 
     public void setControlPointId(int controlPointId) {
         this.controlPointId = controlPointId;
+    }
+
+    @Override
+    public String toString() {
+        return "Process{" + "id=" + id + ", done=" + done + ", packageId=" + packageId + ", controlPointId=" + controlPointId + '}';
     }
     
 }

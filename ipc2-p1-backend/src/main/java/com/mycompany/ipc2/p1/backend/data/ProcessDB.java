@@ -4,11 +4,14 @@
  */
 package com.mycompany.ipc2.p1.backend.data;
 
-
 import com.mycompany.ipc2.p1.backend.model.Process;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -28,11 +31,67 @@ public class ProcessDB {
             preparedStatement.setInt(2, process.getControlPointId());
             preparedStatement.setBoolean(3, false);
             preparedStatement.executeUpdate();
-            
+
             System.out.println("Proceso creado");
         } catch (SQLException e) {
             System.out.println("Error al crear Proceso: " + e);
         }
+    }
+    
+    public void update(Process process) {
+        String query = "UPDATE proceso SET paquete_id = ?, punto_control_id = ?, realizado = ? WHERE id = ?;";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, process.getPackageId());
+            preparedStatement.setInt(2, process.getControlPointId());
+            preparedStatement.setBoolean(3, process.isDone());
+            preparedStatement.setInt(4, process.getId());
+            preparedStatement.executeUpdate();
+
+            System.out.println("Proceso actualizado");
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar Proceso: " + e);
+        }
+    }
+
+    public List<Process> getUnprocessedPackages() {
+        String query = "SELECT * FROM proceso WHERE realizado = false";
+        List<Process> unprocessedPackages = new ArrayList<>();
+
+        try (Statement stmt = connection.createStatement(); ResultSet resultSet = stmt.executeQuery(query)) {
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                int packageId = resultSet.getInt("paquete_id");
+                int controlPointId = resultSet.getInt("punto_control_id");
+
+                Process processToAdd = new Process(id, false, packageId, controlPointId);
+                unprocessedPackages.add(processToAdd);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar 'getUnprocessedPackages': " + e);
+        }
+        return unprocessedPackages;
+    }
+
+    public Process getProcessByPackageId(int packageId) {
+        String query = "SELECT * FROM proceso WHERE paquete_id = ? AND realizado = false";
+        Process processToSend = null;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, packageId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    int controlPointId = resultSet.getInt("punto_control_id");
+                    boolean done = resultSet.getBoolean("realizado");
+
+                    processToSend = new Process(id, done, packageId, controlPointId);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar 'getProcessByPackageId': " + e);
+        }
+        return processToSend;
     }
 
 }
