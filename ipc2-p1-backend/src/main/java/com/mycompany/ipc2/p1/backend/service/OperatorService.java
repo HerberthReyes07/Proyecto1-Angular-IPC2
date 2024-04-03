@@ -85,10 +85,6 @@ public class OperatorService {
         controlPointDB.update(controlPointToUpdate);
     }
 
-    /*public void updateControlPoint(ControlPoint controlPoint) {
-        controlPointDB.update(controlPoint);
-    }*/
-
     public void updatePackage(Package packageSent) {
         packageDB.update(packageSent);
     }

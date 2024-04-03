@@ -157,4 +157,30 @@ public class ControlPointDB {
         }
         return controlPoint;
     }
+
+    public List<ControlPoint> getControlPointsByRouteId(int routeId) {
+        String query = "SELECT * FROM punto_control WHERE ruta_id = ?";
+        List<ControlPoint> controlPoints = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, routeId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    int orderNo = resultSet.getInt("no_orden");
+                    String name = resultSet.getString("nombre");
+                    int queueCapacity = resultSet.getInt("capacidad_cola");
+                    double localOperationFee = resultSet.getDouble("tarifa_operacion_local");
+                    int operatorId = resultSet.getInt("usuario_operador_id");
+
+                    ControlPoint controlPoint = new ControlPoint(id, orderNo, name, queueCapacity, localOperationFee, routeId, operatorId);
+                    controlPoints.add(controlPoint);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar 'getControlPointsByOperatorId': " + e);
+        }
+        return controlPoints;
+    }
 }
