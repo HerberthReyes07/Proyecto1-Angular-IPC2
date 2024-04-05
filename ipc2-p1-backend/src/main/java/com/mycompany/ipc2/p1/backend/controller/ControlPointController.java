@@ -61,10 +61,9 @@ public class ControlPointController extends HttpServlet {
                     if (controlPoint == null) {
                         response.sendError(HttpServletResponse.SC_NOT_FOUND);
                         return;
-                    } else {
-                        gsonControlPoint.sendAsJson(response, controlPoint);
-                        response.setStatus(HttpServletResponse.SC_OK);
                     }
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    gsonControlPoint.sendAsJson(response, controlPoint);
                 }
             }
         }
@@ -88,7 +87,7 @@ public class ControlPointController extends HttpServlet {
 
         System.out.println(controlPointFromJson);
 
-        List<Process> unprocessedPackages = administratorService.getUnprocessedPackages();
+        /*List<Process> unprocessedPackages = administratorService.getUnprocessedPackages();
         List<ControlPoint> controlPoints = administratorService.getControlPointsByRouteId(controlPointFromJson.getRouteId());
         boolean canAdd = true;
 
@@ -102,13 +101,12 @@ public class ControlPointController extends HttpServlet {
             if (!canAdd) {
                 break;
             }
-        }
+        }*/
+        boolean canAdd = administratorService.canProceed(controlPointFromJson.getRouteId());
 
         if (canAdd) {
             int orderNo = administratorService.getOrderNoByRouteId(controlPointFromJson.getRouteId());
-
             controlPointFromJson.setOrderNo(orderNo + 1);
-
             administratorService.createControlPoint(controlPointFromJson);
         } else {
             System.out.println("NO SE PUEDE AGREGAR");

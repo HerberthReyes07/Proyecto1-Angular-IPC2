@@ -12,8 +12,10 @@ import com.mycompany.ipc2.p1.backend.data.ProcessDetailDB;
 import com.mycompany.ipc2.p1.backend.model.ControlPoint;
 import com.mycompany.ipc2.p1.backend.model.Process;
 import com.mycompany.ipc2.p1.backend.model.Package;
+import com.mycompany.ipc2.p1.backend.model.PackageStatus;
 import com.mycompany.ipc2.p1.backend.model.Parameter;
 import com.mycompany.ipc2.p1.backend.model.ProcessDetail;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -63,11 +65,11 @@ public class OperatorService {
     public ControlPoint getNextControlPointByRouteId(int nextOrderNo, int routeId) {
         return controlPointDB.getNextControlPointByRouteId(nextOrderNo, routeId);
     }
-    
+
     public Parameter getCurrentParameter() {
         return parameterDB.getCurrentParameter();
     }
-    
+
     public Parameter getParameterById(int id) {
         return parameterDB.getParameterById(id);
     }
@@ -93,12 +95,120 @@ public class OperatorService {
             controlPointToUpdate.setQueueCapacity(originalQueueCapacity - 1);
             System.out.println("12-" + controlPointToUpdate);
         }
-        
+
         controlPointDB.update(controlPointToUpdate);
     }
 
     public void updatePackage(Package packageSent) {
         packageDB.update(packageSent);
+    }
+
+    //----------------------------------------------------//
+    public List<Package> packagesToProcessByOperatorId(int operatorId) {
+
+        List<ControlPoint> controlPoints = getControlPointsByOperatorId(operatorId);
+        List<Process> unprocessedPackages = getUnprocessedPackages();
+
+        if (controlPoints.isEmpty() || unprocessedPackages.isEmpty()) {
+            //response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
+
+        List<Process> validUnprocessedPackages = new ArrayList<>();
+
+        for (int i = 0; i < controlPoints.size(); i++) {
+            for (int j = 0; j < unprocessedPackages.size(); j++) {
+                if (controlPoints.get(i).getId() == unprocessedPackages.get(j).getControlPointId()) {
+                    validUnprocessedPackages.add(unprocessedPackages.get(j));
+                }
+            }
+        }
+
+        if (validUnprocessedPackages.isEmpty()) {
+            //response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
+
+        List<Package> packages = new ArrayList<>();
+
+        for (int i = 0; i < validUnprocessedPackages.size(); i++) {
+            packages.add(getPackageById(validUnprocessedPackages.get(i).getPackageId()));
+        }
+
+        return packages;
+    }
+
+    public ProcessDetail processPackage(int packageId, ProcessDetail processDetailFromJson) {
+        
+        Process processToDo = getProcessByPackageId(packageId);
+        System.out.println("1-" + processToDo);
+
+        if (processToDo == null) {
+            //response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
+
+        ControlPoint currentControlPoint = getControlPointById(processToDo.getControlPointId());
+        System.out.println("2-" + currentControlPoint);
+
+        Parameter currentParameter = getCurrentParameter();
+        System.out.println("2.5-" + currentParameter);
+
+        if (currentControlPoint.getLocalOperationFee() == currentParameter.getGlobalOperationFee()) {
+            Package currentPackage = getPackageById(processToDo.getPackageId());
+            Parameter parameterToUse = getParameterById(currentPackage.getParameterId());
+            processDetailFromJson.setCostProcess(parameterToUse.getGlobalOperationFee() * processDetailFromJson.getTime());
+        } else {
+            processDetailFromJson.setCostProcess(currentControlPoint.getLocalOperationFee() * processDetailFromJson.getTime());
+        }
+
+        processDetailFromJson.setProcessId(processToDo.getId());
+
+        //processDetailFromJson.setCostProcess(currentControlPoint.getLocalOperationFee() * processDetailFromJson.getTime());
+        System.out.println("3-" + processDetailFromJson);
+        createProcessDetail(processDetailFromJson);
+
+        processToDo.setDone(true);
+        System.out.println("4-" + processToDo);
+        updateProcess(processToDo);
+
+        boolean packageInWarehouseAdded = false;
+
+        if (currentControlPoint.getOrderNo() == 1) {
+            Package currentPackage = getPackageById(processToDo.getPackageId());
+            Package packageToAdd = getPackageInWarehouseByDestinationId(currentPackage.getDestinationId());
+            System.out.println("5-" + packageToAdd);
+            if (packageToAdd != null) {
+                packageInWarehouseAdded = true;
+                packageToAdd.setStatus(PackageStatus.EN_PUNTO_CONTROL);
+                updatePackage(packageToAdd);
+                createProcess(new Process(packageToAdd.getId(), processToDo.getControlPointId()));
+                System.out.println("6-" + new com.mycompany.ipc2.p1.backend.model.Process(packageToAdd.getId(), processToDo.getControlPointId()));
+            }
+        }
+
+        System.out.println("7-" + packageInWarehouseAdded);
+
+        if (!packageInWarehouseAdded) {
+            updateControlPointQueueCapacity(currentControlPoint, true);
+        }
+
+        ControlPoint nextControlPoint = getNextControlPointByRouteId(currentControlPoint.getOrderNo() + 1, currentControlPoint.getRouteId());
+        System.out.println("9-" + nextControlPoint);
+
+        if (nextControlPoint == null) {
+            Package packageToUpdate = getPackageById(processToDo.getPackageId());
+            packageToUpdate.setStatus(PackageStatus.EN_ESPERA_RETIRO);
+            System.out.println("10-" + packageToUpdate);
+            updatePackage(packageToUpdate);
+        } else {
+            System.out.println("11-" + new Process(processToDo.getPackageId(), nextControlPoint.getId()));
+            createProcess(new Process(processToDo.getPackageId(), nextControlPoint.getId()));
+
+            updateControlPointQueueCapacity(nextControlPoint, false);
+        }
+        
+        return processDetailFromJson;
     }
 
 }

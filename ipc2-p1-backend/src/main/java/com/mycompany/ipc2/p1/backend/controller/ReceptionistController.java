@@ -72,22 +72,22 @@ public class ReceptionistController extends HttpServlet {
         System.out.println("----------");
 
         if ((splits.length - 1) == 1) {
-            if (pathInfo.equals("/destinations")) {
+            /*if (pathInfo.equals("/destinations")) {
                 List<Destination> validDestinations = receptionistService.getValidDestinations();
                 response.setStatus(HttpServletResponse.SC_OK);
                 gsonDestination.sendAsJson(response, validDestinations);
-            } else if (pathInfo.equals("/parameters")) {
+            }*/ /*else if (pathInfo.equals("/parameters")) {
                 //Parameter parameterFromDB = receptionistService.getParameters();
                 Parameter parameterFromDB = receptionistService.getCurrentParameter();
                 response.setStatus(HttpServletResponse.SC_OK);
                 gsonParameter.sendAsJson(response, parameterFromDB);
-            } else if (pathInfo.equals("/customers")) {
+            } *//*else if (pathInfo.equals("/customers")) {
                 List<Customer> customersFromDB = receptionistService.getAllCustomers();
                 response.setStatus(HttpServletResponse.SC_OK);
                 gsonCustomer.sendAsJson(response, customersFromDB);
-            }
+            }*/
         } else if ((splits.length - 1) == 2) {
-            if (pathInfo.equals("/customers/" + splits[2])) {
+            /*if (pathInfo.equals("/customers/" + splits[2])) {
                 String customerNit = splits[2];
                 try {
                     Integer.parseInt(customerNit);
@@ -107,12 +107,12 @@ public class ReceptionistController extends HttpServlet {
                 int invoice = receptionistService.getLastInvoiceNo() + 1;
                 response.setStatus(HttpServletResponse.SC_OK);
                 gsonPackage.sendAsJson(response, new Package(invoice));
-            } else if (pathInfo.equals("/packages/on-standby")) {
+            } else*/ /*if (pathInfo.equals("/packages/on-standby")) {
                 List<Package> packagesOnStandby = receptionistService.getAllPackagesOnStandby();
                 response.setStatus(HttpServletResponse.SC_OK);
                 gsonPackage.sendAsJson(response, packagesOnStandby);
-            }
-        } else if ((splits.length - 1) == 3) {
+            }*/
+        } /*else if ((splits.length - 1) == 3) {
             if (pathInfo.equals("/packages/on-standby/" + splits[3])) {
                 String filter = splits[3];
                 //List<Package> filterPackagesOnStandby = receptionistService.filterPackagesOnStandby(filter);
@@ -141,7 +141,7 @@ public class ReceptionistController extends HttpServlet {
                 gsonLocation.sendAsJson(response, locations);
                 response.setStatus(HttpServletResponse.SC_OK);
             }
-        } else {
+        }*/ else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
@@ -162,7 +162,7 @@ public class ReceptionistController extends HttpServlet {
         String action = splits[1];
         System.out.println("ACCION: " + action);
 
-        if (action.equals("packages")) {//createPackage
+        /*if (action.equals("packages")) {//createPackage
 
             Package packageFromJson;
             try {
@@ -197,7 +197,7 @@ public class ReceptionistController extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_OK);
             gsonPackage.sendAsJson(response, packageFromJson);
 
-        } else if (action.equals("customers")) {//createCustomer
+        }*/ /*else if (action.equals("customers")) {//createCustomer
 
             Customer customerFromJson = gsonCustomer.readFromJson(request, Customer.class);
             System.out.println("Cliente enviado: " + customerFromJson.toString());
@@ -205,7 +205,7 @@ public class ReceptionistController extends HttpServlet {
             receptionistService.createCustomer(customerFromJson);
             gsonCustomer.sendAsJson(response, customerFromJson);
             response.setStatus(HttpServletResponse.SC_OK);
-        }
+        }*/
     }
 
     @Override
@@ -223,7 +223,7 @@ public class ReceptionistController extends HttpServlet {
         //response.setStatus(HttpServletResponse.SC_OK);//
         String[] splits = pathInfo.split("/");
 
-        if ((splits.length - 1) == 2) {
+        /*if ((splits.length - 1) == 2) {
             if (pathInfo.equals("/packages/" + splits[2])) {
                 String idPackage = splits[2];
                 try {
@@ -242,7 +242,7 @@ public class ReceptionistController extends HttpServlet {
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
-        }
+        }*/
         String action = splits[1];
         System.out.println("ACCION: " + action);
     }

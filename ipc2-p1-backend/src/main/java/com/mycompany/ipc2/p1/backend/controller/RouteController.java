@@ -4,9 +4,7 @@
  */
 package com.mycompany.ipc2.p1.backend.controller;
 
-import com.mycompany.ipc2.p1.backend.model.ControlPoint;
 import com.mycompany.ipc2.p1.backend.model.Route;
-import com.mycompany.ipc2.p1.backend.model.Process;
 import com.mycompany.ipc2.p1.backend.service.AdministratorService;
 import com.mycompany.ipc2.p1.backend.utils.GsonUtils;
 import jakarta.servlet.ServletException;
@@ -64,10 +62,9 @@ public class RouteController extends HttpServlet {
                     if (route == null) {
                         response.sendError(HttpServletResponse.SC_NOT_FOUND);
                         return;
-                    } else {
-                        gsonRoute.sendAsJson(response, route);
-                        response.setStatus(HttpServletResponse.SC_OK);
                     }
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    gsonRoute.sendAsJson(response, route);
                 }
             }
 
@@ -123,7 +120,7 @@ public class RouteController extends HttpServlet {
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
                     return;
                 } else {*/
-                List<Process> unprocessedPackages = administratorService.getUnprocessedPackages();
+ /*List<Process> unprocessedPackages = administratorService.getUnprocessedPackages();
                 List<ControlPoint> controlPoints = administratorService.getControlPointsByRouteId(routeToUpdate.getId());
                 boolean canDeactivate = true;
 
@@ -137,7 +134,8 @@ public class RouteController extends HttpServlet {
                     if (!canDeactivate) {
                         break;
                     }
-                }
+                }*/
+                boolean canDeactivate = administratorService.canProceed(routeToUpdate.getId());
 
                 if (canDeactivate) {
                     System.out.println("SE PUEDE DESACTIVAR");

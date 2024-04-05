@@ -58,8 +58,8 @@ public class OperatorController extends HttpServlet {
         System.out.println("----------");
 
         if ((splits.length - 1) == 3) {
-            if (pathInfo.equals("/process/packages/" + splits[3])) {
-
+            /*if (pathInfo.equals("/process/packages/" + splits[3])) {
+                
                 String operatorId = splits[3];
                 try {
                     Integer.parseInt(operatorId);
@@ -100,8 +100,8 @@ public class OperatorController extends HttpServlet {
                 System.out.println(packages);
 
                 response.setStatus(HttpServletResponse.SC_OK);
-                gsonControlPoint.sendAsJson(response, packages);
-            }
+                //gsonControlPoint.sendAsJson(response, packages);
+            }*/
         }
     }
 
@@ -126,7 +126,7 @@ public class OperatorController extends HttpServlet {
         System.out.println("----------");
 
         if ((splits.length - 1) == 3) {
-            if (pathInfo.equals("/process/package/" + splits[3])) {
+            /*if (pathInfo.equals("/process/package/" + splits[3])) {
 
                 String packagerId = splits[3];
                 ProcessDetail processDetailFromJson;
@@ -174,7 +174,7 @@ public class OperatorController extends HttpServlet {
 
                 if (currentControlPoint.getOrderNo() == 1) {
                     Package currentPackage = operatorService.getPackageById(processToDo.getPackageId());
-                    Package packageToAdd = operatorService.getPackageInWarehouseByDestinationId(currentPackage.getDestinationId()/*, currentPackage.getId()*/);
+                    Package packageToAdd = operatorService.getPackageInWarehouseByDestinationId(currentPackage.getDestinationId());
                     System.out.println("5-" + packageToAdd);
                     if (packageToAdd != null) {
                         packageInWarehouseAdded = true;
@@ -206,7 +206,7 @@ public class OperatorController extends HttpServlet {
                     operatorService.updateControlPointQueueCapacity(nextControlPoint, false);
                 }
                 response.setStatus(HttpServletResponse.SC_OK);
-            }
+            }*/
         }
 
     }

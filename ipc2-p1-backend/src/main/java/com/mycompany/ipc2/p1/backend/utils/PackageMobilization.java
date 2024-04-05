@@ -34,10 +34,10 @@ public class PackageMobilization {
     public ControlPoint getFirstControlPoint(List<Route> routes) {
 
         List<ControlPoint> firstControlPoints = controlPointDB.getFirstControlPoints();//Punto de control id: 1-3
-        System.out.println("FCP : " + firstControlPoints.toString());
+        System.out.println("2-FCP : " + firstControlPoints.toString());
         List<ControlPoint> firstValidControlPoints = new ArrayList<>();
 
-        for (int i = 0; i < firstControlPoints.size(); i++) {//Ruta id: 1-2
+        for (int i = 0; i < routes.size(); i++) {//Ruta id: 1-2
             for (int j = 0; j < firstControlPoints.size(); j++) {//Punto de control id: 1-3
                 if (routes.get(i).getId() == firstControlPoints.get(j).getRouteId()) {
                     if (firstControlPoints.get(j).getQueueCapacity() > 0) {
@@ -59,7 +59,7 @@ public class PackageMobilization {
             }
         });
 
-        System.out.println("FVCP: " + firstValidControlPoints.toString());
+        System.out.println("3-FVCP: " + firstValidControlPoints.toString()); // ordenado
 
         List<ControlPoint> queueCapacityRepeated = new ArrayList<>();
         ControlPoint auxControlPoint = firstValidControlPoints.get(0);
@@ -75,14 +75,14 @@ public class PackageMobilization {
         }
 
         ControlPoint controlPoint = auxControlPoint;
-        System.out.println("QCR: " + queueCapacityRepeated.toString());
+        System.out.println("4-QCR: " + queueCapacityRepeated.toString());
 
         if (queueCapacityRepeated.size() > 1) {
             int totalQueueCapacity = controlPointDB.getTotalQueueCapacityByRouteId(controlPoint.getRouteId());
             for (int i = 1; i < queueCapacityRepeated.size(); i++) {
                 int aux = controlPointDB.getTotalQueueCapacityByRouteId(queueCapacityRepeated.get(i).getRouteId());
-                System.out.println("TQC = " + totalQueueCapacity);
-                System.out.println("aux = " + aux);
+                System.out.println("5-TQC = " + totalQueueCapacity);
+                System.out.println("5-aux = " + aux);
                 if (aux > totalQueueCapacity) {
                     totalQueueCapacity = aux;
                     controlPoint = queueCapacityRepeated.get(i);
