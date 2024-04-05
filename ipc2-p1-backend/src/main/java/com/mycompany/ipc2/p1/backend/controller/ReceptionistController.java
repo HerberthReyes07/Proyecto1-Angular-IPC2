@@ -8,6 +8,7 @@ import com.mycompany.ipc2.p1.backend.model.ControlPoint;
 import com.mycompany.ipc2.p1.backend.model.Customer;
 import com.mycompany.ipc2.p1.backend.model.Package;
 import com.mycompany.ipc2.p1.backend.model.Destination;
+import com.mycompany.ipc2.p1.backend.model.LocationReport;
 import com.mycompany.ipc2.p1.backend.model.Process;
 import com.mycompany.ipc2.p1.backend.model.PackageStatus;
 import com.mycompany.ipc2.p1.backend.model.Parameter;
@@ -21,6 +22,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,6 +36,7 @@ public class ReceptionistController extends HttpServlet {
     private final GsonUtils<Package> gsonPackage;
     private final GsonUtils<Customer> gsonCustomer;
     private final GsonUtils<Parameter> gsonParameter;
+    private final GsonUtils<LocationReport> gsonLocation;
     private final ReceptionistService receptionistService;
     private final PackageMobilization packageMobilization;
 
@@ -42,6 +45,7 @@ public class ReceptionistController extends HttpServlet {
         gsonPackage = new GsonUtils<>();
         gsonCustomer = new GsonUtils<>();
         gsonParameter = new GsonUtils<>();
+        gsonLocation = new GsonUtils<>();
         receptionistService = new ReceptionistService();
         packageMobilization = new PackageMobilization();
     }
@@ -73,7 +77,8 @@ public class ReceptionistController extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_OK);
                 gsonDestination.sendAsJson(response, validDestinations);
             } else if (pathInfo.equals("/parameters")) {
-                Parameter parameterFromDB = receptionistService.getParameters();
+                //Parameter parameterFromDB = receptionistService.getParameters();
+                Parameter parameterFromDB = receptionistService.getCurrentParameter();
                 response.setStatus(HttpServletResponse.SC_OK);
                 gsonParameter.sendAsJson(response, parameterFromDB);
             } else if (pathInfo.equals("/customers")) {
@@ -110,9 +115,31 @@ public class ReceptionistController extends HttpServlet {
         } else if ((splits.length - 1) == 3) {
             if (pathInfo.equals("/packages/on-standby/" + splits[3])) {
                 String filter = splits[3];
-                List<Package> filterPackagesOnStandby = receptionistService.filterPackagesOnStandby(filter);
+                //List<Package> filterPackagesOnStandby = receptionistService.filterPackagesOnStandby(filter);
+                List<Package> filterPackagesOnStandby = receptionistService.filterPackagesByStatus(filter, 3);
                 response.setStatus(HttpServletResponse.SC_OK);
                 gsonPackage.sendAsJson(response, filterPackagesOnStandby);
+            } else if (pathInfo.equals("/packages/location/" + splits[3])) {
+
+                String filter = splits[3];
+                List<Package> filterPackagesOnRoute = receptionistService.filterPackagesByStatus(filter, 2);
+                
+                List<Process> processes = new ArrayList<>();
+                
+                for (int i = 0; i < filterPackagesOnRoute.size(); i++) {
+                    processes.add(receptionistService.getProcessByPackageId(filterPackagesOnRoute.get(i).getId()));
+                }
+                
+                List<LocationReport> locations = new ArrayList<>();
+                
+                for (int i = 0; i < processes.size(); i++) {
+                    int totalTime = receptionistService.getTotalTimeByPackageId(processes.get(i).getPackageId());
+                    locations.add(new LocationReport(processes.get(i).getPackageId(), processes.get(i).getControlPointId(), totalTime));
+                }
+                
+                
+                gsonLocation.sendAsJson(response, locations);
+                response.setStatus(HttpServletResponse.SC_OK);
             }
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);

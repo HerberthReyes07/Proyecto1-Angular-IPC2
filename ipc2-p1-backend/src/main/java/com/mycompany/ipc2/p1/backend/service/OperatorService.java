@@ -6,11 +6,13 @@ package com.mycompany.ipc2.p1.backend.service;
 
 import com.mycompany.ipc2.p1.backend.data.ControlPointDB;
 import com.mycompany.ipc2.p1.backend.data.PackageDB;
+import com.mycompany.ipc2.p1.backend.data.ParameterDB;
 import com.mycompany.ipc2.p1.backend.data.ProcessDB;
 import com.mycompany.ipc2.p1.backend.data.ProcessDetailDB;
 import com.mycompany.ipc2.p1.backend.model.ControlPoint;
 import com.mycompany.ipc2.p1.backend.model.Process;
 import com.mycompany.ipc2.p1.backend.model.Package;
+import com.mycompany.ipc2.p1.backend.model.Parameter;
 import com.mycompany.ipc2.p1.backend.model.ProcessDetail;
 import java.util.List;
 
@@ -24,12 +26,14 @@ public class OperatorService {
     private final ProcessDB processDB;
     private final PackageDB packageDB;
     private final ProcessDetailDB processDetailDB;
+    private final ParameterDB parameterDB;
 
     public OperatorService() {
         this.controlPointDB = new ControlPointDB();
         this.processDB = new ProcessDB();
         this.packageDB = new PackageDB();
         this.processDetailDB = new ProcessDetailDB();
+        this.parameterDB = new ParameterDB();
     }
 
     public List<ControlPoint> getControlPointsByOperatorId(int idOperator) {
@@ -58,6 +62,14 @@ public class OperatorService {
 
     public ControlPoint getNextControlPointByRouteId(int nextOrderNo, int routeId) {
         return controlPointDB.getNextControlPointByRouteId(nextOrderNo, routeId);
+    }
+    
+    public Parameter getCurrentParameter() {
+        return parameterDB.getCurrentParameter();
+    }
+    
+    public Parameter getParameterById(int id) {
+        return parameterDB.getParameterById(id);
     }
 
     public void createProcessDetail(ProcessDetail processDetail) {

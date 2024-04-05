@@ -30,6 +30,20 @@ public class GeneralUtils {
         return null;
     }
     
+    public int getCodeTypeUser(TypeUser typeUser){
+        switch (typeUser) {
+            case ADMINISTRATOR:
+                return 1;
+            case OPERATOR:
+                return 2;
+            case RECEPTIONIST:
+                return 3;
+            default:
+                System.out.println("CODIGO DE USUARIO NO ENCONTRADO");
+        }
+        return -1;
+    }
+    
     public PackageStatus getPackageStatus(int statusCode) {
         switch (statusCode) {
             case 1:
@@ -57,7 +71,7 @@ public class GeneralUtils {
             case RETIRADO:
                 return 4;
             default:
-                System.out.println("CODIGO NO ENCONTRADO");
+                System.out.println("CODIGO DE PAQUETE NO ENCONTRADO");
         }
         return -1;
     }

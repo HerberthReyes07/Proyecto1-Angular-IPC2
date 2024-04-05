@@ -8,6 +8,7 @@ import com.mycompany.ipc2.p1.backend.model.ControlPoint;
 import com.mycompany.ipc2.p1.backend.model.Process;
 import com.mycompany.ipc2.p1.backend.model.Package;
 import com.mycompany.ipc2.p1.backend.model.PackageStatus;
+import com.mycompany.ipc2.p1.backend.model.Parameter;
 import com.mycompany.ipc2.p1.backend.model.ProcessDetail;
 import com.mycompany.ipc2.p1.backend.service.OperatorService;
 import com.mycompany.ipc2.p1.backend.utils.GsonUtils;
@@ -148,8 +149,20 @@ public class OperatorController extends HttpServlet {
                 ControlPoint currentControlPoint = operatorService.getControlPointById(processToDo.getControlPointId());
                 System.out.println("2-" + currentControlPoint);
 
+                Parameter currentParameter = operatorService.getCurrentParameter();
+                System.out.println("2.5-" + currentParameter);
+
+                if (currentControlPoint.getLocalOperationFee() == currentParameter.getGlobalOperationFee()) {
+                    Package currentPackage = operatorService.getPackageById(processToDo.getPackageId());
+                    Parameter parameterToUse = operatorService.getParameterById(currentPackage.getParameterId());
+                    processDetailFromJson.setCostProcess(parameterToUse.getGlobalOperationFee() * processDetailFromJson.getTime());
+                } else {
+                    processDetailFromJson.setCostProcess(currentControlPoint.getLocalOperationFee() * processDetailFromJson.getTime());
+                }
+
                 processDetailFromJson.setProcessId(processToDo.getId());
-                processDetailFromJson.setCostProcess(currentControlPoint.getLocalOperationFee() * processDetailFromJson.getTime());
+
+                //processDetailFromJson.setCostProcess(currentControlPoint.getLocalOperationFee() * processDetailFromJson.getTime());
                 System.out.println("3-" + processDetailFromJson);
                 operatorService.createProcessDetail(processDetailFromJson);
 

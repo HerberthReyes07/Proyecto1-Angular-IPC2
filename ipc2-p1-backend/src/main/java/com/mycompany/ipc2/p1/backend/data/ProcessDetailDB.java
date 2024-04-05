@@ -8,6 +8,7 @@ import com.mycompany.ipc2.p1.backend.model.ProcessDetail;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -34,6 +35,26 @@ public class ProcessDetailDB {
         } catch (SQLException e) {
             System.out.println("Error al crear Detalle Proceso: " + e);
         }
+    }
+
+    public int getTotalTimeByPackageId(int packageId) {
+        String query = "SELECT SUM(dp.tiempo) AS tiempo_total FROM detalle_proceso dp JOIN proceso p ON dp.proceso_id = p.id WHERE p.paquete_id = ?;";
+        int totalTime = 0;
+        
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, packageId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    totalTime = resultSet.getInt("tiempo_total");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar 'getTotalTimeByPackageId': " + e);
+        }
+        
+        return totalTime;
+        
     }
 
 }

@@ -12,6 +12,7 @@ public class Package {
     private int id;
     private int customerId;
     private int destinationId;
+    private int parameterId;
     private double weight;
     private double shippingCost;
     private PackageStatus status;
@@ -21,10 +22,11 @@ public class Package {
     public Package() {
     }
 
-    public Package(int id, int customerId, int destinationId, double weight, double shippingCost, PackageStatus status, int invoiceNo, String entryDate) {
+    public Package(int id, int customerId, int destinationId, int parameterId, double weight, double shippingCost, PackageStatus status, int invoiceNo, String entryDate) {
         this.id = id;
         this.customerId = customerId;
         this.destinationId = destinationId;
+        this.parameterId = parameterId;
         this.weight = weight;
         this.shippingCost = shippingCost;
         this.status = status;
@@ -60,6 +62,14 @@ public class Package {
         this.destinationId = destinationId;
     }
 
+    public int getParameterId() {
+        return parameterId;
+    }
+
+    public void setParameterId(int parameterId) {
+        this.parameterId = parameterId;
+    }
+    
     public double getWeight() {
         return weight;
     }

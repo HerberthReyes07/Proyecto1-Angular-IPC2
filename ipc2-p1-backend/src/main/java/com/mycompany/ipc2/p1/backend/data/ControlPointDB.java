@@ -24,6 +24,23 @@ public class ControlPointDB {
     public ControlPointDB() {
     }
 
+    public void create(ControlPoint controlPoint) {
+        String query = "INSERT INTO punto_control (no_orden, nombre, capacidad_cola, tarifa_operacion_local, ruta_id, usuario_operador_id) VALUES (?, ?, ?, ?, ?, ?);";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, controlPoint.getOrderNo());
+            preparedStatement.setString(2, controlPoint.getName());
+            preparedStatement.setInt(3, controlPoint.getQueueCapacity());
+            preparedStatement.setDouble(4, controlPoint.getLocalOperationFee());
+            preparedStatement.setInt(5, controlPoint.getRouteId());
+            preparedStatement.setInt(6, controlPoint.getOperatorId());
+            preparedStatement.executeUpdate();
+
+            System.out.println("Punto de Control creado");
+        } catch (SQLException e) {
+            System.out.println("Error al crear Punto de Control: " + e);
+        }
+    }
+
     public void update(ControlPoint controlPoint) {
         String query = "UPDATE punto_control SET no_orden = ?, nombre = ?, capacidad_cola = ?, tarifa_operacion_local = ?, ruta_id = ?, usuario_operador_id = ? WHERE id = ?";
 
@@ -40,6 +57,42 @@ public class ControlPointDB {
         } catch (SQLException e) {
             System.out.println("Error al actualizar Punto de control: " + e);
         }
+    }
+
+    public void updateLocalOperationFee(double currentLocalOperationFee, double localOperationFeeToSet) {
+        String query = "UPDATE punto_control SET tarifa_operacion_local = ? WHERE tarifa_operacion_local = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setDouble(1, localOperationFeeToSet);
+            preparedStatement.setDouble(2, currentLocalOperationFee);
+            preparedStatement.executeUpdate();
+            System.out.println("tarifa_operacion_local actualizado");
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar tarifa_operacion_local: " + e);
+        }
+    }
+
+    public List<ControlPoint> getAllControlPoints() {
+        String query = "SELECT * FROM punto_control;";
+        List<ControlPoint> controlPoints = new ArrayList<>();
+
+        try (Statement stmt = connection.createStatement(); ResultSet resultSet = stmt.executeQuery(query)) {
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                int orderNo = resultSet.getInt("no_orden");
+                String name = resultSet.getString("nombre");
+                int queueCapacity = resultSet.getInt("capacidad_cola");
+                double localOperationFee = resultSet.getDouble("tarifa_operacion_local");
+                int routeId = resultSet.getInt("ruta_id");
+                int operatorId = resultSet.getInt("usuario_operador_id");
+
+                ControlPoint controlPoint = new ControlPoint(id, orderNo, name, queueCapacity, localOperationFee, routeId, operatorId);
+                controlPoints.add(controlPoint);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar 'getAllRoutes': " + e);
+        }
+        return controlPoints;
     }
 
     public List<ControlPoint> getFirstControlPoints() {
@@ -182,5 +235,24 @@ public class ControlPointDB {
             System.out.println("Error al consultar 'getControlPointsByOperatorId': " + e);
         }
         return controlPoints;
+    }
+
+    public int getOrderNoByRouteId(int routeId) {
+        String query = "SELECT no_orden FROM punto_control WHERE ruta_id = ? ORDER BY no_orden DESC LIMIT 1;";
+        int orderNo = 0;
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, routeId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    orderNo = resultSet.getInt("no_orden");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar 'getOrderNoByRouteId': " + e);
+        }
+
+        return orderNo;
     }
 }

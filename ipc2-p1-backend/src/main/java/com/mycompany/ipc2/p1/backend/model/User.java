@@ -22,15 +22,15 @@ public class User {
     public User() {
     }
 
-    public User(int id, String nombre, String username, String password, String dpi, String sexo, TypeUser tipoUsuario, boolean activo) {
+    public User(int id, String name, String username, String password, String dpi, String sex, TypeUser typeUser, boolean active) {
         this.id = id;
-        this.name = nombre;
+        this.name = name;
         this.username = username;
         this.password = password;
         this.dpi = dpi;
-        this.sex = sexo;
-        this.typeUser = tipoUsuario;
-        this.active = activo;
+        this.sex = sex;
+        this.typeUser = typeUser;
+        this.active = active;
     }
 
     public int getId() {
@@ -41,12 +41,12 @@ public class User {
         this.id = id;
     }
 
-    public String getNombre() {
+    public String getName() {
         return name;
     }
 
-    public void setNombre(String nombre) {
-        this.name = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getUsername() {
@@ -73,28 +73,28 @@ public class User {
         this.dpi = dpi;
     }
 
-    public String getSexo() {
+    public String getSex() {
         return sex;
     }
 
-    public void setSexo(String sexo) {
-        this.sex = sexo;
+    public void setSex(String sex) {
+        this.sex = sex;
     }
 
-    public TypeUser getTipoUsuario() {
+    public TypeUser getTypeUser() {
         return typeUser;
     }
 
-    public void setTipoUsuario(TypeUser tipoUsuario) {
-        this.typeUser = tipoUsuario;
+    public void setTypeUser(TypeUser typeUser) {
+        this.typeUser = typeUser;
     }
 
-    public boolean isActivo() {
+    public boolean isActive() {
         return active;
     }
 
-    public void setActivo(boolean activo) {
-        this.active = activo;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     @Override

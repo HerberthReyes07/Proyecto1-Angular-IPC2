@@ -10,6 +10,7 @@ import com.mycompany.ipc2.p1.backend.data.DestinationDB;
 import com.mycompany.ipc2.p1.backend.data.ProcessDB;
 import com.mycompany.ipc2.p1.backend.data.PackageDB;
 import com.mycompany.ipc2.p1.backend.data.ParameterDB;
+import com.mycompany.ipc2.p1.backend.data.ProcessDetailDB;
 import com.mycompany.ipc2.p1.backend.data.RouteDB;
 import com.mycompany.ipc2.p1.backend.model.ControlPoint;
 import com.mycompany.ipc2.p1.backend.model.Package;
@@ -34,7 +35,8 @@ public class ReceptionistService {
     private final ControlPointDB controlPointDB;
     private final ProcessDB processDB;
     private final ParameterDB parameterDB;
-
+    private final ProcessDetailDB processDetailDB;
+    
     public ReceptionistService() {
         this.destinationDB = new DestinationDB();
         this.routeDB = new RouteDB();
@@ -43,6 +45,7 @@ public class ReceptionistService {
         this.controlPointDB = new ControlPointDB();
         this.processDB = new ProcessDB();
         this.parameterDB = new ParameterDB();
+        this.processDetailDB = new ProcessDetailDB();
     }
 
     public List<Destination> getAllDestinations() {
@@ -75,8 +78,11 @@ public class ReceptionistService {
         return customerDB.getCustomerByNit(nit).orElse(null);
     }
 
-    public Parameter getParameters() {
+    /*public Parameter getParameters() {
         return parameterDB.getParameters();
+    }*/
+    public Parameter getCurrentParameter() {
+        return parameterDB.getCurrentParameter();
     }
 
     public int getLastInvoiceNo() {
@@ -99,8 +105,21 @@ public class ReceptionistService {
         return packageDB.getAllPackagesOnStandby();
     }
     
-    public List<Package> filterPackagesOnStandby(String filter) {
-        return packageDB.filterPackagesOnStandby(filter);
+    /*public List<Package> filterPackagesOnStandby(String filter) {
+        //return packageDB.filterPackagesOnStandby(filter);
+        return  packageDB.filterPackagesByStatus(filter, 3);
+    }*/
+    
+    public List<Package> filterPackagesByStatus(String filter, int status) {
+        return  packageDB.filterPackagesByStatus(filter, status);
+    }
+    
+    public Process getProcessByPackageId(int packageId) {
+        return processDB.getProcessByPackageId(packageId);
+    }
+    
+    public int getTotalTimeByPackageId(int packageId) {
+        return processDetailDB.getTotalTimeByPackageId(packageId);
     }
 
     public void createCustomer(Customer customer) {

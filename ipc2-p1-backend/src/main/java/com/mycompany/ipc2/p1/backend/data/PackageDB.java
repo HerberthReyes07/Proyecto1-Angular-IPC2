@@ -29,7 +29,7 @@ public class PackageDB {
     }
 
     public void create(Package packageSent) {
-        String query = "INSERT INTO paquete (peso, costo_envio, estado, no_factura, fecha_ingreso, cliente_id, destino_id) VALUES (?, ?, ?, ?, ?, ?, ?);";
+        String query = "INSERT INTO paquete (peso, costo_envio, estado, no_factura, fecha_ingreso, cliente_id, destino_id, parametro_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setDouble(1, packageSent.getWeight());
             preparedStatement.setDouble(2, packageSent.getShippingCost());
@@ -38,6 +38,7 @@ public class PackageDB {
             preparedStatement.setDate(5, Date.valueOf(packageSent.getEntryDate()));
             preparedStatement.setInt(6, packageSent.getCustomerId());
             preparedStatement.setInt(7, packageSent.getDestinationId());
+            preparedStatement.setInt(8, packageSent.getParameterId());
             preparedStatement.executeUpdate();
 
             System.out.println("Paquete creado");
@@ -47,7 +48,7 @@ public class PackageDB {
     }
 
     public void update(Package packageSent) {
-        String query = "UPDATE paquete SET peso = ?, costo_envio = ?, estado = ?, no_factura = ?, fecha_ingreso = ?, cliente_id = ?, destino_id = ? WHERE id = ?;";
+        String query = "UPDATE paquete SET peso = ?, costo_envio = ?, estado = ?, no_factura = ?, fecha_ingreso = ?, cliente_id = ?, destino_id = ?, parametro_id = ? WHERE id = ?;";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setDouble(1, packageSent.getWeight());
             preparedStatement.setDouble(2, packageSent.getShippingCost());
@@ -56,7 +57,8 @@ public class PackageDB {
             preparedStatement.setDate(5, Date.valueOf(packageSent.getEntryDate()));
             preparedStatement.setInt(6, packageSent.getCustomerId());
             preparedStatement.setInt(7, packageSent.getDestinationId());
-            preparedStatement.setInt(8, packageSent.getId());
+            preparedStatement.setInt(8, packageSent.getParameterId());
+            preparedStatement.setInt(9, packageSent.getId());
             preparedStatement.executeUpdate();
 
             System.out.println("Paquete actualizado");
@@ -80,7 +82,9 @@ public class PackageDB {
                     String entryDate = resultSet.getDate("fecha_ingreso").toString();
                     int customerId = resultSet.getInt("cliente_id");
                     int destinationId = resultSet.getInt("destino_id");
-                    packageToSend = new Package(id, customerId, destinationId, weight, shippingCost, gu.getPackageStatus(status), invoiceNo, entryDate);
+                    int parameterId = resultSet.getInt("parametro_id");
+                    
+                    packageToSend = new Package(id, customerId, destinationId, parameterId, weight, shippingCost, gu.getPackageStatus(status), invoiceNo, entryDate);
                 }
             }
         } catch (SQLException e) {
@@ -132,8 +136,9 @@ public class PackageDB {
                 String entryDate = resultSet.getDate("fecha_ingreso").toString();
                 int customerId = resultSet.getInt("cliente_id");
                 int destinationId = resultSet.getInt("destino_id");
-
-                Package packageToAdd = new Package(id, customerId, destinationId, weight, shippingCost, PackageStatus.EN_ESPERA_RETIRO, invoiceNo, entryDate);
+                int parameterId = resultSet.getInt("parametro_id");
+                
+                Package packageToAdd = new Package(id, customerId, destinationId, parameterId, weight, shippingCost, PackageStatus.EN_ESPERA_RETIRO, invoiceNo, entryDate);
                 packages.add(packageToAdd);
             }
         } catch (SQLException e) {
@@ -158,8 +163,9 @@ public class PackageDB {
                     int invoiceNo = resultSet.getInt("no_factura");
                     String entryDate = resultSet.getDate("fecha_ingreso").toString();
                     int customerId = resultSet.getInt("cliente_id");
+                    int parameterId = resultSet.getInt("parametro_id");
                     
-                    packageToSend = new Package(id, customerId, destinationId, weight, shippingCost, PackageStatus.EN_BODEGA, invoiceNo, entryDate);
+                    packageToSend = new Package(id, customerId, destinationId, parameterId, weight, shippingCost, PackageStatus.EN_BODEGA, invoiceNo, entryDate);
                 }
             }
         } catch (SQLException e) {
@@ -168,7 +174,7 @@ public class PackageDB {
         return packageToSend;
     }
 
-    public List<Package> filterPackagesOnStandby(String filter) {/*'%?%'*/
+    /*public List<Package> filterPackagesOnStandby(String filter) {//'%?%'
         String query = "SELECT p.* FROM paquete p JOIN cliente c ON p.cliente_id = c.id WHERE (c.nit LIKE ? OR p.no_factura LIKE ?) AND estado = 3;";
         List<Package> packages = new ArrayList<>();
 
@@ -184,8 +190,9 @@ public class PackageDB {
                     String entryDate = resultSet.getDate("fecha_ingreso").toString();
                     int customerId = resultSet.getInt("cliente_id");
                     int destinationId = resultSet.getInt("destino_id");
+                    int parameterId = resultSet.getInt("parametro_id");
 
-                    Package packageToAdd = new Package(id, customerId, destinationId, weight, shippingCost, PackageStatus.EN_ESPERA_RETIRO, invoiceNo, entryDate);
+                    Package packageToAdd = new Package(id, customerId, destinationId, parameterId, weight, shippingCost, PackageStatus.EN_ESPERA_RETIRO, invoiceNo, entryDate);
                     packages.add(packageToAdd);
                 }
             }
@@ -193,6 +200,63 @@ public class PackageDB {
             System.out.println("Error al consultar 'filterPackagesOnStandby': " + e);
         }
         return packages;
+    }*/
+    
+    public List<Package> filterPackagesByStatus(String filter, int status) {/*'%?%'*/
+        String query = "SELECT p.* FROM paquete p JOIN cliente c ON p.cliente_id = c.id WHERE (c.nit LIKE ? OR p.no_factura LIKE ?) AND estado = ?;";
+        List<Package> packages = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, "%" + filter + "%");
+            preparedStatement.setString(2, "%" + filter + "%");
+            preparedStatement.setInt(3, status);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    double weight = resultSet.getDouble("peso");
+                    double shippingCost = resultSet.getDouble("costo_envio");
+                    int invoiceNo = resultSet.getInt("no_factura");
+                    String entryDate = resultSet.getDate("fecha_ingreso").toString();
+                    int customerId = resultSet.getInt("cliente_id");
+                    int destinationId = resultSet.getInt("destino_id");
+                    int parameterId = resultSet.getInt("parametro_id");
+
+                    Package packageToAdd = new Package(id, customerId, destinationId, parameterId, weight, shippingCost, gu.getPackageStatus(status), invoiceNo, entryDate);
+                    packages.add(packageToAdd);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar 'filterPackagesByStatus': " + e);
+        }
+        return packages;
     }
+    
+    /*public List<Package> filterPackagesOnRoute(String filter) {
+        String query = "SELECT p.* FROM paquete p JOIN cliente c ON p.cliente_id = c.id WHERE (c.nit LIKE ? OR p.no_factura LIKE ?) AND estado = 2;";
+        List<Package> packages = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, "%" + filter + "%");
+            preparedStatement.setString(2, "%" + filter + "%");
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    double weight = resultSet.getDouble("peso");
+                    double shippingCost = resultSet.getDouble("costo_envio");
+                    int invoiceNo = resultSet.getInt("no_factura");
+                    String entryDate = resultSet.getDate("fecha_ingreso").toString();
+                    int customerId = resultSet.getInt("cliente_id");
+                    int destinationId = resultSet.getInt("destino_id");
+                    int parameterId = resultSet.getInt("parametro_id");
+
+                    Package packageToAdd = new Package(id, customerId, destinationId, parameterId, weight, shippingCost, PackageStatus.EN_PUNTO_CONTROL, invoiceNo, entryDate);
+                    packages.add(packageToAdd);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar 'filterPackagesOnRoute': " + e);
+        }
+        return packages;
+    }*/
 
 }
