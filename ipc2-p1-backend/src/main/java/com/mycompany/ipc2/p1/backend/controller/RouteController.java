@@ -43,8 +43,6 @@ public class RouteController extends HttpServlet {
             List<Route> routes = administratorService.getAllRoutes();
             gsonRoute.sendAsJson(response, routes);
             response.setStatus(HttpServletResponse.SC_OK);
-            //response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            //return;
         } else {
             String[] splits = pathInfo.split("/");
 
@@ -78,15 +76,19 @@ public class RouteController extends HttpServlet {
         String pathInfo = request.getPathInfo();
         System.out.println("PATH INFO: " + pathInfo);
 
-        /*String[] splits = pathInfo.split("/");
-        String action = splits[1];
-        System.out.println("ACCION: " + action);*/
-        //if (action.equals("routes")) {
-        Route routeFromJson = gsonRoute.readFromJson(request, Route.class);
+        Route routeFromJson;
+
+        try {
+            routeFromJson = gsonRoute.readFromJson(request, Route.class);
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+
         System.out.println(routeFromJson);
         administratorService.createRoute(routeFromJson);
+        gsonRoute.sendAsJson(response, routeFromJson);
         response.setStatus(HttpServletResponse.SC_OK);
-        //}
     }
 
     @Override
@@ -106,40 +108,27 @@ public class RouteController extends HttpServlet {
         if ((splits.length - 1) == 1) {
             if (pathInfo.equals("/" + splits[1])) {
 
-                /*String idRoute = splits[1];
+                String idRoute = splits[1];
                 try {
                     Integer.parseInt(idRoute);
                 } catch (NumberFormatException e) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                     return;
-                }*/
-                //Route routeToUpdate = administratorService.getRouteById(Integer.parseInt(idRoute));
-                Route routeToUpdate = gsonRoute.readFromJson(request, Route.class);
+                }
+                Route routeToUpdate = administratorService.getRouteById(Integer.parseInt(idRoute));
+                System.out.println(routeToUpdate);
 
-                /*if (routeToUpdate == null) {
+                if (routeToUpdate == null) {
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
                     return;
-                } else {*/
- /*List<Process> unprocessedPackages = administratorService.getUnprocessedPackages();
-                List<ControlPoint> controlPoints = administratorService.getControlPointsByRouteId(routeToUpdate.getId());
-                boolean canDeactivate = true;
+                }
+                //Route routeToUpdate = gsonRoute.readFromJson(request, Route.class);
 
-                for (int j = 0; j < unprocessedPackages.size(); j++) {
-                    for (int i = 0; i < controlPoints.size(); i++) {
-                        if (controlPoints.get(i).getId() == unprocessedPackages.get(j).getControlPointId()) {
-                            canDeactivate = false;
-                            break;
-                        }
-                    }
-                    if (!canDeactivate) {
-                        break;
-                    }
-                }*/
                 boolean canDeactivate = administratorService.canProceed(routeToUpdate.getId());
 
                 if (canDeactivate) {
                     System.out.println("SE PUEDE DESACTIVAR");
-                    //routeToUpdate.setActive(false);
+                    routeToUpdate.setActive(false);
                     administratorService.updateRoute(routeToUpdate);
                     //response.setStatus(HttpServletResponse.SC_OK);
                     gsonRoute.sendAsJson(response, routeToUpdate);
@@ -150,7 +139,6 @@ public class RouteController extends HttpServlet {
                 }
                 response.setStatus(HttpServletResponse.SC_OK);
 
-                //}
             }
         }
 

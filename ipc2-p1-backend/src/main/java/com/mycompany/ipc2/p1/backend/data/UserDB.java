@@ -29,7 +29,7 @@ public class UserDB {
     }
 
     public void create(User user) {
-        String query = "INSERT INTO punto_control (nombre, username, password, dpi, sexo, tipo_usuario, activo) VALUES (?, ?, ?, ?, ?, ?, ?);";
+        String query = "INSERT INTO usuario (nombre, username, password, dpi, sexo, tipo_usuario, activo) VALUES (?, ?, ?, ?, ?, ?, ?);";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getUsername());
@@ -164,7 +164,7 @@ public class UserDB {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Error al consultar 'getUsersByCodeTypeUser': " + e);
+            System.out.println("Error al consultar 'getUsersByStatus': " + e);
         }
         return users;
     }

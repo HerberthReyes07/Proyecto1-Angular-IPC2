@@ -17,11 +17,11 @@ public class Destination {
     public Destination() {
     }
 
-    public Destination(int id, double cuota_destino, String nombre, String direccion) {
+    public Destination(int id, double destinationFee, String name, String address) {
         this.id = id;
-        this.destinationFee = cuota_destino;
-        this.name = nombre;
-        this.address = direccion;
+        this.destinationFee = destinationFee;
+        this.name = name;
+        this.address = address;
     }
 
     public int getId() {
@@ -32,28 +32,28 @@ public class Destination {
         this.id = id;
     }
 
-    public double getCuota_destino() {
+    public double getDestinationFee() {
         return destinationFee;
     }
 
-    public void setCuota_destino(double cuota_destino) {
-        this.destinationFee = cuota_destino;
+    public void setDestinationFee(double destinationFee) {
+        this.destinationFee = destinationFee;
     }
 
-    public String getNombre() {
+    public String getName() {
         return name;
     }
 
-    public void setNombre(String nombre) {
-        this.name = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getDireccion() {
+    public String getAddress() {
         return address;
     }
 
-    public void setDireccion(String direccion) {
-        this.address = direccion;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     @Override

@@ -52,24 +52,7 @@ public class UserController extends HttpServlet {
             String[] splits = pathInfo.split("/");
 
             if ((splits.length - 1) == 1) {
-                if (pathInfo.equals("/" + splits[1])) {
-                    String idUser = splits[1];
-                    try {
-                        Integer.parseInt(idUser);
-                    } catch (NumberFormatException e) {
-                        response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                        return;
-                    }
-
-                    User user = administratorService.getUserById(Integer.parseInt(idUser));
-                    if (user == null) {
-                        response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                        return;
-                    }
-                    gsonUser.sendAsJson(response, user);
-                    response.setStatus(HttpServletResponse.SC_OK);
-
-                } else if (pathInfo.equals("/administrators") || pathInfo.equals("/operators") || pathInfo.equals("/receptionists")) {
+                if (pathInfo.equals("/administrators") || pathInfo.equals("/operators") || pathInfo.equals("/receptionists")) {
 
                     int codeTypeUser = 0;
                     if (pathInfo.equals("/administrators")) {
@@ -87,8 +70,9 @@ public class UserController extends HttpServlet {
                         return;
                     }
 
-                    gsonUser.sendAsJson(response, users);
                     response.setStatus(HttpServletResponse.SC_OK);
+                    gsonUser.sendAsJson(response, users);
+
                 } else if (pathInfo.equals("/active") || pathInfo.equals("/deactive")) {
 
                     boolean active = true;
@@ -103,15 +87,28 @@ public class UserController extends HttpServlet {
                         return;
                     }
 
-                    gsonUser.sendAsJson(response, users);
                     response.setStatus(HttpServletResponse.SC_OK);
-                }
-            }
-            /*else if ((splits.length - 1) == 2) {
-                if (pathInfo.equals("/")) {
+                    gsonUser.sendAsJson(response, users);
+                } else if (pathInfo.equals("/" + splits[1])) {
+                    String idUser = splits[1];
+                    try {
+                        Integer.parseInt(idUser);
+                    } catch (NumberFormatException e) {
+                        response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                        return;
+                    }
+
+                    User user = administratorService.getUserById(Integer.parseInt(idUser));
+                    if (user == null) {
+                        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                        return;
+
+                    }
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    gsonUser.sendAsJson(response, user);
 
                 }
-            }*/
+            }
 
         }
 
@@ -127,6 +124,10 @@ public class UserController extends HttpServlet {
         User userFromJson;
         try {
             userFromJson = gsonUser.readFromJson(request, User.class);
+            if (userFromJson.getDpi().length() != 13) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
         } catch (NumberFormatException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
@@ -154,16 +155,27 @@ public class UserController extends HttpServlet {
 
         if ((splits.length - 1) == 1) {
             if (pathInfo.equals("/" + splits[1])) {
-                User userToUpdate;
+                //User userToUpdate;
+
+                String idUser = splits[1];
 
                 try {
-                    userToUpdate = gsonUser.readFromJson(request, User.class);
+                    //userToUpdate = gsonUser.readFromJson(request, User.class);
+                    Integer.parseInt(idUser);
                 } catch (NumberFormatException e) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                     return;
                 }
 
+                User userToUpdate = administratorService.getUserById(Integer.parseInt(idUser));
                 System.out.println(userToUpdate);
+
+                if (userToUpdate == null) {
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                    return;
+                }
+
+                userToUpdate.setActive(false);
                 administratorService.updateUser(userToUpdate);
                 gsonUser.sendAsJson(response, userToUpdate);
                 response.setStatus(HttpServletResponse.SC_OK);

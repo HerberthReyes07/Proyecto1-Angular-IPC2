@@ -96,37 +96,4 @@ public class ParameterDB {
         return parameter;
     }
 
-    /*public int getParameterCreatedId() {
-        String query = "SELECT id FROM parametro ORDER BY id DESC LIMIT 1;";
-        int id = -1;
-        try (Statement stmt = connection.createStatement()) {
-            try (ResultSet resultSet = stmt.executeQuery(query)) {
-                if (resultSet.next()) {
-                    id = resultSet.getInt("id");
-                }
-            }
-        } catch (SQLException e) {
-            System.out.println("Error al consultar 'getPackageCreatedId': " + e);
-        }
-        return id;
-    }*/
-    // MODIFICAR
-    /*public Parameter getParameters() {
-        String query = "SELECT * FROM parametro WHERE id = 1;";
-        Parameter parameter = null;
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    int id = resultSet.getInt("id");
-                    double globalOperationFee = resultSet.getDouble("tarifa_operacion_global");
-                    double pricePerPound = resultSet.getDouble("precio_libra");
-
-                    parameter = new Parameter(id, globalOperationFee, pricePerPound);
-                }
-            }
-        } catch (SQLException e) {
-            System.out.println("Error al consultar 'getParameter': " + e);
-        }
-        return parameter;
-    }*/
 }

@@ -183,7 +183,7 @@ public class OperatorService {
                 packageToAdd.setStatus(PackageStatus.EN_PUNTO_CONTROL);
                 updatePackage(packageToAdd);
                 createProcess(new Process(packageToAdd.getId(), processToDo.getControlPointId()));
-                System.out.println("6-" + new com.mycompany.ipc2.p1.backend.model.Process(packageToAdd.getId(), processToDo.getControlPointId()));
+                System.out.println("6-" + new Process(packageToAdd.getId(), processToDo.getControlPointId()));
             }
         }
 

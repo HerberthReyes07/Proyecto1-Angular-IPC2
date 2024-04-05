@@ -87,21 +87,6 @@ public class ControlPointController extends HttpServlet {
 
         System.out.println(controlPointFromJson);
 
-        /*List<Process> unprocessedPackages = administratorService.getUnprocessedPackages();
-        List<ControlPoint> controlPoints = administratorService.getControlPointsByRouteId(controlPointFromJson.getRouteId());
-        boolean canAdd = true;
-
-        for (int j = 0; j < unprocessedPackages.size(); j++) {
-            for (int i = 0; i < controlPoints.size(); i++) {
-                if (controlPoints.get(i).getId() == unprocessedPackages.get(j).getControlPointId()) {
-                    canAdd = false;
-                    break;
-                }
-            }
-            if (!canAdd) {
-                break;
-            }
-        }*/
         boolean canAdd = administratorService.canProceed(controlPointFromJson.getRouteId());
 
         if (canAdd) {
@@ -155,9 +140,13 @@ public class ControlPointController extends HttpServlet {
                 }
 
                 if (canModify) {
+                    System.out.println("SE PUEDE MODIFICAR");
                     administratorService.updateControlPoint(controlPointToUpdate);
                     gsonControlPoint.sendAsJson(response, controlPointToUpdate);
                     response.setStatus(HttpServletResponse.SC_OK);
+                } else {
+                    System.out.println("NO SE PUEDE MODIFICAR");
+                    response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE);
                 }
             }
         }
