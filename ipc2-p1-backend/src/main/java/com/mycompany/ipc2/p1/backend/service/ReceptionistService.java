@@ -39,7 +39,6 @@ public class ReceptionistService {
     private final ProcessDB processDB;
     private final ParameterDB parameterDB;
     private final ProcessDetailDB processDetailDB;
-    private final OperatorService operatorService;
 
     public ReceptionistService() {
         this.destinationDB = new DestinationDB();
@@ -50,7 +49,6 @@ public class ReceptionistService {
         this.processDB = new ProcessDB();
         this.parameterDB = new ParameterDB();
         this.processDetailDB = new ProcessDetailDB();
-        this.operatorService = new OperatorService();
     }
 
     public List<Destination> getAllDestinations() {
