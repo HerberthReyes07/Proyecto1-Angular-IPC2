@@ -31,6 +31,7 @@ export class PackageEntryComponent implements OnInit {
     nit: new FormControl('', [Validators.required, Validators.minLength(7), Validators.maxLength(7)]),
     destination: new FormControl('valInicial', Validators.required),
     weight: new FormControl('', Validators.required),
+    entryDate: new FormControl('', Validators.required),
   });
 
   constructor(private recepService: RecepService) {
@@ -57,6 +58,10 @@ export class PackageEntryComponent implements OnInit {
     return this.packageEntryForm.get('weight') as FormControl;
   }
 
+  get entryDateControl(): FormControl {
+    return this.packageEntryForm.get('entryDate') as FormControl;
+  }
+
   toggleCustomerFormVisibility() {
     this.isCustomerFormOpened = !this.isCustomerFormOpened;
   }
@@ -66,7 +71,7 @@ export class PackageEntryComponent implements OnInit {
   }
 
   verifyNitToSend() {
-    if (this.isNumber(this.nitControl.value)) {
+    if (this.recepService.isNumber(this.nitControl.value)) {
       this.toggleCustomerFormVisibility();
     } else {
       this.message = "El nit a verificar/crear no es valido";
@@ -81,15 +86,17 @@ export class PackageEntryComponent implements OnInit {
         if (customer) {
           const selectedDestination = this.destinations.find(option => option.id === Number.parseInt(this.destinationControl.value));
           if (selectedDestination) {
-            this.recepService.getParameters().subscribe(parameter => {
+            this.recepService.getCurrentParameter().subscribe(parameter => {
               this.recepService.getInvoiceNo().subscribe(auxPackage => {
                 if (auxPackage) {
+
                   this.pricePerPound = parameter.pricePerPound;
                   this.invoiceNo = auxPackage.invoiceNo;
 
                   this.package.customerId = customer.id;
                   this.package.destinationId = selectedDestination.id;
                   this.package.weight = this.weightControl.value;
+                  this.package.entryDate = this.entryDateControl.value;
                   this.package.shippingCost = this.recepService.calculateDestinationFee(selectedDestination, this.package, parameter);
                   this.package.invoiceNo = auxPackage.invoiceNo;
 
@@ -97,9 +104,12 @@ export class PackageEntryComponent implements OnInit {
                   this.isPaymentDisabled = false;
 
                   const lastNit = this.nitControl.value;
+                  const lastDate = this.entryDateControl.value;
                   this.clearForm();
                   this.nitControl.setValue(lastNit);
                   this.nitControl.disable();
+                  this.entryDateControl.setValue(lastDate);
+                  this.entryDateControl.disable();
                 }
               }, error => {
                 console.log("Error al consultar invoiceNo")
@@ -139,8 +149,8 @@ export class PackageEntryComponent implements OnInit {
     this.recepService.cleanPackages();
   }
 
-  isNumber(str: string): boolean {
+  /*isNumber(str: string): boolean {
     return /^\d+$/.test(str);
-  }
+  }*/
 
 }

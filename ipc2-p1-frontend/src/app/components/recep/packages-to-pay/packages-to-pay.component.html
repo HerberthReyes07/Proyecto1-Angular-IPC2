@@ -32,6 +32,7 @@
                                                 <th>#</th>
                                                 <th>Nit</th>
                                                 <th>Peso (lb)</th>
+                                                <th>Fecha Entrada</th>
                                                 <th>Destino</th>
                                                 <th>Cuota Destino</th>
                                                 <th>Costo Envio</th>
@@ -42,6 +43,7 @@
                                                 <td>{{i + 1}}</td>
                                                 <td>{{customerNit}}</td>
                                                 <td>{{p.weight | number: "1.2-2"}}</td>
+                                                <td>{{p.entryDate}}</td>
                                                 <td>{{getDestinationById(p.destinationId).name}}</td>
                                                 <td>{{getDestinationById(p.destinationId).destinationFee | number:
                                                     "1.2-2"}}

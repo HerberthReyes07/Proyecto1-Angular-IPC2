@@ -3,6 +3,7 @@ import { User } from '../model/user';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
+import { TypeUser } from '../model/type-user';
 
 @Injectable({
   providedIn: 'root'
@@ -36,5 +37,16 @@ export class UserService {
 
   setLocalStorageItem(user: User): void {
     localStorage.setItem('currentUser', JSON.stringify(user));
+  }
+
+  getTypeUser(verifyUser: string): TypeUser {
+    switch (verifyUser) {
+      case "recep":
+        return TypeUser.RECEPTIONIST;
+      case "oper":
+        return TypeUser.OPERATOR;
+      default:
+        return TypeUser.ADMINISTRATOR;
+    }
   }
 }

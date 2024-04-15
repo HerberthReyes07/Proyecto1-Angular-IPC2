@@ -41,6 +41,7 @@
                                         <th>Peso (lb)</th>
                                         <th>Costo Envio</th>
                                         <th>Destino</th>
+                                        <th>Fecha Entrada</th>
                                         <th>Accion</th>
                                 </thead>
                                 <tbody>
@@ -52,6 +53,7 @@
                                         <td>{{p.weight | number: "1.2-2"}}</td>
                                         <td>{{p.shippingCost | number: "1.2-2"}} Q</td>
                                         <td>{{getDestinationById(p.destinationId).name}}</td>
+                                        <td>{{p.entryDate}}</td>
                                         <td><button type="button" class="btn btn-danger btn-sm"
                                                 (click)="pickUpPackage(p)">Retirar</button></td>
                                     </tr>

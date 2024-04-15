@@ -177,6 +177,7 @@ public class ReceptionistService {
         Destination destination = getDestinationById(packageFromJson.getDestinationId());
         
         packageFromJson.setParameterId(currentParameter.getId());
+        //packageFromJson.setInvoiceNo(getLastInvoiceNo() + 1);
         
         double shippingCost = (packageFromJson.getWeight() * currentParameter.getPricePerPound()) + destination.getDestinationFee();
         packageFromJson.setShippingCost(shippingCost);

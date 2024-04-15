@@ -66,7 +66,7 @@ public class UserDB {
     }
 
     public Optional<User> getUserByLoginCredentials(String username, String password) {
-        String query = "SELECT * FROM usuario WHERE username = ? AND password = ?";
+        String query = "SELECT * FROM usuario WHERE username = ? AND password = ? AND activo = true;";
         User user = null;
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, username);//primer ?

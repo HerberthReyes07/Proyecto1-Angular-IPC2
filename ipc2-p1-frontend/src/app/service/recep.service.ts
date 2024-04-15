@@ -11,7 +11,7 @@ import { BehaviorSubject, Observable, Subject, map } from 'rxjs';
 })
 export class RecepService {
 
-  url: string = 'http://localhost:8080/ipc2-p1-backend/recep';
+  url: string = 'http://localhost:8080/ipc2-p1-backend';
 
   private packages = new BehaviorSubject<Package[]>([]);
   //private packagesOnStandby = new BehaviorSubject<Package[]>([]);
@@ -37,43 +37,44 @@ export class RecepService {
   }
 
   getDestinations() {
-    return this.http.get<Destination[]>(`${this.url}/readAllDestinations`);
+    return this.http.get<Destination[]>(`${this.url}/destinations`);
   }
 
   getCustomerByNit(nit : string) {
-    return this.http.get<Customer>(`${this.url}/getCustomerByNit/${nit}`);
+    return this.http.get<Customer>(`${this.url}/customers/${nit}`);
   }
 
   getInvoiceNo(){
-    return this.http.get<Package>(`${this.url}/getInvoiceNo`);
+    return this.http.get<Package>(`${this.url}/packages/invoiceNo`);
   }
 
-  getParameters(){
-    return this.http.get<Parameter>(`${this.url}/getParameters`);
+  getCurrentParameter(){
+    return this.http.get<Parameter>(`${this.url}/parameters/current`);
   }
 
   getAllCustomers(){
-    return this.http.get<Customer[]>(`${this.url}/getAllCustomers`);
+    return this.http.get<Customer[]>(`${this.url}/customers`);
   }
 
   getAllPackagesOnStandby(){
-    return this.http.get<Package[]>(`${this.url}/getAllPackagesOnStandby`);
+    return this.http.get<Package[]>(`${this.url}/packages/on-standby`);
   }
 
   filterPackagesOnStandby(filter : string){
-    return this.http.get<Package[]>(`${this.url}/filterPackagesOnStandby/${filter}`);
+    return this.http.get<Package[]>(`${this.url}/packages/on-standby/${filter}`);
   }
 
   createCustomer(customer : Customer){
-    return this.http.post<Customer>(`${this.url}/createCustomer`, customer);
+    return this.http.post<Customer>(`${this.url}/customers`, customer);
   }
 
   createPackage(packageS : Package){
-    return this.http.post<Package>(`${this.url}/createPackage`, packageS);
+    return this.http.post<Package>(`${this.url}/packages`, packageS);
   }
 
   updatePackage(packageS : Package){
-    return this.http.put<Package>(`${this.url}/updatePackage`, packageS);
+    //return this.http.put<Package>(`${this.url}/packages`, packageS);
+    return this.http.put<Package>(`${this.url}/packages`, packageS.id);
   }
 
   calculateDestinationFee(destination: Destination, packageS : Package, parameter : Parameter){
