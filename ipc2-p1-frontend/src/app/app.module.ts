@@ -17,6 +17,7 @@ import { PackageEntryComponent } from './components/recep/package-entry/package-
 import { CustomerFormComponent } from './components/recep/customer-form/customer-form.component';
 import { PackagesToPayComponent } from './components/recep/packages-to-pay/packages-to-pay.component';
 import { PickUpPackageComponent } from './components/recep/pick-up-package/pick-up-package.component';
+import { CheckLocationComponent } from './components/recep/check-location/check-location.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { PickUpPackageComponent } from './components/recep/pick-up-package/pick-
     CustomerFormComponent,
     PackagesToPayComponent,
     PickUpPackageComponent,
+    CheckLocationComponent,
   ],
   imports: [
     BrowserModule,

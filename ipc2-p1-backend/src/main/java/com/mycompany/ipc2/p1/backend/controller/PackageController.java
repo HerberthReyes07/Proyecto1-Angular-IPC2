@@ -63,6 +63,14 @@ public class PackageController extends HttpServlet {
                     int invoice = receptionistService.getLastInvoiceNo() + 1;
                     response.setStatus(HttpServletResponse.SC_OK);
                     gsonPackage.sendAsJson(response, new Package(invoice));
+                } else if (pathInfo.equals("/on-route")) {
+                    List<Package> packagesOnRoute = receptionistService.getAllPackagesOnRoute();
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    gsonPackage.sendAsJson(response, packagesOnRoute);
+                } else if (pathInfo.equals("/locations")) {
+                    List<LocationReport> locations = receptionistService.getLocationsOfPackagesByNitOrInvoiceNo(null);
+                    gsonLocation.sendAsJson(response, locations);
+                    response.setStatus(HttpServletResponse.SC_OK);
                 }
             } else if ((splits.length - 1) == 2) {
                 if (pathInfo.equals("/on-standby/" + splits[2])) {
@@ -125,7 +133,7 @@ public class PackageController extends HttpServlet {
 
             Package createdPackage = receptionistService.registerPackage(packageFromJson);
             response.setStatus(HttpServletResponse.SC_OK);
-            gsonPackage.sendAsJson(response, createdPackage);
+            gsonPackage.sendAsJson(response,packageFromJson);
 
         } else {
             String[] splits = pathInfo.split("/");

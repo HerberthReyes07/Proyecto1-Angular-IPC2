@@ -9,6 +9,7 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
 import { ManagerHomepageComponent } from './components/manager-homepage/manager-homepage.component';
 import { PackageEntryComponent } from './components/recep/package-entry/package-entry.component';
 import { PickUpPackageComponent } from './components/recep/pick-up-package/pick-up-package.component';
+import { CheckLocationComponent } from './components/recep/check-location/check-location.component';
 
 const routes: Routes = [
   {
@@ -40,13 +41,18 @@ const routes: Routes = [
     canActivate: [IsLoggedInGuard]
   },
   {
-    path: 'recep/paquete/entrada',
+    path: 'recep/paquetes/entrada',
     component: PackageEntryComponent,
     canActivate: [IsLoggedInGuard]
   },
   {
-    path: 'recep/paquete/retiro',
+    path: 'recep/paquetes/retiro',
     component: PickUpPackageComponent,
+    canActivate: [IsLoggedInGuard]
+  },
+  {
+    path: 'recep/paquetes/localizacion',
+    component: CheckLocationComponent,
     canActivate: [IsLoggedInGuard]
   },
   {

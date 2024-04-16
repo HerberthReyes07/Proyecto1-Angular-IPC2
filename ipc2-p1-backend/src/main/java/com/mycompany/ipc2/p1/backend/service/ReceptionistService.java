@@ -106,7 +106,11 @@ public class ReceptionistService {
     }
     
     public List<Package> getAllPackagesOnStandby() {
-        return packageDB.getAllPackagesOnStandby();
+        return packageDB.getAllPackagesByStatus(3);
+    }
+    
+    public List<Package> getAllPackagesOnRoute() {
+        return packageDB.getAllPackagesByStatus(2);
     }
     
     public Destination getDestinationById(int id) {
@@ -147,7 +151,14 @@ public class ReceptionistService {
 
     //----------------------------------------------------------------------------//
     public List<LocationReport> getLocationsOfPackagesByNitOrInvoiceNo(String filter) {
-        List<Package> filterPackagesOnRoute = filterPackagesByStatus(filter, 2);
+        List<Package> filterPackagesOnRoute;
+        
+        if (filter == null) {
+            filterPackagesOnRoute = getAllPackagesOnRoute();
+        } else {
+            filterPackagesOnRoute = filterPackagesByStatus(filter, 2);
+        }
+        
 
         List<Process> processes = new ArrayList<>();
 
@@ -179,8 +190,8 @@ public class ReceptionistService {
         packageFromJson.setParameterId(currentParameter.getId());
         //packageFromJson.setInvoiceNo(getLastInvoiceNo() + 1);
         
-        double shippingCost = (packageFromJson.getWeight() * currentParameter.getPricePerPound()) + destination.getDestinationFee();
-        packageFromJson.setShippingCost(shippingCost);
+        //double shippingCost = (packageFromJson.getWeight() * currentParameter.getPricePerPound()) + destination.getDestinationFee();
+        //packageFromJson.setShippingCost(shippingCost);
 
         if (controlPoint == null) {
             System.out.println("EN BODEGA");

@@ -5,6 +5,9 @@ import { Customer } from '../model/customer';
 import { Package } from '../model/package';
 import { Parameter } from '../model/parameter';
 import { BehaviorSubject, Observable, Subject, map } from 'rxjs';
+import { LocationReport } from '../model/location-report';
+import { ControlPoint } from '../model/control-point';
+import { Route } from '../model/route';
 
 @Injectable({
   providedIn: 'root'
@@ -60,8 +63,28 @@ export class RecepService {
     return this.http.get<Package[]>(`${this.url}/packages/on-standby`);
   }
 
+  getAllPackagesOnRoute(){
+    return this.http.get<Package[]>(`${this.url}/packages/on-route`);
+  }
+
+  getAllPackagesLocations(){
+    return this.http.get<LocationReport[]>(`${this.url}/packages/locations`);
+  }
+
+  getAllControlPoints(){
+    return this.http.get<ControlPoint[]>(`${this.url}/control-points`);
+  }
+
+  getAllRoutes(){
+    return this.http.get<Route[]>(`${this.url}/routes`);
+  }
+
   filterPackagesOnStandby(filter : string){
     return this.http.get<Package[]>(`${this.url}/packages/on-standby/${filter}`);
+  }
+
+  filterLocations(filter : string){
+    return this.http.get<LocationReport[]>(`${this.url}/packages/location/${filter}`);
   }
 
   createCustomer(customer : Customer){
@@ -73,8 +96,7 @@ export class RecepService {
   }
 
   updatePackage(packageS : Package){
-    //return this.http.put<Package>(`${this.url}/packages`, packageS);
-    return this.http.put<Package>(`${this.url}/packages`, packageS.id);
+    return this.http.put<Package>(`${this.url}/packages/${packageS.id}`, packageS);
   }
 
   calculateDestinationFee(destination: Destination, packageS : Package, parameter : Parameter){

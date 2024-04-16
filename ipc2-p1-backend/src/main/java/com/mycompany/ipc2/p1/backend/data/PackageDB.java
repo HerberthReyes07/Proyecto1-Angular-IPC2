@@ -148,26 +148,30 @@ public class PackageDB {
         return lastInvoiceNo;
     }
 
-    public List<Package> getAllPackagesOnStandby() {
-        String query = "SELECT * FROM paquete WHERE estado = 3;";
+    public List<Package> getAllPackagesByStatus(int status) {
+        String query = "SELECT * FROM paquete WHERE estado = ?;";
         List<Package> packages = new ArrayList<>();
 
-        try (Statement stmt = connection.createStatement(); ResultSet resultSet = stmt.executeQuery(query)) {
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                double weight = resultSet.getDouble("peso");
-                double shippingCost = resultSet.getDouble("costo_envio");
-                int invoiceNo = resultSet.getInt("no_factura");
-                String entryDate = resultSet.getDate("fecha_ingreso").toString();
-                int customerId = resultSet.getInt("cliente_id");
-                int destinationId = resultSet.getInt("destino_id");
-                int parameterId = resultSet.getInt("parametro_id");
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, status);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    double weight = resultSet.getDouble("peso");
+                    double shippingCost = resultSet.getDouble("costo_envio");
+                    int invoiceNo = resultSet.getInt("no_factura");
+                    String entryDate = resultSet.getDate("fecha_ingreso").toString();
+                    int customerId = resultSet.getInt("cliente_id");
+                    int destinationId = resultSet.getInt("destino_id");
+                    int parameterId = resultSet.getInt("parametro_id");
 
-                Package packageToAdd = new Package(id, customerId, destinationId, parameterId, weight, shippingCost, PackageStatus.EN_ESPERA_RETIRO, invoiceNo, entryDate);
-                packages.add(packageToAdd);
+                    Package packageToAdd = new Package(id, customerId, destinationId, parameterId, weight, shippingCost, gu.getPackageStatus(status), invoiceNo, entryDate);
+                    packages.add(packageToAdd);
+                }
             }
+
         } catch (SQLException e) {
-            System.out.println("Error al consultar 'getPackagesOnStandby': " + e);
+            System.out.println("Error al consultar 'getAllPackagesByStatus': " + e);
         }
         return packages;
     }
