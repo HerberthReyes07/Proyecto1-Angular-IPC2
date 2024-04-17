@@ -9,14 +9,18 @@ import com.mycompany.ipc2.p1.backend.data.DestinationDB;
 import com.mycompany.ipc2.p1.backend.data.PackageDB;
 import com.mycompany.ipc2.p1.backend.data.ParameterDB;
 import com.mycompany.ipc2.p1.backend.data.ProcessDB;
+import com.mycompany.ipc2.p1.backend.data.ProcessDetailDB;
 import com.mycompany.ipc2.p1.backend.data.RouteDB;
 import com.mycompany.ipc2.p1.backend.data.UserDB;
 import com.mycompany.ipc2.p1.backend.model.Package;
 import com.mycompany.ipc2.p1.backend.model.ControlPoint;
 import com.mycompany.ipc2.p1.backend.model.Destination;
+import com.mycompany.ipc2.p1.backend.model.EarningsReport;
+import com.mycompany.ipc2.p1.backend.model.PackageStatus;
 import com.mycompany.ipc2.p1.backend.model.Parameter;
 import com.mycompany.ipc2.p1.backend.model.Route;
 import com.mycompany.ipc2.p1.backend.model.Process;
+import com.mycompany.ipc2.p1.backend.model.ProcessDetail;
 import com.mycompany.ipc2.p1.backend.model.RoutesReport;
 import com.mycompany.ipc2.p1.backend.model.User;
 import java.util.ArrayList;
@@ -35,6 +39,7 @@ public class AdministratorService {
     private final ParameterDB parameterDB;
     private final DestinationDB destinationDB;
     private final PackageDB packageDB;
+    private final ProcessDetailDB processDetailDB;
     
     public AdministratorService() {
         this.routeDB = new RouteDB();
@@ -44,6 +49,7 @@ public class AdministratorService {
         this.parameterDB = new ParameterDB();
         this.destinationDB = new DestinationDB();
         this.packageDB = new PackageDB();
+        this.processDetailDB = new ProcessDetailDB();
     }
     
     public void createRoute(Route route) {
@@ -184,7 +190,6 @@ public class AdministratorService {
         
         List<Route> routes = getAllRoutes();
         
-        
         for (int i = 0; i < routes.size(); i++) {
             
             int onRoute = 0;
@@ -207,6 +212,65 @@ public class AdministratorService {
         }
         
         return routesReports;
+    }
+    
+    public List<EarningsReport> getEarningsReport(String initialDate, String finalDate){
+        
+        List<Package> packages;
+        List<ProcessDetail> processDetails;
+        
+        if (initialDate == null && finalDate == null) {
+            packages = packageDB.getAllPackages();
+            processDetails = processDetailDB.getAllProcessDetails();
+        } else {
+            packages = packageDB.getAllPackagesByDateRange(initialDate, finalDate);
+            processDetails = processDetailDB.getAllProcessDetailsByDateRange(initialDate, finalDate);
+        }
+        
+        List<Process> revenueProcesses = new ArrayList<>();
+        
+        for (int i = 0; i < packages.size(); i++) {
+            //ver lo de EN_BODEGA
+            if (packages.get(i).getStatus() == PackageStatus.EN_PUNTO_CONTROL) {
+                revenueProcesses.add(processDB.getProcessByPackageId(packages.get(i).getId(), false));
+            } else if (packages.get(i).getStatus() == PackageStatus.EN_ESPERA_RETIRO || packages.get(i).getStatus() == PackageStatus.RETIRADO) {
+                revenueProcesses.add(processDB.getProcessByPackageId(packages.get(i).getId(), true));
+            }
+        }
+        
+        List<Process> costsProcesses = new ArrayList<>();
+        
+        for (int i = 0; i < processDetails.size(); i++) {
+            costsProcesses.add(processDB.getProcessById(processDetails.get(i).getProcessId()));
+        }
+        
+
+        List<Route> routes = getAllRoutes();
+        List<EarningsReport> earningsReports = new ArrayList<>();
+        
+        for (int i = 0; i < routes.size(); i++) {
+            
+            double revenue = 0;
+            double costs = 0;
+            
+            for (int j = 0; j < revenueProcesses.size(); j++) {
+                ControlPoint controlPoint = controlPointDB.getControlPointById(revenueProcesses.get(j).getControlPointId());
+                if (controlPoint.getRouteId() == routes.get(i).getId()) {
+                    revenue += packageDB.getPackageById(revenueProcesses.get(j).getPackageId()).getShippingCost();
+                }
+            }
+            
+            for (int j = 0; j < costsProcesses.size(); j++) {
+                ControlPoint controlPoint = controlPointDB.getControlPointById(costsProcesses.get(j).getControlPointId());
+                if (controlPoint.getRouteId() == routes.get(i).getId()) {
+                    costs += processDetailDB.getCostByProcessId(costsProcesses.get(j).getId());
+                }                
+            }
+            
+            earningsReports.add(new EarningsReport(costs, revenue, routes.get(i).getId()));
+        }
+        
+        return earningsReports;
     }
     
 }

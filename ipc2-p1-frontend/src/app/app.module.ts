@@ -21,6 +21,7 @@ import { CheckLocationComponent } from './components/recep/check-location/check-
 import { ProcessPackagesComponent } from './components/oper/process-packages/process-packages.component';
 import { ProcessFormComponent } from './components/oper/process-form/process-form.component';
 import { RoutesReportComponent } from './components/admin/routes-report/routes-report.component';
+import { EarningsReportComponent } from './components/admin/earnings-report/earnings-report.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { RoutesReportComponent } from './components/admin/routes-report/routes-r
     ProcessPackagesComponent,
     ProcessFormComponent,
     RoutesReportComponent,
+    EarningsReportComponent,
   ],
   imports: [
     BrowserModule,

@@ -73,12 +73,10 @@ export class RoutesReportComponent implements OnInit{
   }
 
   getState(state: boolean){
-    
     if (state) {
       return "Activa"
     } else {
       return "Inactiva"
     }
-
   }
 }

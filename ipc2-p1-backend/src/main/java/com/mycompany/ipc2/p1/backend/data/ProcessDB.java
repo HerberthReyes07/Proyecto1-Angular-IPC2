@@ -120,5 +120,27 @@ public class ProcessDB {
         }
         return processToSend;
     }
+    
+    public Process getProcessById(int id) {
+        String query = "SELECT * FROM proceso WHERE id = ? AND realizado = true";
+        
+        
+        Process processToSend = null;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, id);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int packageId = resultSet.getInt("paquete_id");
+                    int controlPointId = resultSet.getInt("punto_control_id");
+
+                    processToSend = new Process(id, true, packageId, controlPointId);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar 'getProcessById': " + e);
+        }
+        return processToSend;
+    }
 
 }

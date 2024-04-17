@@ -1,0 +1,74 @@
+<div class="container mt-2 col-md-9">
+    <div class="card my-5">
+
+        <div class="card text-center">
+            <div class="card-header">
+                <h3>Reporte de rutas</h3>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <form class="row g-3" [formGroup]="filterForm">
+                <div class="col-md-5">
+                    <label for="route" class="form-label">Ruta</label>
+                    <select id="routes" class="form-select" formControlName="routeControl">
+                        <option value="0" selected>Todos</option>
+                        <ng-container *ngFor="let r of routes; let i = index">
+                            <option value="{{r.id}}">{{i + 1}}. {{r.name}}</option>
+                        </ng-container>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="initialDate" class="form-label">Fecha inicial: </label>
+                    <input type="date" class="form-control" name="processDate" formControlName="initialDateControl">
+                </div>
+                <div class="col-md-2">
+                    <label for="finalDate" class="form-label">Fecha Final: </label>
+                    <input type="date" class="form-control" name="processDate" formControlName="finalDateControl">
+                </div>
+                <div class="col-md-1">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-success" style="margin-top: 32px;" (click)="filter()">Filtrar</button>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" style="margin-top: 32px;" (click)="clear()">Ver Todas</button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="row">
+                <div class="col">
+                    <div class="card my-4">
+                        <div class="card-body">
+                            <table class="table table-hover table-sm" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Ruta</th>
+                                        <th>Destino</th>
+                                        <th>Estado</th>
+                                        <th>Ingresos</th>
+                                        <th>Costos</th>
+                                        <th>Ganancias</th>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let re of earningnsReportsFiltered; let i = index">
+                                        <td>{{i + 1}}</td>
+                                        <td>{{getRouteById(re.routeId).name}}</td>
+                                        <td>{{getDestinationById(getRouteById(re.routeId).destinationId).name}}</td>
+                                        <td>{{getState(getRouteById(re.routeId).active)}}</td>
+                                        <td style="color: green;">{{re.revenue | number: "1.2-2"}} Q</td>
+                                        <td style="color: red;">{{re.costs | number: "1.2-2"}} Q</td>
+                                        <td><strong>{{re.revenue - re.costs | number: "1.2-2"}} Q</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
