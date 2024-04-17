@@ -35,8 +35,6 @@ export class LoginComponent {
     this.user.username = this.usernameControl.value;
     this.user.password = this.passwordControl.value;
 
-    console.log("Username enviado: " + this.user.username + ", Password enviada: " + this.user.password);
-
     this.userService.logIn(this.user)
       .subscribe(consultedUser => {
         if (consultedUser) {

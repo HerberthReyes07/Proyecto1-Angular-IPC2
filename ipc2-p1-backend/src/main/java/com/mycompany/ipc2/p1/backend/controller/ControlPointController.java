@@ -7,6 +7,7 @@ package com.mycompany.ipc2.p1.backend.controller;
 import com.mycompany.ipc2.p1.backend.model.ControlPoint;
 import com.mycompany.ipc2.p1.backend.model.Process;
 import com.mycompany.ipc2.p1.backend.service.AdministratorService;
+import com.mycompany.ipc2.p1.backend.service.OperatorService;
 import com.mycompany.ipc2.p1.backend.utils.GsonUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -25,10 +26,12 @@ public class ControlPointController extends HttpServlet {
 
     private final GsonUtils<ControlPoint> gsonControlPoint;
     private final AdministratorService administratorService;
+    private final OperatorService operatorService;
 
     public ControlPointController() {
         gsonControlPoint = new GsonUtils<>();
         administratorService = new AdministratorService();
+        operatorService = new OperatorService();
     }
 
     @Override
@@ -65,8 +68,28 @@ public class ControlPointController extends HttpServlet {
                     response.setStatus(HttpServletResponse.SC_OK);
                     gsonControlPoint.sendAsJson(response, controlPoint);
                 }
+            } else if ((splits.length - 1) == 2) {
+                if (pathInfo.equals("/operator/" + splits[2])) {
+                    String idOperator = splits[2];
+                    try {
+                        Integer.parseInt(idOperator);
+                    } catch (NumberFormatException e) {
+                        response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                        return;
+                    }
+                    
+                    List<ControlPoint> controlPoints = operatorService.getControlPointsByOperatorId(Integer.parseInt(idOperator));
+                    System.out.println(controlPoints);
+                    
+                    if (controlPoints == null) {
+                        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                        return;
+                    }
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    gsonControlPoint.sendAsJson(response, controlPoints);
+                }
             }
-        }
+        } 
     }
 
     @Override

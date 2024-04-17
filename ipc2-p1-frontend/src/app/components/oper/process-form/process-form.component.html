@@ -1,0 +1,78 @@
+<div id="clientModal" tabindex="-1" aria-labelledby="clientModalLabel" class="modal fade show" style="display: block;"
+    aria-modal="true" role="dialog">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="clientModalLabel">Procesar Paquete</h5>
+                <button type="button" (click)="closeForm()"><i class="bi bi-x-lg"></i></button>
+            </div>
+
+            <div class="modal-body">
+
+                <div *ngIf="packageProcessed" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill" style="margin-right: 10px;"></i><strong>Paquete procesado
+                        exitosamente!</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div *ngIf="hasError" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-circle-fill"
+                        style="margin-right: 10px;"></i><strong>{{message}}</strong>
+                    <button type="button" class="btn-close" (click)="toggleHasError()" data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+                </div>
+
+                <form [formGroup]="processForm" *ngIf="!packageProcessed">
+                    <div class="mb-3">
+                        <label name="invoiceNo" class="form-label">No. Factura:</label>
+                        <input type="text" class="form-control" name="invoiceNo" value={{packageToProcess.invoiceNo}}
+                            disabled>
+                    </div>
+
+                    <div class="mb-3">
+                        <label name="weight" class="form-label">Peso (lb):</label>
+                        <input type="text" class="form-control" name="weight" value={{packageToProcess.weight}}
+                            disabled>
+                    </div>
+
+                    <div class="mb-3">
+                        <label name="destination" class="form-label">Destino:</label>
+                        <input type="text" class="form-control" name="destination"
+                            value={{getDestinationById(packageToProcess.destinationId).name}} disabled>
+                    </div>
+
+                    <div class="mb-3">
+                        <label name="entryDate" class="form-label">Fecha de entrada:</label>
+                        <input type="text" class="form-control" name="entryDate" value={{packageToProcess.entryDate}}
+                            disabled>
+                    </div>
+
+                    <div class="mb-3">
+                        <label name="time" class="form-label">Tiempo (en horas): </label>
+                        <input type="text" class="form-control" name="time" formControlName="time">
+                    </div>
+                    <div class="errors-container"
+                        *ngIf="timeControl.invalid && (timeControl.touched || timeControl.dirty)">
+                        <p class="error-msg" *ngIf="timeControl.hasError('required')">
+                            El campo es obligatorio
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label name="processDate" class="form-label">Fecha: </label>
+                        <input type="date" class="form-control" name="processDate" formControlName="processDate">
+                    </div>
+                    <div class="errors-container"
+                        *ngIf="processDateControl.invalid && (processDateControl.touched || processDateControl.dirty)">
+                        <p class="error-msg" *ngIf="processDateControl.hasError('required')">
+                            El campo es obligatorio
+                        </p>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer" *ngIf="!packageProcessed">
+                <button type="submit" (click)="processPackage()" class="btn btn-primary">Registrar</button>
+            </div>
+        </div>
+    </div>
+</div>

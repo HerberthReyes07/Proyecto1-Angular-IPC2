@@ -10,6 +10,7 @@ import { ManagerHomepageComponent } from './components/manager-homepage/manager-
 import { PackageEntryComponent } from './components/recep/package-entry/package-entry.component';
 import { PickUpPackageComponent } from './components/recep/pick-up-package/pick-up-package.component';
 import { CheckLocationComponent } from './components/recep/check-location/check-location.component';
+import { ProcessPackagesComponent } from './components/oper/process-packages/process-packages.component';
 
 const routes: Routes = [
   {
@@ -53,6 +54,11 @@ const routes: Routes = [
   {
     path: 'recep/paquetes/localizacion',
     component: CheckLocationComponent,
+    canActivate: [IsLoggedInGuard]
+  },
+  {
+    path: 'oper/paquetes/procesar',
+    component: ProcessPackagesComponent,
     canActivate: [IsLoggedInGuard]
   },
   {

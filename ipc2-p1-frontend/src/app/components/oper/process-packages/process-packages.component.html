@@ -1,0 +1,71 @@
+<div class="container mt-2 col-md-7">
+    <div class="card my-5">
+
+        <!-- <div *ngIf="pickedUpPackage" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill" style="margin-right: 10px;"></i><strong>Paquete retirado exitosamente!</strong>
+            <button type="button" (click)="changePickedUpPackageValue()" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div> -->
+
+        <div class="card text-center">
+            <div class="card-header">
+                <h3>Procesar Paquete</h3>
+            </div>
+        </div>
+        <div class="card-body">
+            <form class="row g-3" [formGroup]="searchForm">
+                <div class="col-md-5">
+                    <label for="inputState" class="form-label">Punto de Control</label>
+                    <select id="inputState" class="form-select" formControlName="searchByControl" (change)="search()">
+                        <option value="0" selected>Todos</option>
+                        <ng-container *ngFor="let cp of controlPoints">
+                            <option value="{{cp.id}}">{{cp.name}} \ {{getRouteById(cp.routeId).name}}</option>
+                        </ng-container>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-success" style="margin-top: 32px;" (click)="processPackage()" [disabled]="!canProcess">Procesar siguiente</button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="row">
+                <div class="col">
+                    <div class="card my-4">
+                        <div class="card-header">
+                            <h5 class="modal-title">Listado de paquetes en espera a ser procesados</h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-hover table-sm" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>No. Factura</th>
+                                        <th>Peso (lb)</th>
+                                        <th>Destino</th>
+                                        <th>Fecha Entrada</th>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let p of filteredPackages; let i = index">
+                                        <td>{{i + 1}}</td>
+                                        <td>{{p.invoiceNo}}</td>
+                                        <td>{{p.weight | number: "1.2-2"}}</td>
+                                        <td>{{getDestinationById(p.destinationId).name}}</td>
+                                        <td>{{p.entryDate}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-background" *ngIf="isProcessFormOpened">
+    <!-- <app-customer-form [nitValue]="this.nitControl.value"
+        (toggleFormVisibility)="toggleCustomerFormVisibility()"></app-customer-form> -->
+        <app-process-form (toggleFormVisibility)="toggleProcessFormVisibility()" (processDone)="processDone()" 
+        [packageToProcess]="packageToProcess" [destinations]="destinations"></app-process-form>
+</div>

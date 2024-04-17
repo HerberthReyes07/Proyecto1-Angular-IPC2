@@ -18,6 +18,8 @@ import { CustomerFormComponent } from './components/recep/customer-form/customer
 import { PackagesToPayComponent } from './components/recep/packages-to-pay/packages-to-pay.component';
 import { PickUpPackageComponent } from './components/recep/pick-up-package/pick-up-package.component';
 import { CheckLocationComponent } from './components/recep/check-location/check-location.component';
+import { ProcessPackagesComponent } from './components/oper/process-packages/process-packages.component';
+import { ProcessFormComponent } from './components/oper/process-form/process-form.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +37,8 @@ import { CheckLocationComponent } from './components/recep/check-location/check-
     PackagesToPayComponent,
     PickUpPackageComponent,
     CheckLocationComponent,
+    ProcessPackagesComponent,
+    ProcessFormComponent,
   ],
   imports: [
     BrowserModule,

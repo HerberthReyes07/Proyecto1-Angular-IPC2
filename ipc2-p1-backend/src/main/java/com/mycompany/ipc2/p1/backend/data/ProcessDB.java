@@ -37,7 +37,7 @@ public class ProcessDB {
             System.out.println("Error al crear Proceso: " + e);
         }
     }
-    
+
     public void update(Process process) {
         String query = "UPDATE proceso SET paquete_id = ?, punto_control_id = ?, realizado = ? WHERE id = ?;";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -69,6 +69,28 @@ public class ProcessDB {
             }
         } catch (SQLException e) {
             System.out.println("Error al consultar 'getUnprocessedPackages': " + e);
+        }
+        return unprocessedPackages;
+    }
+
+    public List<Process> getUnprocessedPackagesByControlPointId(int controlPointId) {
+        String query = "SELECT * FROM proceso WHERE realizado = false AND punto_control_id = ?";
+        List<Process> unprocessedPackages = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, controlPointId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    int packageId = resultSet.getInt("paquete_id");
+
+                    Process processToAdd = new Process(id, false, packageId, controlPointId);
+                    unprocessedPackages.add(processToAdd);
+                }
+
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar 'getUnprocessedPackagesByControlPointId': " + e);
         }
         return unprocessedPackages;
     }

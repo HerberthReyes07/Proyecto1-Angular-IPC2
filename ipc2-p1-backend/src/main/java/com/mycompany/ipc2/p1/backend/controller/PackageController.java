@@ -7,6 +7,7 @@ package com.mycompany.ipc2.p1.backend.controller;
 import com.mycompany.ipc2.p1.backend.model.LocationReport;
 import com.mycompany.ipc2.p1.backend.model.Package;
 import com.mycompany.ipc2.p1.backend.model.PackageStatus;
+import com.mycompany.ipc2.p1.backend.model.Process;
 import com.mycompany.ipc2.p1.backend.model.ProcessDetail;
 import com.mycompany.ipc2.p1.backend.service.OperatorService;
 import com.mycompany.ipc2.p1.backend.service.ReceptionistService;
@@ -95,6 +96,27 @@ public class PackageController extends HttpServlet {
                     }
 
                     List<Package> packages = operatorService.packagesToProcessByOperatorId(Integer.parseInt(operatorId));
+
+                    if (packages == null) {
+                        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                        return;
+                    }
+
+                    System.out.println(packages);
+
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    gsonPackage.sendAsJson(response, packages);
+                } else if (pathInfo.equals("/to-process/control-point/" + splits[3])) {
+
+                    String controlPointId = splits[3];
+                    try {
+                        Integer.parseInt(controlPointId);
+                    } catch (NumberFormatException e) {
+                        response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                        return;
+                    }
+
+                    List<Package> packages = operatorService.packagesToProcessByControlPointId(Integer.parseInt(controlPointId));
 
                     if (packages == null) {
                         response.setStatus(HttpServletResponse.SC_NOT_FOUND);

@@ -46,6 +46,10 @@ public class OperatorService {
         return processDB.getUnprocessedPackages();
     }
 
+    public List<Process> getUnprocessedPackagesByControlPointId(int controlPointId) {
+        return processDB.getUnprocessedPackagesByControlPointId(controlPointId);
+    }
+
     public Package getPackageById(int id) {
         return packageDB.getPackageById(id);
     }
@@ -110,7 +114,6 @@ public class OperatorService {
         List<Process> unprocessedPackages = getUnprocessedPackages();
 
         if (controlPoints.isEmpty() || unprocessedPackages.isEmpty()) {
-            //response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
 
@@ -125,7 +128,6 @@ public class OperatorService {
         }
 
         if (validUnprocessedPackages.isEmpty()) {
-            //response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
 
@@ -138,8 +140,24 @@ public class OperatorService {
         return packages;
     }
 
+    public List<Package> packagesToProcessByControlPointId(int controlPointId) {
+        List<Process> unprocessedPackages = getUnprocessedPackagesByControlPointId(controlPointId);
+
+        if (unprocessedPackages == null) {
+            return null;
+        }
+
+        List<Package> packages = new ArrayList<>();
+
+        for (int i = 0; i < unprocessedPackages.size(); i++) {
+            packages.add(getPackageById(unprocessedPackages.get(i).getPackageId()));
+        }
+
+        return packages;
+    }
+
     public ProcessDetail processPackage(int packageId, ProcessDetail processDetailFromJson) {
-        
+
         Process processToDo = getProcessByPackageId(packageId);
         System.out.println("1-" + processToDo);
 
@@ -207,7 +225,7 @@ public class OperatorService {
 
             updateControlPointQueueCapacity(nextControlPoint, false);
         }
-        
+
         return processDetailFromJson;
     }
 
