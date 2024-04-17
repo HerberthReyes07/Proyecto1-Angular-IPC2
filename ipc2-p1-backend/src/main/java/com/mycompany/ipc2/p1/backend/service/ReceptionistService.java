@@ -121,8 +121,8 @@ public class ReceptionistService {
         return packageDB.filterPackagesByStatus(filter, status);
     }
 
-    public Process getProcessByPackageId(int packageId) {
-        return processDB.getProcessByPackageId(packageId);
+    public Process getProcessByPackageId(int packageId, boolean done) {
+        return processDB.getProcessByPackageId(packageId, done);
     }
 
     public int getTotalTimeByPackageId(int packageId) {
@@ -163,7 +163,7 @@ public class ReceptionistService {
         List<Process> processes = new ArrayList<>();
 
         for (int i = 0; i < filterPackagesOnRoute.size(); i++) {
-            processes.add(getProcessByPackageId(filterPackagesOnRoute.get(i).getId()));
+            processes.add(getProcessByPackageId(filterPackagesOnRoute.get(i).getId(), false));
         }
 
         List<LocationReport> locations = new ArrayList<>();

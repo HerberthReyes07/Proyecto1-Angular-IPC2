@@ -5,6 +5,7 @@
 package com.mycompany.ipc2.p1.backend.controller;
 
 import com.mycompany.ipc2.p1.backend.model.Route;
+import com.mycompany.ipc2.p1.backend.model.RoutesReport;
 import com.mycompany.ipc2.p1.backend.service.AdministratorService;
 import com.mycompany.ipc2.p1.backend.utils.GsonUtils;
 import jakarta.servlet.ServletException;
@@ -23,10 +24,12 @@ import java.util.List;
 public class RouteController extends HttpServlet {
 
     private final GsonUtils<Route> gsonRoute;
+    private final GsonUtils<RoutesReport> gsonRoutesReport;
     private final AdministratorService administratorService;
 
     public RouteController() {
         gsonRoute = new GsonUtils<>();
+        gsonRoutesReport = new GsonUtils<>();
         administratorService = new AdministratorService();
     }
 
@@ -47,7 +50,11 @@ public class RouteController extends HttpServlet {
             String[] splits = pathInfo.split("/");
 
             if ((splits.length - 1) == 1) {
-                if (pathInfo.equals("/" + splits[1])) {
+                if (pathInfo.equals("/report")) {
+                    List<RoutesReport> routesReports = administratorService.getRoutesReport();
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    gsonRoutesReport.sendAsJson(response, routesReports);
+                } else if (pathInfo.equals("/" + splits[1])) {
                     String idRoute = splits[1];
                     try {
                         Integer.parseInt(idRoute);

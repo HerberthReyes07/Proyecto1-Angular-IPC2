@@ -54,8 +54,8 @@ public class OperatorService {
         return packageDB.getPackageById(id);
     }
 
-    public Process getProcessByPackageId(int packageId) {
-        return processDB.getProcessByPackageId(packageId);
+    public Process getProcessByPackageId(int packageId, boolean done) {
+        return processDB.getProcessByPackageId(packageId, done);
     }
 
     public ControlPoint getControlPointById(int id) {
@@ -158,7 +158,7 @@ public class OperatorService {
 
     public ProcessDetail processPackage(int packageId, ProcessDetail processDetailFromJson) {
 
-        Process processToDo = getProcessByPackageId(packageId);
+        Process processToDo = getProcessByPackageId(packageId, false);
         System.out.println("1-" + processToDo);
 
         if (processToDo == null) {

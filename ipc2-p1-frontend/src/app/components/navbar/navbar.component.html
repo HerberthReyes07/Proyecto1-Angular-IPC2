@@ -15,7 +15,17 @@
                                 <a class="nav-link" routerLink="students">nav-item-admin</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" routerLink="otro/one">nav-item-admin</a>
+                                <a class="nav-link">
+                                    <div class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" style="color: #9fa3a9; text-decoration: none;">Reportes</a>
+                                        <div class="dropdown-menu">
+                                            <a href="#" routerLink="admin/reportes/rutas" class="dropdown-item">Rutas</a>
+                                            <a href="#" class="dropdown-item">Ganancias</a>
+                                            <a href="#" class="dropdown-item">Clientes</a>
+                                            <a href="#" class="dropdown-item">Rutas populares</a>
+                                        </div>
+                                    </div>
+                                </a>
                             </li>
                         </ng-container>
                         <ng-container *ngSwitchCase="'OPERATOR'">

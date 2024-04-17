@@ -11,6 +11,7 @@ import { PackageEntryComponent } from './components/recep/package-entry/package-
 import { PickUpPackageComponent } from './components/recep/pick-up-package/pick-up-package.component';
 import { CheckLocationComponent } from './components/recep/check-location/check-location.component';
 import { ProcessPackagesComponent } from './components/oper/process-packages/process-packages.component';
+import { RoutesReportComponent } from './components/admin/routes-report/routes-report.component';
 
 const routes: Routes = [
   {
@@ -59,6 +60,11 @@ const routes: Routes = [
   {
     path: 'oper/paquetes/procesar',
     component: ProcessPackagesComponent,
+    canActivate: [IsLoggedInGuard]
+  },
+  {
+    path: 'admin/reportes/rutas',
+    component: RoutesReportComponent,
     canActivate: [IsLoggedInGuard]
   },
   {

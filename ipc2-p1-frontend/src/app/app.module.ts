@@ -20,6 +20,7 @@ import { PickUpPackageComponent } from './components/recep/pick-up-package/pick-
 import { CheckLocationComponent } from './components/recep/check-location/check-location.component';
 import { ProcessPackagesComponent } from './components/oper/process-packages/process-packages.component';
 import { ProcessFormComponent } from './components/oper/process-form/process-form.component';
+import { RoutesReportComponent } from './components/admin/routes-report/routes-report.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { ProcessFormComponent } from './components/oper/process-form/process-for
     CheckLocationComponent,
     ProcessPackagesComponent,
     ProcessFormComponent,
+    RoutesReportComponent,
   ],
   imports: [
     BrowserModule,

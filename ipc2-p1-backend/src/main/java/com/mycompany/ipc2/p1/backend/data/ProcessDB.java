@@ -95,17 +95,22 @@ public class ProcessDB {
         return unprocessedPackages;
     }
 
-    public Process getProcessByPackageId(int packageId) {
-        String query = "SELECT * FROM proceso WHERE paquete_id = ? AND realizado = false";
+    public Process getProcessByPackageId(int packageId, boolean done) {
+        String query = "SELECT * FROM proceso WHERE paquete_id = ? AND realizado = ?";
+        
+        if (done) {
+            query += " LIMIT 1";
+        }
+        
         Process processToSend = null;
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, packageId);
+            preparedStatement.setBoolean(2, done);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     int id = resultSet.getInt("id");
                     int controlPointId = resultSet.getInt("punto_control_id");
-                    boolean done = resultSet.getBoolean("realizado");
 
                     processToSend = new Process(id, done, packageId, controlPointId);
                 }

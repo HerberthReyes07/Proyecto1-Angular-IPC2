@@ -6,16 +6,20 @@ package com.mycompany.ipc2.p1.backend.service;
 
 import com.mycompany.ipc2.p1.backend.data.ControlPointDB;
 import com.mycompany.ipc2.p1.backend.data.DestinationDB;
+import com.mycompany.ipc2.p1.backend.data.PackageDB;
 import com.mycompany.ipc2.p1.backend.data.ParameterDB;
 import com.mycompany.ipc2.p1.backend.data.ProcessDB;
 import com.mycompany.ipc2.p1.backend.data.RouteDB;
 import com.mycompany.ipc2.p1.backend.data.UserDB;
+import com.mycompany.ipc2.p1.backend.model.Package;
 import com.mycompany.ipc2.p1.backend.model.ControlPoint;
 import com.mycompany.ipc2.p1.backend.model.Destination;
 import com.mycompany.ipc2.p1.backend.model.Parameter;
 import com.mycompany.ipc2.p1.backend.model.Route;
 import com.mycompany.ipc2.p1.backend.model.Process;
+import com.mycompany.ipc2.p1.backend.model.RoutesReport;
 import com.mycompany.ipc2.p1.backend.model.User;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +34,7 @@ public class AdministratorService {
     private final UserDB userDB;
     private final ParameterDB parameterDB;
     private final DestinationDB destinationDB;
+    private final PackageDB packageDB;
     
     public AdministratorService() {
         this.routeDB = new RouteDB();
@@ -38,6 +43,7 @@ public class AdministratorService {
         this.userDB = new UserDB();
         this.parameterDB = new ParameterDB();
         this.destinationDB = new DestinationDB();
+        this.packageDB = new PackageDB();
     }
     
     public void createRoute(Route route) {
@@ -149,6 +155,58 @@ public class AdministratorService {
             }
         }
         return canProceed;
+    }
+    
+    public List<RoutesReport> getRoutesReport(){
+        
+        List<Package> packagesOnStandBy = packageDB.getAllPackagesByStatus(3);
+        List<Package> packagesPickedUp = packageDB.getAllPackagesByStatus(4);
+        
+        List<Package> packagesOffRoute = new ArrayList<>();
+        packagesOffRoute.addAll(packagesOnStandBy);
+        packagesOffRoute.addAll(packagesPickedUp);
+
+        List<Package> packagesOnRoute = packageDB.getAllPackagesByStatus(2);
+        
+        List<Process> processesOnRoute = new ArrayList<>();
+
+        for (int i = 0; i < packagesOnRoute.size(); i++) {
+            processesOnRoute.add(processDB.getProcessByPackageId(packagesOnRoute.get(i).getId(), false));
+        }
+        
+        List<Process> processesOffRoute = new ArrayList<>();
+        
+        for (int i = 0; i < packagesOffRoute.size(); i++) {
+            processesOffRoute.add(processDB.getProcessByPackageId(packagesOffRoute.get(i).getId(), true));
+        }
+        
+        List<RoutesReport> routesReports = new ArrayList<>();
+        
+        List<Route> routes = getAllRoutes();
+        
+        
+        for (int i = 0; i < routes.size(); i++) {
+            
+            int onRoute = 0;
+            int offRoute = 0;
+            
+            for (int j = 0; j < processesOnRoute.size(); j++) {
+                ControlPoint controlPoint = controlPointDB.getControlPointById(processesOnRoute.get(j).getControlPointId());
+                if (controlPoint.getRouteId() == routes.get(i).getId()) {
+                    onRoute++;
+                }
+            }
+            for (int j = 0; j < processesOffRoute.size(); j++) {
+                ControlPoint controlPoint = controlPointDB.getControlPointById(processesOffRoute.get(j).getControlPointId());
+                if (controlPoint.getRouteId() == routes.get(i).getId()) {
+                    offRoute++;
+                }
+            }
+
+            routesReports.add(new RoutesReport(onRoute, offRoute, routes.get(i).getId()));
+        }
+        
+        return routesReports;
     }
     
 }
