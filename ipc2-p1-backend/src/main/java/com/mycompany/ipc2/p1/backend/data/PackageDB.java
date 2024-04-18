@@ -91,7 +91,7 @@ public class PackageDB {
         }
         return packages;
     }
-    
+
     public List<Package> getAllPackagesByDateRange(String initialDate, String finalDate) {
         String query = "SELECT * FROM paquete WHERE fecha_ingreso BETWEEN ? AND ?;";
         List<Package> packages = new ArrayList<>();
@@ -99,24 +99,24 @@ public class PackageDB {
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, initialDate);
             preparedStatement.setString(2, finalDate);
-            
+
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                double weight = resultSet.getDouble("peso");
-                double shippingCost = resultSet.getDouble("costo_envio");
-                int status = resultSet.getInt("estado");
-                int invoiceNo = resultSet.getInt("no_factura");
-                String entryDate = resultSet.getDate("fecha_ingreso").toString();
-                int customerId = resultSet.getInt("cliente_id");
-                int destinationId = resultSet.getInt("destino_id");
-                int parameterId = resultSet.getInt("parametro_id");
+                    int id = resultSet.getInt("id");
+                    double weight = resultSet.getDouble("peso");
+                    double shippingCost = resultSet.getDouble("costo_envio");
+                    int status = resultSet.getInt("estado");
+                    int invoiceNo = resultSet.getInt("no_factura");
+                    String entryDate = resultSet.getDate("fecha_ingreso").toString();
+                    int customerId = resultSet.getInt("cliente_id");
+                    int destinationId = resultSet.getInt("destino_id");
+                    int parameterId = resultSet.getInt("parametro_id");
 
-                Package packageToAdd = new Package(id, customerId, destinationId, parameterId, weight, shippingCost, gu.getPackageStatus(status), invoiceNo, entryDate);
-                packages.add(packageToAdd);
+                    Package packageToAdd = new Package(id, customerId, destinationId, parameterId, weight, shippingCost, gu.getPackageStatus(status), invoiceNo, entryDate);
+                    packages.add(packageToAdd);
+                }
             }
-            }
-            
+
         } catch (SQLException e) {
             System.out.println("Error al consultar 'getAllPackages': " + e);
         }
@@ -245,6 +245,35 @@ public class PackageDB {
                     int id = resultSet.getInt("id");
                     double weight = resultSet.getDouble("peso");
                     double shippingCost = resultSet.getDouble("costo_envio");
+                    int invoiceNo = resultSet.getInt("no_factura");
+                    String entryDate = resultSet.getDate("fecha_ingreso").toString();
+                    int customerId = resultSet.getInt("cliente_id");
+                    int destinationId = resultSet.getInt("destino_id");
+                    int parameterId = resultSet.getInt("parametro_id");
+
+                    Package packageToAdd = new Package(id, customerId, destinationId, parameterId, weight, shippingCost, gu.getPackageStatus(status), invoiceNo, entryDate);
+                    packages.add(packageToAdd);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar 'filterPackagesByStatus': " + e);
+        }
+        return packages;
+    }
+    
+    public List<Package> filterPackagesByCustomer(String filter) {
+        String query = "SELECT p.* FROM paquete p JOIN cliente c ON p.cliente_id = c.id WHERE (c.nit LIKE ? OR c.nombre LIKE ?);";
+        List<Package> packages = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, "%" + filter + "%");
+            preparedStatement.setString(2, "%" + filter + "%");
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    double weight = resultSet.getDouble("peso");
+                    double shippingCost = resultSet.getDouble("costo_envio");
+                    int status = resultSet.getInt("estado");
                     int invoiceNo = resultSet.getInt("no_factura");
                     String entryDate = resultSet.getDate("fecha_ingreso").toString();
                     int customerId = resultSet.getInt("cliente_id");

@@ -5,6 +5,8 @@
 package com.mycompany.ipc2.p1.backend.controller;
 
 import com.mycompany.ipc2.p1.backend.model.Customer;
+import com.mycompany.ipc2.p1.backend.model.CustomersReport;
+import com.mycompany.ipc2.p1.backend.service.AdministratorService;
 import com.mycompany.ipc2.p1.backend.service.ReceptionistService;
 import com.mycompany.ipc2.p1.backend.utils.GsonUtils;
 import jakarta.servlet.ServletException;
@@ -23,11 +25,15 @@ import java.util.List;
 public class CustomerController extends HttpServlet {
 
     private final GsonUtils<Customer> gsonCustomer;
+    private final GsonUtils<CustomersReport> gsonCustomerReport;
     private final ReceptionistService receptionistService;
+    private final AdministratorService administratorService;
 
     public CustomerController() {
         gsonCustomer = new GsonUtils<>();
+        gsonCustomerReport = new GsonUtils<>();
         receptionistService = new ReceptionistService();
+        administratorService = new AdministratorService();
     }
 
     @Override
@@ -64,7 +70,18 @@ public class CustomerController extends HttpServlet {
                         gsonCustomer.sendAsJson(response, customerFromDB);
                     }
                 }
-            } else {
+            } else if ((splits.length - 1) == 2){
+                if (pathInfo.equals("/reports/all")) {
+                    List<CustomersReport> customerReports = administratorService.getCustomerReports(null);
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    gsonCustomerReport.sendAsJson(response, customerReports);
+                } else if (pathInfo.equals("/reports/" + splits[2])){
+                    List<CustomersReport> customerReports = administratorService.getCustomerReports(splits[2]);
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    gsonCustomerReport.sendAsJson(response, customerReports);
+                }
+            }
+            else {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 //return;
             }

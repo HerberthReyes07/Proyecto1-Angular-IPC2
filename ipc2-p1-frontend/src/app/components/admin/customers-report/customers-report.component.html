@@ -1,0 +1,61 @@
+<div class="container mt-2 col-md-12">
+    <div class="card my-5">
+
+        <div class="card text-center">
+            <div class="card-header">
+                <h3>Reporte de clientes</h3>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <form [formGroup]="searchForm">
+                <div class="mb-3">
+                    <label name="buscarPor" class="form-label">Filtrar por cliente:</label>
+                    <input type="text" (input)="search()" class="form-control" formControlName="searchByControl" 
+                    placeholder="Ingrese el Nit o Nombre del cliente">
+                </div>
+            </form>
+
+            <div class="row">
+                <div class="col">
+                    <div class="card my-4">
+                        <div class="card-body">
+                            <table class="table table-hover table-sm" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Cliente</th>
+                                        <th>Nit</th>
+                                        <th>No. Factura</th>
+                                        <th>Peso (lb)</th>
+                                        <th>Fecha Ingreso</th>
+                                        <th>Estado</th>
+                                        <th>Destino</th>
+                                        <th>Ingresos</th>
+                                        <th>Costos</th>
+                                        <th>Ganancias</th>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let cr of customersReportsFiltered; let i = index">
+                                        <td>{{i + 1}}</td>
+                                        <td>{{getCustomerById(cr.customerId).name}}</td>
+                                        <td>{{getCustomerById(cr.customerId).nit}}</td>
+                                        <td>{{getPackageById(cr.packageId).invoiceNo}}</td>
+                                        <td>{{getPackageById(cr.packageId).weight | number: "1.2-2"}}</td>
+                                        <td>{{getPackageById(cr.packageId).entryDate}}</td>
+                                        <td>{{getStatus(getPackageById(cr.packageId).status)}}</td>
+                                        <td>{{getDestinationById(getPackageById(cr.packageId).destinationId).name}}</td>
+                                        <td style="color: green;">{{cr.revenue | number: "1.2-2"}} Q</td>
+                                        <td style="color: red;">{{cr.costs | number: "1.2-2"}} Q</td>
+                                        <td><strong>{{cr.revenue - cr.costs | number: "1.2-2"}} Q</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { RoutesReport } from '../model/routes-report';
 import { EarningsReport } from '../model/earnings-report';
+import { Package } from '../model/package';
+import { CustomersReport } from '../model/customers-report';
 
 @Injectable({
   providedIn: 'root'
@@ -22,5 +24,17 @@ export class AdminService {
 
   getEarningsByDateRange(initialDate: string, finalDate: string){
     return this.http.get<EarningsReport[]>(`${this.url}/routes/earnings/${initialDate}/${finalDate}`);
+  }
+
+  getCustomersReport(){
+    return this.http.get<CustomersReport[]>(`${this.url}/customers/reports/all`);
+  }
+
+  getCustomersReportByFilter(filter: string){
+    return this.http.get<CustomersReport[]>(`${this.url}/customers/reports/${filter}`);
+  }
+
+  getAllPackages(){
+    return this.http.get<Package[]>(`${this.url}/packages`);
   }
 }

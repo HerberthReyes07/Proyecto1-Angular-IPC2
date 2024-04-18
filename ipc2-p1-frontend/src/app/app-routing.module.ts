@@ -13,6 +13,7 @@ import { CheckLocationComponent } from './components/recep/check-location/check-
 import { ProcessPackagesComponent } from './components/oper/process-packages/process-packages.component';
 import { RoutesReportComponent } from './components/admin/routes-report/routes-report.component';
 import { EarningsReportComponent } from './components/admin/earnings-report/earnings-report.component';
+import { CustomersReportComponent } from './components/admin/customers-report/customers-report.component';
 
 const routes: Routes = [
   {
@@ -71,6 +72,11 @@ const routes: Routes = [
   {
     path: 'admin/reportes/ganancias',
     component: EarningsReportComponent,
+    canActivate: [IsLoggedInGuard]
+  },
+  {
+    path: 'admin/reportes/clientes',
+    component: CustomersReportComponent,
     canActivate: [IsLoggedInGuard]
   },
   {

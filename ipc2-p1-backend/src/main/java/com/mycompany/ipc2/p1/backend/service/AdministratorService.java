@@ -5,6 +5,7 @@
 package com.mycompany.ipc2.p1.backend.service;
 
 import com.mycompany.ipc2.p1.backend.data.ControlPointDB;
+import com.mycompany.ipc2.p1.backend.data.CustomerDB;
 import com.mycompany.ipc2.p1.backend.data.DestinationDB;
 import com.mycompany.ipc2.p1.backend.data.PackageDB;
 import com.mycompany.ipc2.p1.backend.data.ParameterDB;
@@ -14,6 +15,8 @@ import com.mycompany.ipc2.p1.backend.data.RouteDB;
 import com.mycompany.ipc2.p1.backend.data.UserDB;
 import com.mycompany.ipc2.p1.backend.model.Package;
 import com.mycompany.ipc2.p1.backend.model.ControlPoint;
+import com.mycompany.ipc2.p1.backend.model.Customer;
+import com.mycompany.ipc2.p1.backend.model.CustomersReport;
 import com.mycompany.ipc2.p1.backend.model.Destination;
 import com.mycompany.ipc2.p1.backend.model.EarningsReport;
 import com.mycompany.ipc2.p1.backend.model.PackageStatus;
@@ -40,6 +43,7 @@ public class AdministratorService {
     private final DestinationDB destinationDB;
     private final PackageDB packageDB;
     private final ProcessDetailDB processDetailDB;
+    private final CustomerDB customerDB;
     
     public AdministratorService() {
         this.routeDB = new RouteDB();
@@ -50,6 +54,7 @@ public class AdministratorService {
         this.destinationDB = new DestinationDB();
         this.packageDB = new PackageDB();
         this.processDetailDB = new ProcessDetailDB();
+        this.customerDB = new CustomerDB();
     }
     
     public void createRoute(Route route) {
@@ -271,6 +276,26 @@ public class AdministratorService {
         }
         
         return earningsReports;
+    }
+    
+    public List<CustomersReport> getCustomerReports(String filter){
+        
+        //List<Customer> customers = customerDB.getAllCustomers();
+        List<Package> packages;
+        
+        if (filter == null) {
+            packages = packageDB.getAllPackages();
+        } else {
+            packages = packageDB.filterPackagesByCustomer(filter);
+        }
+        
+        
+        List<CustomersReport> customerReports = new ArrayList<>();
+        for (int i = 0; i < packages.size(); i++) {
+            customerReports.add(new CustomersReport(packages.get(i).getCustomerId(), packages.get(i).getId(), packages.get(i).getShippingCost(), processDetailDB.getTotalCostByPackageId(packages.get(i).getId())));
+        }
+        
+        return customerReports;
     }
     
 }

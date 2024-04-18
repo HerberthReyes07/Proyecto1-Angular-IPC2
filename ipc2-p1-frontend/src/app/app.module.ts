@@ -22,6 +22,7 @@ import { ProcessPackagesComponent } from './components/oper/process-packages/pro
 import { ProcessFormComponent } from './components/oper/process-form/process-form.component';
 import { RoutesReportComponent } from './components/admin/routes-report/routes-report.component';
 import { EarningsReportComponent } from './components/admin/earnings-report/earnings-report.component';
+import { CustomersReportComponent } from './components/admin/customers-report/customers-report.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { EarningsReportComponent } from './components/admin/earnings-report/earn
     ProcessFormComponent,
     RoutesReportComponent,
     EarningsReportComponent,
+    CustomersReportComponent,
   ],
   imports: [
     BrowserModule,

@@ -126,5 +126,25 @@ public class ProcessDetailDB {
         return totalTime;
 
     }
+    
+    public double getTotalCostByPackageId(int packageId) {
+        String query = "SELECT SUM(dp.costo_proceso) AS costo_total FROM detalle_proceso dp JOIN proceso p ON dp.proceso_id = p.id WHERE p.paquete_id = ?;";
+        double totalCost = 0;
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, packageId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    totalCost = resultSet.getDouble("costo_total");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar 'getTotalCostByPackageId': " + e);
+        }
+
+        return totalCost;
+
+    }
 
 }

@@ -17,6 +17,7 @@ export class EarningsReportComponent implements OnInit{
   routes!: Route[];
   earningnsReports!: EarningsReport[];
   earningnsReportsFiltered!: EarningsReport[];
+  hasError = false;
 
   filterForm = new FormGroup({
     initialDateControl: new FormControl(''),
@@ -55,7 +56,7 @@ export class EarningsReportComponent implements OnInit{
         this.earningnsReportsFiltered = this.earningnsReports.filter((item) => item.routeId == this.routeControl.value);
       }
     } else if ((this.initialDateControl.value == "" && this.finalDateControl.value != "") || (this.initialDateControl.value != "" && this.finalDateControl.value == "")) {
-      console.log("ERROR")
+      this.hasError = true;
     } else {
       this.adminService.getEarningsByDateRange(this.initialDateControl.value, this.finalDateControl.value).subscribe(dataEarnings => {
         if (dataEarnings) {
@@ -112,6 +113,10 @@ export class EarningsReportComponent implements OnInit{
     } else {
       return "Inactiva"
     }
+  }
+
+  toggleHasError() {
+    this.hasError = false;
   }
 
 }
