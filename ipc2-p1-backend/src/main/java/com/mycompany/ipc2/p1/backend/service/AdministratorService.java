@@ -15,18 +15,20 @@ import com.mycompany.ipc2.p1.backend.data.RouteDB;
 import com.mycompany.ipc2.p1.backend.data.UserDB;
 import com.mycompany.ipc2.p1.backend.model.Package;
 import com.mycompany.ipc2.p1.backend.model.ControlPoint;
-import com.mycompany.ipc2.p1.backend.model.Customer;
 import com.mycompany.ipc2.p1.backend.model.CustomersReport;
 import com.mycompany.ipc2.p1.backend.model.Destination;
 import com.mycompany.ipc2.p1.backend.model.EarningsReport;
 import com.mycompany.ipc2.p1.backend.model.PackageStatus;
 import com.mycompany.ipc2.p1.backend.model.Parameter;
+import com.mycompany.ipc2.p1.backend.model.PopularRoutesReport;
 import com.mycompany.ipc2.p1.backend.model.Route;
 import com.mycompany.ipc2.p1.backend.model.Process;
 import com.mycompany.ipc2.p1.backend.model.ProcessDetail;
 import com.mycompany.ipc2.p1.backend.model.RoutesReport;
 import com.mycompany.ipc2.p1.backend.model.User;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -34,7 +36,7 @@ import java.util.List;
  * @author herberthreyes
  */
 public class AdministratorService {
-    
+
     private final RouteDB routeDB;
     private final ProcessDB processDB;
     private final ControlPointDB controlPointDB;
@@ -44,7 +46,7 @@ public class AdministratorService {
     private final PackageDB packageDB;
     private final ProcessDetailDB processDetailDB;
     private final CustomerDB customerDB;
-    
+
     public AdministratorService() {
         this.routeDB = new RouteDB();
         this.processDB = new ProcessDB();
@@ -56,43 +58,43 @@ public class AdministratorService {
         this.processDetailDB = new ProcessDetailDB();
         this.customerDB = new CustomerDB();
     }
-    
+
     public void createRoute(Route route) {
         routeDB.create(route);
     }
-    
+
     public void createControlPoint(ControlPoint controlPoint) {
         controlPointDB.create(controlPoint);
     }
-    
+
     public void createUser(User user) {
         userDB.create(user);
     }
-    
+
     public void createParameter(Parameter parameter) {
         parameterDB.create(parameter);
     }
-    
+
     public void createDestination(Destination destination) {
         destinationDB.create(destination);
     }
-    
+
     public void updateRoute(Route route) {
         routeDB.update(route);
     }
-    
+
     public void updateControlPoint(ControlPoint controlPoint) {
         controlPointDB.update(controlPoint);
     }
-    
+
     public void updateUser(User user) {
         userDB.update(user);
     }
-    
+
     public void updateLocalOperationFee(double currentLocalOperationFee, double localOperationFeeToSet) {
         controlPointDB.updateLocalOperationFee(currentLocalOperationFee, localOperationFeeToSet);
     }
-    
+
     public void updateDestination(Destination destination) {
         destinationDB.update(destination);
     }
@@ -100,51 +102,51 @@ public class AdministratorService {
     public List<Route> getAllRoutes() {
         return routeDB.getAllRoutes();
     }
-    
+
     public Route getRouteById(int id) {
         return routeDB.getRouteById(id);
     }
-    
+
     public List<Process> getUnprocessedPackages() {
         return processDB.getUnprocessedPackages();
     }
-    
+
     public List<ControlPoint> getControlPointsByRouteId(int routeId) {
         return controlPointDB.getControlPointsByRouteId(routeId);
     }
-    
+
     public int getOrderNoByRouteId(int routeId) {
         return controlPointDB.getOrderNoByRouteId(routeId);
     }
-    
+
     public List<ControlPoint> getAllControlPoints() {
         return controlPointDB.getAllControlPoints();
     }
-    
+
     public ControlPoint getControlPointById(int id) {
         return controlPointDB.getControlPointById(id);
     }
-    
+
     public List<User> getAllUsers() {
         return userDB.getAllUsers();
     }
-    
+
     public User getUserById(int id) {
         return userDB.getUserById(id);
     }
-    
+
     public List<User> getUsersByCodeTypeUser(int codeTypeUser) {
         return userDB.getUsersByCodeTypeUser(codeTypeUser);
     }
-    
+
     public List<User> getUsersByStatus(boolean active) {
         return userDB.getUsersByStatus(active);
     }
-    
+
     public Parameter getCurrentParameter() {
         return parameterDB.getCurrentParameter();
     }
-    
+
     public List<Parameter> getAllParameters() {
         return parameterDB.getAllParameters();
     }
@@ -153,7 +155,7 @@ public class AdministratorService {
         List<Process> unprocessedPackages = getUnprocessedPackages();
         List<ControlPoint> controlPoints = getControlPointsByRouteId(routeId);
         boolean canProceed = true;
-        
+
         for (int j = 0; j < unprocessedPackages.size(); j++) {
             for (int i = 0; i < controlPoints.size(); i++) {
                 if (controlPoints.get(i).getId() == unprocessedPackages.get(j).getControlPointId()) {
@@ -167,39 +169,39 @@ public class AdministratorService {
         }
         return canProceed;
     }
-    
-    public List<RoutesReport> getRoutesReport(){
-        
+
+    public List<RoutesReport> getRoutesReport() {
+
         List<Package> packagesOnStandBy = packageDB.getAllPackagesByStatus(3);
         List<Package> packagesPickedUp = packageDB.getAllPackagesByStatus(4);
-        
+
         List<Package> packagesOffRoute = new ArrayList<>();
         packagesOffRoute.addAll(packagesOnStandBy);
         packagesOffRoute.addAll(packagesPickedUp);
 
         List<Package> packagesOnRoute = packageDB.getAllPackagesByStatus(2);
-        
+
         List<Process> processesOnRoute = new ArrayList<>();
 
         for (int i = 0; i < packagesOnRoute.size(); i++) {
             processesOnRoute.add(processDB.getProcessByPackageId(packagesOnRoute.get(i).getId(), false));
         }
-        
+
         List<Process> processesOffRoute = new ArrayList<>();
-        
+
         for (int i = 0; i < packagesOffRoute.size(); i++) {
             processesOffRoute.add(processDB.getProcessByPackageId(packagesOffRoute.get(i).getId(), true));
         }
-        
+
         List<RoutesReport> routesReports = new ArrayList<>();
-        
+
         List<Route> routes = getAllRoutes();
-        
+
         for (int i = 0; i < routes.size(); i++) {
-            
+
             int onRoute = 0;
             int offRoute = 0;
-            
+
             for (int j = 0; j < processesOnRoute.size(); j++) {
                 ControlPoint controlPoint = controlPointDB.getControlPointById(processesOnRoute.get(j).getControlPointId());
                 if (controlPoint.getRouteId() == routes.get(i).getId()) {
@@ -215,15 +217,15 @@ public class AdministratorService {
 
             routesReports.add(new RoutesReport(onRoute, offRoute, routes.get(i).getId()));
         }
-        
+
         return routesReports;
     }
-    
-    public List<EarningsReport> getEarningsReport(String initialDate, String finalDate){
-        
+
+    public List<EarningsReport> getEarningsReport(String initialDate, String finalDate) {
+
         List<Package> packages;
         List<ProcessDetail> processDetails;
-        
+
         if (initialDate == null && finalDate == null) {
             packages = packageDB.getAllPackages();
             processDetails = processDetailDB.getAllProcessDetails();
@@ -231,9 +233,9 @@ public class AdministratorService {
             packages = packageDB.getAllPackagesByDateRange(initialDate, finalDate);
             processDetails = processDetailDB.getAllProcessDetailsByDateRange(initialDate, finalDate);
         }
-        
+
         List<Process> revenueProcesses = new ArrayList<>();
-        
+
         for (int i = 0; i < packages.size(); i++) {
             //ver lo de EN_BODEGA
             if (packages.get(i).getStatus() == PackageStatus.EN_PUNTO_CONTROL) {
@@ -242,60 +244,107 @@ public class AdministratorService {
                 revenueProcesses.add(processDB.getProcessByPackageId(packages.get(i).getId(), true));
             }
         }
-        
+
         List<Process> costsProcesses = new ArrayList<>();
-        
+
         for (int i = 0; i < processDetails.size(); i++) {
             costsProcesses.add(processDB.getProcessById(processDetails.get(i).getProcessId()));
         }
-        
 
         List<Route> routes = getAllRoutes();
         List<EarningsReport> earningsReports = new ArrayList<>();
-        
+
         for (int i = 0; i < routes.size(); i++) {
-            
+
             double revenue = 0;
             double costs = 0;
-            
+
             for (int j = 0; j < revenueProcesses.size(); j++) {
                 ControlPoint controlPoint = controlPointDB.getControlPointById(revenueProcesses.get(j).getControlPointId());
                 if (controlPoint.getRouteId() == routes.get(i).getId()) {
                     revenue += packageDB.getPackageById(revenueProcesses.get(j).getPackageId()).getShippingCost();
                 }
             }
-            
+
             for (int j = 0; j < costsProcesses.size(); j++) {
                 ControlPoint controlPoint = controlPointDB.getControlPointById(costsProcesses.get(j).getControlPointId());
                 if (controlPoint.getRouteId() == routes.get(i).getId()) {
                     costs += processDetailDB.getCostByProcessId(costsProcesses.get(j).getId());
-                }                
+                }
             }
-            
+
             earningsReports.add(new EarningsReport(costs, revenue, routes.get(i).getId()));
         }
-        
+
         return earningsReports;
     }
-    
-    public List<CustomersReport> getCustomerReports(String filter){
-        
-        //List<Customer> customers = customerDB.getAllCustomers();
+
+    public List<CustomersReport> getCustomerReports(String filter) {
+
         List<Package> packages;
-        
+
         if (filter == null) {
             packages = packageDB.getAllPackages();
         } else {
             packages = packageDB.filterPackagesByCustomer(filter);
         }
-        
-        
+
         List<CustomersReport> customerReports = new ArrayList<>();
         for (int i = 0; i < packages.size(); i++) {
             customerReports.add(new CustomersReport(packages.get(i).getCustomerId(), packages.get(i).getId(), packages.get(i).getShippingCost(), processDetailDB.getTotalCostByPackageId(packages.get(i).getId())));
         }
-        
+
         return customerReports;
     }
-    
+
+    public List<PopularRoutesReport> getPopularRoutesReports(String initialDate, String finalDate) {
+        List<Package> packages;
+
+        if (initialDate == null && finalDate == null) {
+            packages = packageDB.getAllPackages();
+        } else {
+            packages = packageDB.getAllPackagesByDateRange(initialDate, finalDate);
+        }
+
+        List<Process> processes = new ArrayList<>();
+
+        for (int i = 0; i < packages.size(); i++) {
+            if (packages.get(i).getStatus() == PackageStatus.EN_PUNTO_CONTROL) {
+                processes.add(processDB.getProcessByPackageId(packages.get(i).getId(), false));
+            } else if (packages.get(i).getStatus() == PackageStatus.EN_ESPERA_RETIRO || packages.get(i).getStatus() == PackageStatus.RETIRADO) {
+                processes.add(processDB.getProcessByPackageId(packages.get(i).getId(), true));
+            }
+        }
+
+        List<Route> routes = getAllRoutes();
+        List<PopularRoutesReport> popularRoutesReports = new ArrayList<>();
+
+        for (int i = 0; i < routes.size(); i++) {
+
+            int packagesQuantity = 0;
+            for (int j = 0; j < processes.size(); j++) {
+                ControlPoint controlPoint = controlPointDB.getControlPointById(processes.get(j).getControlPointId());
+                if (controlPoint.getRouteId() == routes.get(i).getId()) {
+                    packagesQuantity++;
+                }
+            }
+            popularRoutesReports.add(new PopularRoutesReport(routes.get(i).getId(), packagesQuantity));
+        }
+        
+        Collections.sort(popularRoutesReports, new Comparator<PopularRoutesReport>() {
+            @Override
+            public int compare(PopularRoutesReport prr1, PopularRoutesReport prr2) {
+                return Integer.compare(prr2.getPackagesQuantity(), prr1.getPackagesQuantity());
+            }
+        });
+
+        List<PopularRoutesReport> aux = new ArrayList<>();
+        
+        for (int i = 0; i < 3; i++) {
+            aux.add(popularRoutesReports.get(i));
+        }
+        
+        return aux; 
+    }
+
 }

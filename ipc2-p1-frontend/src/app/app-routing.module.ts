@@ -14,6 +14,7 @@ import { ProcessPackagesComponent } from './components/oper/process-packages/pro
 import { RoutesReportComponent } from './components/admin/routes-report/routes-report.component';
 import { EarningsReportComponent } from './components/admin/earnings-report/earnings-report.component';
 import { CustomersReportComponent } from './components/admin/customers-report/customers-report.component';
+import { PopularRoutesReportComponent } from './components/admin/popular-routes-report/popular-routes-report.component';
 
 const routes: Routes = [
   {
@@ -77,6 +78,11 @@ const routes: Routes = [
   {
     path: 'admin/reportes/clientes',
     component: CustomersReportComponent,
+    canActivate: [IsLoggedInGuard]
+  },
+  {
+    path: 'admin/reportes/rutas/populares',
+    component: PopularRoutesReportComponent,
     canActivate: [IsLoggedInGuard]
   },
   {

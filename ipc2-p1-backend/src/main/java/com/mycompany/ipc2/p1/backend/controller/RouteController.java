@@ -5,6 +5,7 @@
 package com.mycompany.ipc2.p1.backend.controller;
 
 import com.mycompany.ipc2.p1.backend.model.EarningsReport;
+import com.mycompany.ipc2.p1.backend.model.PopularRoutesReport;
 import com.mycompany.ipc2.p1.backend.model.Route;
 import com.mycompany.ipc2.p1.backend.model.RoutesReport;
 import com.mycompany.ipc2.p1.backend.service.AdministratorService;
@@ -27,11 +28,13 @@ public class RouteController extends HttpServlet {
     private final GsonUtils<Route> gsonRoute;
     private final GsonUtils<RoutesReport> gsonRoutesReport;
     private final GsonUtils<EarningsReport> gsonEarningsReport;
+    private final GsonUtils<PopularRoutesReport> gsonPopularRoutesReport;
     private final AdministratorService administratorService;
 
     public RouteController() {
         gsonRoute = new GsonUtils<>();
         gsonRoutesReport = new GsonUtils<>();
+        gsonPopularRoutesReport = new GsonUtils<>();
         gsonEarningsReport = new GsonUtils<>();
         administratorService = new AdministratorService();
     }
@@ -79,12 +82,20 @@ public class RouteController extends HttpServlet {
                     List<EarningsReport> earningsReports = administratorService.getEarningsReport(null, null);
                     response.setStatus(HttpServletResponse.SC_OK);
                     gsonEarningsReport.sendAsJson(response, earningsReports);
+                } else if (pathInfo.equals("/popular/all")) {
+                    List<PopularRoutesReport> popularRoutesReports = administratorService.getPopularRoutesReports(null, null);
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    gsonPopularRoutesReport.sendAsJson(response, popularRoutesReports);
                 }
             } else if ((splits.length - 1) == 3) {
                 if (pathInfo.equals("/earnings/" + splits[2] + "/" + splits[3])) {
                     List<EarningsReport> earningsReports = administratorService.getEarningsReport(splits[2], splits[3]);
                     response.setStatus(HttpServletResponse.SC_OK);
                     gsonEarningsReport.sendAsJson(response, earningsReports);
+                } else if (pathInfo.equals("/popular/" + splits[2] + "/" + splits[3])) {
+                    List<PopularRoutesReport> popularRoutesReports = administratorService.getPopularRoutesReports(splits[2], splits[3]);
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    gsonPopularRoutesReport.sendAsJson(response, popularRoutesReports);
                 }
             }
         }
