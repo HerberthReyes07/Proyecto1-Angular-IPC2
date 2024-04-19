@@ -42,7 +42,7 @@ public class GsonUtils<T> {
         while ((line = reader.readLine()) != null) buffer.append(line);
 
         String payload = buffer.toString();
-
+        
         return gson.fromJson(payload, classT);
     }
 }

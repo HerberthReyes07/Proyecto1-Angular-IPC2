@@ -136,6 +136,7 @@ public class UserController extends HttpServlet {
         System.out.println(userFromJson);
 
         administratorService.createUser(userFromJson);
+        gsonUser.sendAsJson(response, userFromJson);
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
@@ -155,27 +156,18 @@ public class UserController extends HttpServlet {
 
         if ((splits.length - 1) == 1) {
             if (pathInfo.equals("/" + splits[1])) {
-                //User userToUpdate;
-
-                String idUser = splits[1];
+                User userToUpdate;
 
                 try {
-                    //userToUpdate = gsonUser.readFromJson(request, User.class);
-                    Integer.parseInt(idUser);
-                } catch (NumberFormatException e) {
+                    userToUpdate = gsonUser.readFromJson(request, User.class);
+                } catch (Exception e) {
+                    System.out.println(e);
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                     return;
                 }
 
-                User userToUpdate = administratorService.getUserById(Integer.parseInt(idUser));
                 System.out.println(userToUpdate);
 
-                if (userToUpdate == null) {
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                    return;
-                }
-
-                userToUpdate.setActive(false);
                 administratorService.updateUser(userToUpdate);
                 gsonUser.sendAsJson(response, userToUpdate);
                 response.setStatus(HttpServletResponse.SC_OK);

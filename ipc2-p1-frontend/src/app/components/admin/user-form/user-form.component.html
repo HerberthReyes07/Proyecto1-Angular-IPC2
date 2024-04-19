@@ -1,0 +1,114 @@
+<div id="clientModal" tabindex="-1" aria-labelledby="clientModalLabel" class="modal fade show" style="display: block;"
+    aria-modal="true" role="dialog">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="clientModalLabel">Formulario de Usuario</h5>
+                <button type="button" (click)="closeForm()"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="modal-body">
+
+                <div *ngIf="isUserCreated || isUserUpdated" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill" style="margin-right: 10px;"></i><strong>{{message}}</strong>
+                    <button type="button" (click)="toggleactionCompleted()" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div *ngIf="hasError" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-circle-fill"
+                        style="margin-right: 10px;"></i><strong>{{message}}</strong>
+                    <button type="button" (click)="toggleHasError()" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <form [formGroup]="userForm" *ngIf="!isUserUpdated">
+
+                    <div class="mb-3">
+                        <label name="name" class="form-label">Nombre: </label>
+                        <input type="text" class="form-control" name="name" formControlName="name">
+                    </div>
+                    <div class="errors-container"
+                        *ngIf="nameControl.invalid && (nameControl.touched || nameControl.dirty)">
+                        <p class="error-msg" *ngIf="nameControl.hasError('required')">
+                            El campo es obligatorio
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label name="username" class="form-label">Username: </label>
+                        <input type="text" class="form-control" name="username" formControlName="username">
+                    </div>
+                    <div class="errors-container"
+                        *ngIf="usernameControl.invalid && (usernameControl.touched || usernameControl.dirty)">
+                        <p class="error-msg" *ngIf="usernameControl.hasError('required')">
+                            El campo es obligatorio
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label name="password" class="form-label">Contraseña: </label>
+                        <input type="password" class="form-control" name="password" formControlName="password">
+                    </div>
+                    <div class="errors-container"
+                        *ngIf="passwordControl.invalid && (passwordControl.touched || passwordControl.dirty)">
+                        <p class="error-msg" *ngIf="passwordControl.hasError('required')">
+                            El campo es obligatorio
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label name="dpi" class="form-label">DPI: </label>
+                        <input type="text" class="form-control" name="dpi" formControlName="dpi" 
+                        placeholder="Ej. 1234567890123">
+                    </div>
+                    <div class="errors-container"
+                        *ngIf="dpiControl.invalid && (dpiControl.touched || dpiControl.dirty)">
+                        <p class="error-msg" *ngIf="dpiControl.hasError('required')">
+                            El campo es obligatorio
+                        </p>
+                        <p class="error-msg"
+                            *ngIf="dpiControl.hasError('minlength') || dpiControl.hasError('maxlength')">
+                            La longitud del DPI debe ser de 13
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label name="sex" class="form-label">Sexo:</label>
+                        <select class="form-select" name="sex" formControlName="sex">
+                            <option value="0">Seleccione una opción: </option>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Femenino">Femenino</option>
+                        </select>
+                    </div>
+                    <div class="errors-container"
+                        *ngIf="sexControl.value === '0' && (sexControl.touched || sexControl.dirty)">
+                        <p class="error-msg">
+                            Por favor eliga una opción válida
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label name="typeUser" class="form-label">Tipo de usuario:</label>
+                        <select class="form-select" name="typeUser" formControlName="typeUser">
+                            <option value="0">Seleccione una opción: </option>
+                            <option value="1">Administrador</option>
+                            <option value="2">Operador</option>
+                            <option value="3">Recepcionista</option>
+                        </select>
+                    </div>
+                    <div class="errors-container"
+                        *ngIf="typeUserControl.value === '0' && (typeUserControl.touched || typeUserControl.dirty)">
+                        <p class="error-msg">
+                            Por favor eliga una opción válida
+                        </p>
+                    </div>
+                    
+                </form>
+            </div>
+            <div class="modal-footer" *ngIf="!isUserUpdated">
+                <button type="submit" (click)="sendUser()" class="btn btn-primary">
+                    <ng-container *ngIf="!isNewUser">Editar</ng-container>
+                    <ng-container *ngIf="isNewUser">Crear</ng-container>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

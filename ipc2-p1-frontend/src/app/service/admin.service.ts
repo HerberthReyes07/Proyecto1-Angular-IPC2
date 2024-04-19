@@ -5,6 +5,7 @@ import { EarningsReport } from '../model/earnings-report';
 import { Package } from '../model/package';
 import { CustomersReport } from '../model/customers-report';
 import { PopularRoutesReport } from '../model/popular-routes-report';
+import { User } from '../model/user';
 
 @Injectable({
   providedIn: 'root'
@@ -45,5 +46,17 @@ export class AdminService {
 
   getAllPackages(){
     return this.http.get<Package[]>(`${this.url}/packages`);
+  }
+
+  getAllUsers(){
+    return this.http.get<User[]>(`${this.url}/users`);
+  }
+  
+  createUser(user: User){
+    return this.http.post<User>(`${this.url}/users`, user);
+  }
+  
+  updateUser(user: User){
+    return this.http.put<User>(`${this.url}/users/${user.id}`, user);
   }
 }

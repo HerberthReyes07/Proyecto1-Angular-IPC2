@@ -1,0 +1,91 @@
+<div class="container mt-2 col-md-9">
+    <div class="card my-5">
+
+        <div class="card text-center">
+            <div class="card-header">
+                <h3>Gestión de Usuarios</h3>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <form class="row g-3" [formGroup]="filterForm">
+                <div class="col-md-3">
+                    <label for="state" class="form-label">Filtrar por tipo de usuario: </label>
+                    <select id="state" class="form-select" formControlName="typeUserControl" (change)="filter()">
+                        <option value="0" selected>Cualquiera</option>
+                        <option value="1">Administrador</option>
+                        <option value="2">Operador</option>
+                        <option value="3">Recepcionista</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="state" class="form-label">Filtrar por estado: </label>
+                    <select id="state" class="form-select" formControlName="stateControl" (change)="filter()">
+                        <option value="0" selected>Cualquiera</option>
+                        <option value="1">Activo</option>
+                        <option value="2">Inactivo</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="state" class="form-label">Filtrar por sexo: </label>
+                    <select id="state" class="form-select" formControlName="sexControl" (change)="filter()">
+                        <option value="0" selected>Cualquiera</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Femenino">Femenino</option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-success" style="margin-top: 32px;" (click)="newUser()">Crear</button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="row">
+                <div class="col">
+                    <div class="card my-4">
+                        <div class="card-body">
+                            <table class="table table-hover table-sm" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Nombre</th>
+                                        <th>Username</th>
+                                        <th>DPI</th>
+                                        <th>Sexo</th>
+                                        <th>Tipo</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let u of usersFiltered; let i = index">
+                                        <td>{{i + 1}}</td>
+                                        <td>{{u.name}}</td>
+                                        <td>{{u.username}}</td>
+                                        <td>{{u.dpi}}</td>
+                                        <td>{{u.sex}}</td>
+                                        <td>{{getTypeUser(u.typeUser)}}</td>
+                                        <td>{{getState(u.active)}}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-info btn-sm" style="margin-right: 10px;"
+                                                (click)="updateUser(u)">Editar</button>
+                                            <button *ngIf="u.active" type="button" class="btn btn-danger btn-sm"
+                                                (click)="changeUserState(u)">Desactivar</button>    
+                                            <button *ngIf="!u.active" type="button" class="btn btn-primary btn-sm"
+                                                (click)="changeUserState(u)">Activar</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-background" *ngIf="isUserFormOpened">
+    <app-user-form [userToUpdate]="userToUpdate" [isNewUser]="isNewUser"
+    (toggleFormVisibility)="toggleUserFormVisibility()" (actionCompleted)="actionCompleted()"></app-user-form>
+</div>
