@@ -16,6 +16,8 @@ export class UserManagementComponent implements OnInit {
   isUserFormOpened = false;
   userToUpdate!: User;
   isNewUser = true;
+  message = "";
+  canProceed = false;
 
   filterForm = new FormGroup({
     typeUserControl: new FormControl('0'),
@@ -79,6 +81,12 @@ export class UserManagementComponent implements OnInit {
     }
     this.adminService.updateUser(user).subscribe(dataUser => {
       if (dataUser) {
+        if (dataUser.active) {
+          this.message = "El usuario: " + user.name + " ha sido activado";
+        } else {
+          this.message = "El usuario: " + user.name + " ha sido desactivado";
+        }
+        this.canProceed = true;
         this.filter();
       }
     });
@@ -148,4 +156,7 @@ export class UserManagementComponent implements OnInit {
     return false;
   }
 
+  toggleCanProceed(){
+    this.canProceed = !this.canProceed;
+  }
 }

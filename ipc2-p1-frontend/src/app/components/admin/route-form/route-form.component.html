@@ -1,0 +1,61 @@
+<div id="clientModal" tabindex="-1" aria-labelledby="clientModalLabel" class="modal fade show" style="display: block;"
+    aria-modal="true" role="dialog">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="clientModalLabel">Formulario de Ruta</h5>
+                <button type="button" (click)="closeForm()"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="modal-body">
+
+                <div *ngIf="isRouteCreated || isRouteUpdated" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill" style="margin-right: 10px;"></i><strong>{{message}}</strong>
+                    <button type="button" (click)="toggleActionCompleted()" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div *ngIf="hasError" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-circle-fill"
+                        style="margin-right: 10px;"></i><strong>{{message}}</strong>
+                    <button type="button" (click)="toggleHasError()" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <form [formGroup]="routeForm" *ngIf="!isRouteUpdated">
+
+                    <div class="mb-3">
+                        <label name="name" class="form-label">Nombre: </label>
+                        <input type="text" class="form-control" name="name" formControlName="name">
+                    </div>
+                    <div class="errors-container"
+                        *ngIf="nameControl.invalid && (nameControl.touched || nameControl.dirty)">
+                        <p class="error-msg" *ngIf="nameControl.hasError('required')">
+                            El campo es obligatorio
+                        </p>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="destination" class="form-label">Destino: </label>
+                        <select id="destination" class="form-select" formControlName="destination">
+                            <option value="0" selected>Cualquiera</option>
+                            <ng-container *ngFor="let d of destinations">
+                                <option value="{{d.id}}">{{d.name}}</option>
+                            </ng-container>
+                        </select>
+                    </div>
+                    <div class="errors-container"
+                        *ngIf="destinationControl.value === '0' && (destinationControl.touched || destinationControl.dirty)">
+                        <p class="error-msg">
+                            Por favor eliga una opción válida
+                        </p>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer" *ngIf="!isRouteUpdated">
+                <button type="submit" (click)="sendRoute()" class="btn btn-primary">
+                    <ng-container *ngIf="!isNewRoute">Editar</ng-container>
+                    <ng-container *ngIf="isNewRoute">Crear</ng-container>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

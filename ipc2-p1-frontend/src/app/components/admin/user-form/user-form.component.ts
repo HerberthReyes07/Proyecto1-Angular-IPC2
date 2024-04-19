@@ -11,6 +11,7 @@ import { RecepService } from 'src/app/service/recep.service';
   styleUrls: ['./user-form.component.css']
 })
 export class UserFormComponent implements OnInit {
+  
   @Input() userToUpdate!: User;
   @Input() isNewUser!: boolean;
   @Output() toggleFormVisibility = new EventEmitter<void>();
@@ -151,6 +152,5 @@ export class UserFormComponent implements OnInit {
 
   toggleactionCompleted() {
     this.isUserCreated = false;
-    this.isUserUpdated = false;
   }
 }

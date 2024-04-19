@@ -6,6 +6,7 @@ import { Package } from '../model/package';
 import { CustomersReport } from '../model/customers-report';
 import { PopularRoutesReport } from '../model/popular-routes-report';
 import { User } from '../model/user';
+import { Route } from '../model/route';
 
 @Injectable({
   providedIn: 'root'
@@ -55,8 +56,16 @@ export class AdminService {
   createUser(user: User){
     return this.http.post<User>(`${this.url}/users`, user);
   }
+
+  createRoute(route: Route){
+    return this.http.post<Route>(`${this.url}/routes`, route);
+  }
   
   updateUser(user: User){
     return this.http.put<User>(`${this.url}/users/${user.id}`, user);
+  }
+
+  updateRoute(route: Route){
+    return this.http.put<Route>(`${this.url}/routes/${route.id}`, route);
   }
 }

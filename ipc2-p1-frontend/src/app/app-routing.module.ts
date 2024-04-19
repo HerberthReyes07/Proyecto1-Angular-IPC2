@@ -16,6 +16,7 @@ import { EarningsReportComponent } from './components/admin/earnings-report/earn
 import { CustomersReportComponent } from './components/admin/customers-report/customers-report.component';
 import { PopularRoutesReportComponent } from './components/admin/popular-routes-report/popular-routes-report.component';
 import { UserManagementComponent } from './components/admin/user-management/user-management.component';
+import { RouteManagementComponent } from './components/admin/route-management/route-management.component';
 
 const routes: Routes = [
   {
@@ -69,6 +70,11 @@ const routes: Routes = [
   {
     path: 'admin/gestion/usuarios',
     component: UserManagementComponent,
+    canActivate: [IsLoggedInGuard]
+  },
+  {
+    path: 'admin/gestion/rutas',
+    component: RouteManagementComponent,
     canActivate: [IsLoggedInGuard]
   },
   {

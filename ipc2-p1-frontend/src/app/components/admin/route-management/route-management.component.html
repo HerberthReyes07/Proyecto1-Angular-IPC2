@@ -1,1 +1,87 @@
-<p>route-management works!</p>
+<div class="container mt-2 col-md-9">
+    <div class="card my-5">
+
+        <div class="card text-center">
+            <div class="card-header">
+                <h3>Gestión de rutas</h3>
+            </div>
+        </div>
+        <div class="card-body">
+            
+            <div *ngIf="canProceed" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill" style="margin-right: 10px;"></i><strong>{{message}}</strong>
+                <button type="button" (click)="toggleCanProceed()" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div *ngIf="deactivateError" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-circle-fill"
+                    style="margin-right: 10px;"></i><strong>{{message}}</strong>
+                <button type="button" (click)="toggleDeactivateError()" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <form class="row g-3" [formGroup]="filterForm">
+                <div class="col-md-3">
+                    <label for="state" class="form-label">Filtrar por estado: </label>
+                    <select id="state" class="form-select" formControlName="stateControl" (change)="filter()">
+                        <option value="0">Cualquiera</option>
+                        <option value="1">Activas</option>
+                        <option value="2">Inactivas</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="destination" class="form-label">Filtrar por Destino: </label>
+                    <select id="destination" class="form-select" formControlName="destinationControl" (change)="filter()">
+                        <option value="0" selected>Cualquiera</option>
+                        <ng-container *ngFor="let d of destinations">
+                            <option value="{{d.id}}">{{d.name}}</option>
+                        </ng-container>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-success" style="margin-top: 32px;" (click)="newRoute()">Crear</button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="row">
+                <div class="col">
+                    <div class="card my-4">
+                        <div class="card-body">
+                            <table class="table table-hover table-sm" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Ruta</th>
+                                        <th>Destino</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let r of routesFiltered; let i = index">
+                                        <td>{{i + 1}}</td>
+                                        <td>{{r.name}}</td>
+                                        <td>{{getDestinationById(r.destinationId).name}}</td>
+                                        <td>{{getState(r.active)}}</td>
+                                        <td>
+                                            <button *ngIf="r.active" type="button" class="btn btn-danger btn-sm"
+                                            (click)="changeRouteStatus(r)">Desactivar</button>    
+                                            <button *ngIf="!r.active" type="button" class="btn btn-primary btn-sm"
+                                            (click)="changeRouteStatus(r)">Activar</button>
+                                            <button *ngIf="!r.active" type="button" class="btn btn-info btn-sm" style="margin-left: 10px;"
+                                                (click)="updateRoute(r)">Editar</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-background" *ngIf="isRouteFormOpened">
+    <app-route-form [destinations]="destinations" [isNewRoute]="isNewRoute" [routeToUpdate]="routeToUpdate"
+    (toggleFormVisibility)="toggleRouteFormVisibility()" (actionCompleted)="actionCompleted()"></app-route-form>
+</div>

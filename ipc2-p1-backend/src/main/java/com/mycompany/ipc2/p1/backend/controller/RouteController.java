@@ -119,8 +119,9 @@ public class RouteController extends HttpServlet {
 
         System.out.println(routeFromJson);
         administratorService.createRoute(routeFromJson);
-        gsonRoute.sendAsJson(response, routeFromJson);
         response.setStatus(HttpServletResponse.SC_OK);
+        gsonRoute.sendAsJson(response, routeFromJson);
+        
     }
 
     @Override
@@ -140,36 +141,30 @@ public class RouteController extends HttpServlet {
         if ((splits.length - 1) == 1) {
             if (pathInfo.equals("/" + splits[1])) {
 
-                String idRoute = splits[1];
+                Route routeToUpdate;
                 try {
-                    Integer.parseInt(idRoute);
-                } catch (NumberFormatException e) {
+                    routeToUpdate = gsonRoute.readFromJson(request, Route.class);
+                } catch (Exception e) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                     return;
                 }
-                Route routeToUpdate = administratorService.getRouteById(Integer.parseInt(idRoute));
                 System.out.println(routeToUpdate);
 
-                if (routeToUpdate == null) {
-                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                    return;
-                }
-                //Route routeToUpdate = gsonRoute.readFromJson(request, Route.class);
+                if (!routeToUpdate.isActive()) {
+                    boolean canDeactivate = administratorService.canProceed(routeToUpdate.getId());
 
-                boolean canDeactivate = administratorService.canProceed(routeToUpdate.getId());
-
-                if (canDeactivate) {
-                    System.out.println("SE PUEDE DESACTIVAR");
-                    routeToUpdate.setActive(false);
-                    administratorService.updateRoute(routeToUpdate);
-                    //response.setStatus(HttpServletResponse.SC_OK);
-                    gsonRoute.sendAsJson(response, routeToUpdate);
+                    if (canDeactivate) {
+                        administratorService.updateRoute(routeToUpdate);
+                        response.setStatus(HttpServletResponse.SC_OK);
+                        gsonRoute.sendAsJson(response, routeToUpdate);
+                    } else {
+                        response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE);
+                    }
                 } else {
-                    System.out.println("NO SE PUEDE DESACTIVAR");
-                    response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE);
-                    return;
+                    administratorService.updateRoute(routeToUpdate);
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    gsonRoute.sendAsJson(response, routeToUpdate);
                 }
-                response.setStatus(HttpServletResponse.SC_OK);
 
             }
         }

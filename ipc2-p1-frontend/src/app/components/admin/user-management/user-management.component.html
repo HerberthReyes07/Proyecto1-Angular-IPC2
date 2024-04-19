@@ -8,6 +8,11 @@
         </div>
         <div class="card-body">
 
+            <div *ngIf="canProceed" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle-fill" style="margin-right: 10px;"></i><strong>{{message}}</strong>
+                <button type="button" (click)="toggleCanProceed()" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
             <form class="row g-3" [formGroup]="filterForm">
                 <div class="col-md-3">
                     <label for="state" class="form-label">Filtrar por tipo de usuario: </label>
