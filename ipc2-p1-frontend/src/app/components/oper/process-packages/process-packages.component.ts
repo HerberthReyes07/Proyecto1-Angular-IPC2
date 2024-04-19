@@ -39,7 +39,7 @@ export class ProcessPackagesComponent implements OnInit {
         this.operService.getControlPointsByOperatorId(operator.id).subscribe(dataControlPoints => {
           if (dataControlPoints) {
             this.controlPoints = dataControlPoints;
-            this.recepService.getDestinations().subscribe(dataDestionations => {
+            this.recepService.getAllDestinations().subscribe(dataDestionations => {
               if (dataDestionations) {
                 this.destinations = dataDestionations;
                 this.operService.getPackagesToProcessByOperatorId(operator.id).subscribe(dataPackages => {

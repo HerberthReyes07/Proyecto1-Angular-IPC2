@@ -42,9 +42,20 @@ public class DestinationController extends HttpServlet {
         System.out.println("PATH INFO: " + pathInfo);
 
         if (pathInfo == null || pathInfo.equals("/")) {
-            List<Destination> validDestinations = receptionistService.getValidDestinations();
+            //List<Destination> validDestinations = receptionistService.getValidDestinations();
+            List<Destination> destinations = receptionistService.getAllDestinations();
             response.setStatus(HttpServletResponse.SC_OK);
-            gsonDestination.sendAsJson(response, validDestinations);
+            gsonDestination.sendAsJson(response, destinations);
+        } else {
+            String[] splits = pathInfo.split("/");
+
+            if ((splits.length - 1) == 1) {
+                if (pathInfo.equals("/valid")) {
+                    List<Destination> validDestinations = receptionistService.getValidDestinations();
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    gsonDestination.sendAsJson(response, validDestinations);
+                }
+            }
         }
     }
 

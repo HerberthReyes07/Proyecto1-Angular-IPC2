@@ -27,7 +27,7 @@ export class CustomersReportComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.recepService.getDestinations().subscribe(dataDestination => {
+    this.recepService.getAllDestinations().subscribe(dataDestination => {
       if (dataDestination) {
         this.destinations = dataDestination;
         this.recepService.getAllCustomers().subscribe(dataCustomers => {

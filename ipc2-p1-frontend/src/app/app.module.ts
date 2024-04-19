@@ -26,6 +26,7 @@ import { CustomersReportComponent } from './components/admin/customers-report/cu
 import { PopularRoutesReportComponent } from './components/admin/popular-routes-report/popular-routes-report.component';
 import { UserManagementComponent } from './components/admin/user-management/user-management.component';
 import { UserFormComponent } from './components/admin/user-form/user-form.component';
+import { RouteManagementComponent } from './components/admin/route-management/route-management.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { UserFormComponent } from './components/admin/user-form/user-form.compon
     PopularRoutesReportComponent,
     UserManagementComponent,
     UserFormComponent,
+    RouteManagementComponent,
   ],
   imports: [
     BrowserModule,

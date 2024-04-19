@@ -39,8 +39,12 @@ export class RecepService {
     this.packages.next([]);
   }
 
-  getDestinations() {
+  getAllDestinations() {
     return this.http.get<Destination[]>(`${this.url}/destinations`);
+  }
+
+  getValidDestinations() {
+    return this.http.get<Destination[]>(`${this.url}/destinations/valid`);
   }
 
   getCustomerByNit(nit : string) {

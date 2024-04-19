@@ -31,7 +31,7 @@ export class PickUpPackageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.recepService.getDestinations().subscribe(dataDestinations => {
+    this.recepService.getAllDestinations().subscribe(dataDestinations => {
       if (dataDestinations) {
         this.destinations = dataDestinations;
         this.recepService.getAllCustomers().subscribe(dataCustomers => {

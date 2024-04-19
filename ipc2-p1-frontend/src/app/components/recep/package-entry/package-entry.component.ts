@@ -41,7 +41,7 @@ export class PackageEntryComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.recepService.getDestinations()
+    this.recepService.getValidDestinations()
       .subscribe(data => this.destinations = data);
     this.recepService.cleanPackages();
   }
