@@ -77,10 +77,10 @@ public class ControlPointController extends HttpServlet {
                         response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                         return;
                     }
-                    
+
                     List<ControlPoint> controlPoints = operatorService.getControlPointsByOperatorId(Integer.parseInt(idOperator));
                     System.out.println(controlPoints);
-                    
+
                     if (controlPoints == null) {
                         response.sendError(HttpServletResponse.SC_NOT_FOUND);
                         return;
@@ -88,8 +88,22 @@ public class ControlPointController extends HttpServlet {
                     response.setStatus(HttpServletResponse.SC_OK);
                     gsonControlPoint.sendAsJson(response, controlPoints);
                 }
+            } else if ((splits.length - 1) == 3) {
+                if (pathInfo.equals("/orderNo/route/" + splits[3])) {
+                    String idRoute = splits[3];
+                    try {
+                        Integer.parseInt(idRoute);
+                    } catch (NumberFormatException e) {
+                        response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                        return;
+                    }
+
+                    int orderNo = administratorService.getOrderNoByRouteId(Integer.parseInt(idRoute));
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    gsonControlPoint.sendAsJson(response, new ControlPoint(orderNo + 1));
+                }
             }
-        } 
+        }
     }
 
     @Override
@@ -116,13 +130,14 @@ public class ControlPointController extends HttpServlet {
             int orderNo = administratorService.getOrderNoByRouteId(controlPointFromJson.getRouteId());
             controlPointFromJson.setOrderNo(orderNo + 1);
             administratorService.createControlPoint(controlPointFromJson);
+            response.setStatus(HttpServletResponse.SC_OK);
+            gsonControlPoint.sendAsJson(response, controlPointFromJson);
         } else {
             System.out.println("NO SE PUEDE AGREGAR");
             response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE);
             return;
         }
 
-        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     @Override
@@ -165,12 +180,45 @@ public class ControlPointController extends HttpServlet {
                 if (canModify) {
                     System.out.println("SE PUEDE MODIFICAR");
                     administratorService.updateControlPoint(controlPointToUpdate);
-                    gsonControlPoint.sendAsJson(response, controlPointToUpdate);
                     response.setStatus(HttpServletResponse.SC_OK);
+                    gsonControlPoint.sendAsJson(response, controlPointToUpdate);
                 } else {
                     System.out.println("NO SE PUEDE MODIFICAR");
                     response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE);
                 }
+            }
+        } else if ((splits.length - 1) == 2) {
+            if (pathInfo.equals("/orderNo/" + splits[2])) {
+
+                ControlPoint controlPointToUpdate;
+
+                try {
+                    controlPointToUpdate = gsonControlPoint.readFromJson(request, ControlPoint.class);
+                } catch (NumberFormatException e) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                    return;
+                }
+
+                System.out.println(controlPointToUpdate);
+
+                List<ControlPoint> controlPoints = administratorService.getControlPointsByRouteId(controlPointToUpdate.getRouteId());
+
+                if (controlPointToUpdate.getOrderNo() != (controlPoints.size() + 1)) {
+                    for (int i = 0; i < controlPoints.size(); i++) {
+                        if (controlPoints.get(i).getOrderNo() != 1) {
+                            int originalOrderNo = controlPoints.get(i).getOrderNo();
+                            controlPoints.get(i).setOrderNo(originalOrderNo - 1);
+                            administratorService.updateControlPoint(controlPoints.get(i));
+                            if ((originalOrderNo - 1) == controlPointToUpdate.getOrderNo()) {
+                                //solo deshabilitar el select de ruta o
+                                //actualizar todos los procesos hechos con el id del controlPointToUpdate al id controlPoints.get(i) para mantener las ganancias en la ruta
+                            }
+                        }
+                    }
+                }
+
+                response.setStatus(HttpServletResponse.SC_OK);
+                gsonControlPoint.sendAsJson(response, controlPointToUpdate);
             }
         }
 

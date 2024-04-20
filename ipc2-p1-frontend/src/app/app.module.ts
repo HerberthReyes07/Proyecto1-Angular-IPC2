@@ -28,6 +28,8 @@ import { UserManagementComponent } from './components/admin/user-management/user
 import { UserFormComponent } from './components/admin/user-form/user-form.component';
 import { RouteManagementComponent } from './components/admin/route-management/route-management.component';
 import { RouteFormComponent } from './components/admin/route-form/route-form.component';
+import { ControlPointManagementComponent } from './components/admin/control-point-management/control-point-management.component';
+import { ControlPointFormComponent } from './components/admin/control-point-form/control-point-form.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +57,8 @@ import { RouteFormComponent } from './components/admin/route-form/route-form.com
     UserFormComponent,
     RouteManagementComponent,
     RouteFormComponent,
+    ControlPointManagementComponent,
+    ControlPointFormComponent,
   ],
   imports: [
     BrowserModule,

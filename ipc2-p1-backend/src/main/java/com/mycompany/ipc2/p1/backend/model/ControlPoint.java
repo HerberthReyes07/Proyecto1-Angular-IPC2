@@ -31,6 +31,10 @@ public class ControlPoint {
         this.operatorId = operatorId;
     }
 
+    public ControlPoint(int orderNo) {
+        this.orderNo = orderNo;
+    }
+    
     public int getId() {
         return id;
     }

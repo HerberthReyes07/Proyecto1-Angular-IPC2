@@ -35,7 +35,7 @@
                     <div class="mb-3">
                         <label for="destination" class="form-label">Destino: </label>
                         <select id="destination" class="form-select" formControlName="destination">
-                            <option value="0" selected>Cualquiera</option>
+                            <option value="0" selected>Seleccione una opción: </option>
                             <ng-container *ngFor="let d of destinations">
                                 <option value="{{d.id}}">{{d.name}}</option>
                             </ng-container>

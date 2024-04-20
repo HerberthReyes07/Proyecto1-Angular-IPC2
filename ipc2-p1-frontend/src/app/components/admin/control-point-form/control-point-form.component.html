@@ -1,0 +1,111 @@
+<div id="clientModal" tabindex="-1" aria-labelledby="clientModalLabel" class="modal fade show" style="display: block;"
+    aria-modal="true" role="dialog">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="clientModalLabel">Formulario de Punto de Control</h5>
+                <button type="button" (click)="closeForm()"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="modal-body">
+
+                <div *ngIf="isControlPointCreated || isControlPointUpdated"
+                    class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill" style="margin-right: 10px;"></i><strong>{{message}}</strong>
+                    <button type="button" (click)="toggleActionCompleted()" class="btn-close" data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+                </div>
+                <div *ngIf="hasError" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-circle-fill"
+                        style="margin-right: 10px;"></i><strong>{{message}}</strong>
+                    <button type="button" (click)="toggleHasError()" class="btn-close" data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+                </div>
+
+                <form [formGroup]="controlPointForm" *ngIf="!isControlPointUpdated">
+
+                    <div class="mb-3">
+                        <label name="name" class="form-label">Nombre: </label>
+                        <input type="text" class="form-control" name="name" formControlName="name">
+                    </div>
+                    <div class="errors-container"
+                        *ngIf="nameControl.invalid && (nameControl.touched || nameControl.dirty)">
+                        <p class="error-msg" *ngIf="nameControl.hasError('required')">
+                            El campo es obligatorio
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label name="queueCapacity" class="form-label">Capacidad de cola: </label>
+                        <input type="text" class="form-control" name="queueCapacity" formControlName="queueCapacity">
+                    </div>
+                    <div class="errors-container"
+                        *ngIf="queueCapacityControl.invalid && (queueCapacityControl.touched || queueCapacityControl.dirty)">
+                        <p class="error-msg" *ngIf="queueCapacityControl.hasError('required')">
+                            El campo es obligatorio
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label name="operationFee" class="form-label">Tarifa de operación (Q): </label>
+                        <br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="typeFee" (click)="globalFee()" [checked]="isGlobalFee">
+                            <label class="form-check-label" for="globalFee">Tarifa global</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="typeFee" (click)="localFee()" [checked]="!isGlobalFee">
+                            <label class="form-check-label" for="localFee">Tarifa local</label>
+                        </div>
+                        <input type="text" class="form-control" name="operationFee" formControlName="operationFee" style="margin-top: 10px;">
+                    </div>
+                    <div class="errors-container"
+                        *ngIf="operationFeeControl.invalid && (operationFeeControl.touched || operationFeeControl.dirty)">
+                        <p class="error-msg" *ngIf="operationFeeControl.hasError('required')">
+                            El campo es obligatorio
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="route" class="form-label">Ruta: </label>
+                        <select id="route" class="form-select" formControlName="route">
+                            <option value="0" selected>Seleccione una opción: </option>
+                            <ng-container *ngFor="let r of routes">
+                                <option value="{{r.id}}">{{r.name}}</option>
+                            </ng-container>
+                        </select>
+                    </div>
+                    <div class="errors-container"
+                        *ngIf="routeControl.value === '0' && (routeControl.touched || routeControl.dirty)">
+                        <p class="error-msg">
+                            Por favor eliga una opción válida
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="operator" class="form-label">Operador: </label>
+                        <select id="operator" class="form-select" formControlName="operator">
+                            <option value="0" selected>Seleccione una opción: </option>
+                            <ng-container *ngFor="let o of operators">
+                                <option value="{{o.id}}">{{o.name}} | {{o.username}}</option>
+                            </ng-container>
+                        </select>
+                    </div>
+                    <div class="errors-container"
+                        *ngIf="operatorControl.value === '0' && (operatorControl.touched || operatorControl.dirty)">
+                        <p class="error-msg">
+                            Por favor eliga una opción válida
+                        </p>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer" *ngIf="!isControlPointUpdated">
+                <button type="submit" (click)="sendRoute()" class="btn btn-primary">
+                    <ng-container *ngIf="!isNewControlPoint">Editar</ng-container>
+                    <ng-container *ngIf="isNewControlPoint">Crear</ng-container>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

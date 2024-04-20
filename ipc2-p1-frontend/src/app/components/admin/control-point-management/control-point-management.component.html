@@ -1,0 +1,104 @@
+<div class="container mt-2 col-md-9">
+    <div class="card my-5">
+
+        <div class="card text-center">
+            <div class="card-header">
+                <h3>Gestión de Puntos de Control</h3>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <form class="row g-3" [formGroup]="filterForm">
+                <div class="col-md-2">
+                    <label for="orderNo" class="form-label">Filtrar por No. Orden: </label>
+                    <select id="orderNo" class="form-select" formControlName="orderNo" (change)="filter()">
+                        <option value="0">Cualquiera</option>
+                        <ng-container *ngFor="let cp of controlPointsFiltered.slice(0, limit); let i = index">
+                            <option value="{{i + 1}}">{{i + 1}}</option>
+                        </ng-container>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="route" class="form-label">Filtrar por Ruta: </label>
+                    <select id="route" class="form-select" formControlName="route" (change)="filter()">
+                        <option value="0" selected>Cualquiera</option>
+                        <ng-container *ngFor="let r of routes">
+                            <option value="{{r.id}}">{{r.name}}</option>
+                        </ng-container>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="queueCapacity" class="form-label">Ordenar por Capacidad de cola: </label>
+                    <select id="queueCapacity" class="form-select" formControlName="queueCapacity" (change)="filter()">
+                        <option value="0">Cualquiera</option>
+                        <option value="1">Mayor a menor</option>
+                        <option value="2">Menor a mayor</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="operationFee" class="form-label">Ordenar por Tarifa de operacion: </label>
+                    <select id="operationFee" class="form-select" formControlName="operationFee" (change)="filter()">
+                        <option value="0">Cualquiera</option>
+                        <option value="1">Mayor a menor</option>
+                        <option value="2">Menor a mayor</option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-success" style="margin-top: 32px;"
+                            (click)="newControlPoint()">Crear</button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="row">
+                <div class="col">
+                    <div class="card my-4">
+                        <div class="card-body">
+                            <table class="table table-hover table-sm" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>No. Orden</th>
+                                        <th>Nombre</th>
+                                        <th>Capacidad Cola</th>
+                                        <th>Tarifa Operación</th>
+                                        <th>Ruta</th>
+                                        <th>Operador</th>
+                                        <th>Accion</th>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let cp of controlPointsFiltered; let i = index">
+                                        <td><strong>{{i + 1}}</strong></td>
+                                        <td>{{cp.orderNo}}</td>
+                                        <td>{{cp.name}}</td>
+                                        <td>{{cp.queueCapacity}}</td>
+                                        <td>{{cp.localOperationFee| number: "1.2-2"}} Q</td>
+                                        <td>{{getRouteById(cp.routeId).name}}</td>
+                                        <td>{{getOperatorById(cp.operatorId).name}}</td>
+                                        <td><button type="button" class="btn btn-info btn-sm"
+                                                (click)="updateControlPoint(cp)">Editar</button></td>
+                                        <!-- <td>
+                                            <button *ngIf="r.active" type="button" class="btn btn-danger btn-sm"
+                                            (click)="changeRouteStatus(r)">Desactivar</button>    
+                                            <button *ngIf="!r.active" type="button" class="btn btn-primary btn-sm"
+                                            (click)="changeRouteStatus(r)">Activar</button>
+                                            <button *ngIf="!r.active" type="button" class="btn btn-info btn-sm" style="margin-left: 10px;"
+                                                (click)="updateRoute(r)">Editar</button>
+                                        </td> -->
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-background" *ngIf="isControlPointFormOpened">
+    <app-control-point-form [routes]="routes" [operators]="operators" [controlPointToUpdate]="controlPointToUpdate"
+        [isNewControlPoint]="isNewControlPoint" (toggleFormVisibility)="toggleControlPointFormVisibility()"
+        (actionCompleted)="actionCompleted()"></app-control-point-form>
+</div>

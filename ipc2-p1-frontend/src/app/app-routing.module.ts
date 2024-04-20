@@ -17,6 +17,7 @@ import { CustomersReportComponent } from './components/admin/customers-report/cu
 import { PopularRoutesReportComponent } from './components/admin/popular-routes-report/popular-routes-report.component';
 import { UserManagementComponent } from './components/admin/user-management/user-management.component';
 import { RouteManagementComponent } from './components/admin/route-management/route-management.component';
+import { ControlPointManagementComponent } from './components/admin/control-point-management/control-point-management.component';
 
 const routes: Routes = [
   {
@@ -75,6 +76,11 @@ const routes: Routes = [
   {
     path: 'admin/gestion/rutas',
     component: RouteManagementComponent,
+    canActivate: [IsLoggedInGuard]
+  },
+  {
+    path: 'admin/gestion/puntos-control',
+    component: ControlPointManagementComponent,
     canActivate: [IsLoggedInGuard]
   },
   {

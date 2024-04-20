@@ -7,6 +7,7 @@ import { CustomersReport } from '../model/customers-report';
 import { PopularRoutesReport } from '../model/popular-routes-report';
 import { User } from '../model/user';
 import { Route } from '../model/route';
+import { ControlPoint } from '../model/control-point';
 
 @Injectable({
   providedIn: 'root'
@@ -52,6 +53,18 @@ export class AdminService {
   getAllUsers(){
     return this.http.get<User[]>(`${this.url}/users`);
   }
+
+  getAllOperatorsUsers(){
+    return this.http.get<User[]>(`${this.url}/users/operators`);
+  }
+
+  getAllControlPoints(){
+    return this.http.get<ControlPoint[]>(`${this.url}/control-points`);
+  }
+
+  getNextOrderNo(routeId: number){
+    return this.http.get<ControlPoint>(`${this.url}/control-points/orderNo/route/${routeId}`);
+  }
   
   createUser(user: User){
     return this.http.post<User>(`${this.url}/users`, user);
@@ -60,6 +73,10 @@ export class AdminService {
   createRoute(route: Route){
     return this.http.post<Route>(`${this.url}/routes`, route);
   }
+
+  createControlPoint(controlPoint: ControlPoint){
+    return this.http.post<ControlPoint>(`${this.url}/control-points`, controlPoint);
+  }
   
   updateUser(user: User){
     return this.http.put<User>(`${this.url}/users/${user.id}`, user);
@@ -67,5 +84,13 @@ export class AdminService {
 
   updateRoute(route: Route){
     return this.http.put<Route>(`${this.url}/routes/${route.id}`, route);
+  }
+
+  updateControlPoint(controlPoint: ControlPoint){
+    return this.http.put<ControlPoint>(`${this.url}/control-points/${controlPoint.id}`, controlPoint);
+  }
+
+  updateControlPoints(controlPoint: ControlPoint){
+    return this.http.put<ControlPoint>(`${this.url}/control-points/orderNo/${controlPoint.routeId}`, controlPoint);
   }
 }

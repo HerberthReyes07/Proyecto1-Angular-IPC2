@@ -111,4 +111,8 @@ export class RecepService {
     return /^\d+$/.test(str);
   }
 
+  isDecimal(str: string): boolean {
+    return /^\d+\.?\d+$/.test(str);
+  }
+
 }
