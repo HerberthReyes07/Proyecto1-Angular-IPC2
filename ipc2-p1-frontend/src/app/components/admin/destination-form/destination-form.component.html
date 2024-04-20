@@ -1,0 +1,67 @@
+<div id="clientModal" tabindex="-1" aria-labelledby="clientModalLabel" class="modal fade show" style="display: block;"
+    aria-modal="true" role="dialog">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="clientModalLabel">Formulario de Destino</h5>
+                <button type="button" (click)="closeForm()"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="modal-body">
+
+                <div *ngIf="isDestinationCreated || isDestinationUpdated" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill" style="margin-right: 10px;"></i><strong>{{message}}</strong>
+                    <button type="button" (click)="toggleActionCompleted()" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div *ngIf="hasError" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-circle-fill"
+                        style="margin-right: 10px;"></i><strong>{{message}}</strong>
+                    <button type="button" (click)="toggleHasError()" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <form [formGroup]="destinationForm" *ngIf="!isDestinationUpdated">
+
+                    <div class="mb-3">
+                        <label name="name" class="form-label">Nombre: </label>
+                        <input type="text" class="form-control" name="name" formControlName="name">
+                    </div>
+                    <div class="errors-container"
+                        *ngIf="nameControl.invalid && (nameControl.touched || nameControl.dirty)">
+                        <p class="error-msg" *ngIf="nameControl.hasError('required')">
+                            El campo es obligatorio
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label name="address" class="form-label">Dirección: </label>
+                        <input type="text" class="form-control" name="address" formControlName="address">
+                    </div>
+                    <div class="errors-container"
+                        *ngIf="addressControl.invalid && (addressControl.touched || addressControl.dirty)">
+                        <p class="error-msg" *ngIf="addressControl.hasError('required')">
+                            El campo es obligatorio
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label name="fee" class="form-label">Cuota: </label>
+                        <input type="text" class="form-control" name="fee" formControlName="fee">
+                    </div>
+                    <div class="errors-container"
+                        *ngIf="feeControl.invalid && (feeControl.touched || feeControl.dirty)">
+                        <p class="error-msg" *ngIf="feeControl.hasError('required')">
+                            El campo es obligatorio
+                        </p>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer" *ngIf="!isDestinationUpdated">
+                <button type="submit" (click)="sendDestination()" class="btn btn-primary">
+                    <ng-container *ngIf="!isNewDestination">Editar</ng-container>
+                    <ng-container *ngIf="isNewDestination">Crear</ng-container>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -99,13 +99,6 @@ public class DestinationController extends HttpServlet {
         if ((splits.length - 1) == 1) {
             if (pathInfo.equals("/" + splits[1])) {
 
-                String idDestination = splits[1];
-                try {
-                    Integer.parseInt(idDestination);
-                } catch (NumberFormatException e) {
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                    return;
-                }
                 Destination destinationToUpdate;
 
                 try {

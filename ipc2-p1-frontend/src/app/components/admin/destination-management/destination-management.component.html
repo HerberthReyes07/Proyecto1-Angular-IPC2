@@ -1,0 +1,67 @@
+<div class="container mt-2 col-md-9">
+    <div class="card my-5">
+
+        <div class="card text-center">
+            <div class="card-header">
+                <h3>Gestión de Destinos</h3>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <div class="row g-3">
+                <div class="col-md-5">
+                    <label for="orderBy" class="form-label">Ordenar por Cuota: </label>
+                    <select id="orderBy" class="form-select" (change)="filter()">
+                        <option value="0" selected>Cualquiera</option>
+                        <option value="1">Mayor a menor</option>
+                        <option value="2">Menor a mayor</option>
+                    </select>
+                </div>
+
+                <div class="col-md-1">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-success" style="margin-top: 32px;"
+                            (click)="newDestination()">Crear</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="card my-4">
+                        <div class="card-body">
+                            <table class="table table-hover table-sm" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Destino</th>
+                                        <th>Dirección</th>
+                                        <th>Cuota</th>
+                                        <th>Acciones</th>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let d of destinationsFiltered; let i = index">
+                                        <td>{{i + 1}}</td>
+                                        <td>{{d.name}}</td>
+                                        <td>{{d.address}}</td>
+                                        <td>{{d.destinationFee| number: "1.2-2"}} Q</td>
+                                        <td>
+                                            <button type="button" class="btn btn-info btn-sm" style="margin-left: 10px;"
+                                                (click)="updateDestination(d)">Editar</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-background" *ngIf="isDestinationFormOpened">
+    <app-destination-form [isNewDestination]="isNewDestination" [destinationToUpdate]="destinationToUpdate"
+        (toggleFormVisibility)="toggleDestinationFormVisibility()"
+        (actionCompleted)="actionCompleted()"></app-destination-form>
+</div>

@@ -8,6 +8,7 @@ import { PopularRoutesReport } from '../model/popular-routes-report';
 import { User } from '../model/user';
 import { Route } from '../model/route';
 import { ControlPoint } from '../model/control-point';
+import { Destination } from '../model/destination';
 
 @Injectable({
   providedIn: 'root'
@@ -69,6 +70,10 @@ export class AdminService {
   createUser(user: User){
     return this.http.post<User>(`${this.url}/users`, user);
   }
+  
+  createDestination(destination: Destination){
+    return this.http.post<Destination>(`${this.url}/destinations`, destination);
+  }
 
   createRoute(route: Route){
     return this.http.post<Route>(`${this.url}/routes`, route);
@@ -80,6 +85,10 @@ export class AdminService {
   
   updateUser(user: User){
     return this.http.put<User>(`${this.url}/users/${user.id}`, user);
+  }
+
+  updateDestination(destination: Destination){
+    return this.http.put<Destination>(`${this.url}/destinations/${destination.id}`, destination);
   }
 
   updateRoute(route: Route){
