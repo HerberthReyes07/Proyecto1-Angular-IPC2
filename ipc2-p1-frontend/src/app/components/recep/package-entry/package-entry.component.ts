@@ -82,46 +82,54 @@ export class PackageEntryComponent implements OnInit {
   addPackage(): void {
 
     if (this.validateFields()) {
-      this.recepService.getCustomerByNit(this.nitControl.value).subscribe(customer => {
-        if (customer) {
-          const selectedDestination = this.destinations.find(option => option.id === Number.parseInt(this.destinationControl.value));
-          if (selectedDestination) {
-            this.recepService.getCurrentParameter().subscribe(parameter => {
-              this.recepService.getInvoiceNo().subscribe(auxPackage => {
-                if (auxPackage) {
 
-                  this.pricePerPound = parameter.pricePerPound;
-                  this.invoiceNo = auxPackage.invoiceNo;
+      if (this.recepService.isNumber(this.weightControl.value) || this.recepService.isDecimal(this.weightControl.value)) {
 
-                  this.package.customerId = customer.id;
-                  this.package.destinationId = selectedDestination.id;
-                  this.package.weight = this.weightControl.value;
-                  this.package.entryDate = this.entryDateControl.value;
-                  this.package.shippingCost = this.recepService.calculateDestinationFee(selectedDestination, this.package, parameter);
-                  this.package.invoiceNo = auxPackage.invoiceNo;
+        this.recepService.getCustomerByNit(this.nitControl.value).subscribe(customer => {
+          if (customer) {
+            const selectedDestination = this.destinations.find(option => option.id === Number.parseInt(this.destinationControl.value));
+            if (selectedDestination) {
+              this.recepService.getCurrentParameter().subscribe(parameter => {
+                this.recepService.getInvoiceNo().subscribe(auxPackage => {
+                  if (auxPackage) {
 
-                  this.recepService.addPackage({ ...this.package });
-                  this.isPaymentDisabled = false;
+                    this.pricePerPound = parameter.pricePerPound;
+                    this.invoiceNo = auxPackage.invoiceNo;
 
-                  const lastNit = this.nitControl.value;
-                  const lastDate = this.entryDateControl.value;
-                  this.clearForm();
-                  this.nitControl.setValue(lastNit);
-                  this.nitControl.disable();
-                  this.entryDateControl.setValue(lastDate);
-                  this.entryDateControl.disable();
-                }
-              }, error => {
-                console.log("Error al consultar invoiceNo")
+                    this.package.customerId = customer.id;
+                    this.package.destinationId = selectedDestination.id;
+                    this.package.weight = this.weightControl.value;
+                    this.package.entryDate = this.entryDateControl.value;
+                    this.package.shippingCost = this.recepService.calculateDestinationFee(selectedDestination, this.package, parameter);
+                    this.package.invoiceNo = auxPackage.invoiceNo;
+
+                    this.recepService.addPackage({ ...this.package });
+                    this.isPaymentDisabled = false;
+
+                    const lastNit = this.nitControl.value;
+                    const lastDate = this.entryDateControl.value;
+                    this.clearForm();
+                    this.nitControl.setValue(lastNit);
+                    this.nitControl.disable();
+                    this.entryDateControl.setValue(lastDate);
+                    this.entryDateControl.disable();
+                  }
+                }, error => {
+                  console.log("Error al consultar invoiceNo")
+                });
               });
-            });
+            }
           }
-        }
-      }, error => {
-        console.log('nit invalido:', error.status);
-        this.message = "El nit ingresado no existe, porfavor registre al cliente";
+        }, error => {
+          console.log('nit invalido:', error.status);
+          this.message = "El nit ingresado no existe, porfavor registre al cliente";
+          this.hasError = !this.hasError;
+        });
+      } else {
+        this.message = "Los datos ingresados no son válidos";
         this.hasError = !this.hasError;
-      });
+      }
+
     } else {
       console.log("Campos vacios");
       this.message = "Complete los campos vacios para enviar el paquete";
@@ -145,12 +153,13 @@ export class PackageEntryComponent implements OnInit {
   clearInfo() {
     this.clearForm();
     this.nitControl.enable();
+    this.entryDateControl.enable();
     this.isPaymentDisabled = !this.isPaymentDisabled;
     this.recepService.cleanPackages();
   }
 
-  /*isNumber(str: string): boolean {
-    return /^\d+$/.test(str);
-  }*/
+  toggleHasError() {
+    this.hasError = !this.hasError;
+  }
 
 }

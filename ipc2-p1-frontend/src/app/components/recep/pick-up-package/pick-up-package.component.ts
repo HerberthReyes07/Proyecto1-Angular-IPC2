@@ -80,13 +80,20 @@ export class PickUpPackageComponent implements OnInit {
   }
   
   search() {
-    this.recepService.filterPackagesOnStandby(this.searchByControl.value).subscribe(data => {
-      if (data) {
-        this.filteredPackages = data;
-      }
-    }, error => {
-      //this.filteredPackages = this.packagesOnStandby;
-    });
+
+    if (this.searchByControl.value === "") {
+      this.filteredPackages = this.packagesOnStandby;
+    } else {
+      this.recepService.filterPackagesOnStandby(this.searchByControl.value).subscribe(data => {
+        if (data) {
+          this.filteredPackages = data;
+        }
+      }, error => {
+        //this.filteredPackages = this.packagesOnStandby;
+      });
+    }
+
+    
   }
 
   get searchByControl(): FormControl {

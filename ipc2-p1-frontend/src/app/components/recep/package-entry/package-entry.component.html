@@ -9,7 +9,7 @@
 
         <div *ngIf="hasError" class="alert alert-danger alert-dismissible fade show" role="alert">
             <i class="bi bi-exclamation-circle-fill" style="margin-right: 10px;"></i><strong>{{message}}</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <button type="button" (click)="toggleHasError()" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
 
         <div class="card text-center">
@@ -60,7 +60,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label name="weight" class="form-label">Peso:</label>
+                        <label name="weight" class="form-label">Peso (lb):</label>
                         <input type="text" class="form-control" name="weight" formControlName="weight"
                             placeholder="En libras (lb)">
                     </div>

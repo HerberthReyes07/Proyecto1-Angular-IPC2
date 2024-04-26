@@ -9,7 +9,7 @@ import { RecepService } from 'src/app/service/recep.service';
   templateUrl: './packages-to-pay.component.html',
   styleUrls: ['./packages-to-pay.component.css']
 })
-export class PackagesToPayComponent {
+export class PackagesToPayComponent implements OnInit {
 
   @Input() customerNit!: string;
   @Input() destinations!: Destination[];
@@ -29,6 +29,14 @@ export class PackagesToPayComponent {
   //showSuccedMessage = false;
   //errorMessage = '';
   message = '';
+
+  ngOnInit(): void {
+    this.listaSubscription = this.recepService.packages$.subscribe((packages: Package[]) => {
+      if (packages.length === 0) {
+        this.isPaymentAllowed = false;
+      }
+    });
+  }
 
   constructor(private recepService: RecepService) {
   }
