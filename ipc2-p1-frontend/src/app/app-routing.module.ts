@@ -19,6 +19,7 @@ import { UserManagementComponent } from './components/admin/user-management/user
 import { RouteManagementComponent } from './components/admin/route-management/route-management.component';
 import { ControlPointManagementComponent } from './components/admin/control-point-management/control-point-management.component';
 import { DestinationManagementComponent } from './components/admin/destination-management/destination-management.component';
+import { ParameterManagementComponent } from './components/admin/parameter-management/parameter-management.component';
 
 const routes: Routes = [
   {
@@ -87,6 +88,11 @@ const routes: Routes = [
   {
     path: 'admin/gestion/puntos-control',
     component: ControlPointManagementComponent,
+    canActivate: [IsLoggedInGuard]
+  },
+  {
+    path: 'admin/gestion/parametros',
+    component: ParameterManagementComponent,
     canActivate: [IsLoggedInGuard]
   },
   {

@@ -309,6 +309,7 @@ public class AdministratorService {
         List<Process> processes = new ArrayList<>();
 
         for (int i = 0; i < packages.size(); i++) {
+            //ver si solo dejo el segundo if
             if (packages.get(i).getStatus() == PackageStatus.EN_PUNTO_CONTROL) {
                 processes.add(processDB.getProcessByPackageId(packages.get(i).getId(), false));
             } else if (packages.get(i).getStatus() == PackageStatus.EN_ESPERA_RETIRO || packages.get(i).getStatus() == PackageStatus.RETIRADO) {

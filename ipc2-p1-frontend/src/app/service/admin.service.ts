@@ -9,6 +9,7 @@ import { User } from '../model/user';
 import { Route } from '../model/route';
 import { ControlPoint } from '../model/control-point';
 import { Destination } from '../model/destination';
+import { Parameter } from '../model/parameter';
 
 @Injectable({
   providedIn: 'root'
@@ -63,6 +64,10 @@ export class AdminService {
     return this.http.get<ControlPoint[]>(`${this.url}/control-points`);
   }
 
+  getAllParameters(){
+    return this.http.get<Parameter[]>(`${this.url}/parameters`);
+  }
+
   getNextOrderNo(routeId: number){
     return this.http.get<ControlPoint>(`${this.url}/control-points/orderNo/route/${routeId}`);
   }
@@ -81,6 +86,10 @@ export class AdminService {
 
   createControlPoint(controlPoint: ControlPoint){
     return this.http.post<ControlPoint>(`${this.url}/control-points`, controlPoint);
+  }
+
+  createParameter(parameter: Parameter){
+    return this.http.post<Parameter>(`${this.url}/parameters`, parameter);
   }
   
   updateUser(user: User){

@@ -1,0 +1,53 @@
+<div id="clientModal" tabindex="-1" aria-labelledby="clientModalLabel" class="modal fade show" style="display: block;"
+    aria-modal="true" role="dialog">
+
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="clientModalLabel">Formulario de Parametro</h5>
+                <button type="button" (click)="closeForm()"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="modal-body">
+
+                <div *ngIf="isParameterCreated" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill" style="margin-right: 10px;"></i><strong>{{message}}</strong>
+                    <button type="button" (click)="toggleActionCompleted()" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div *ngIf="hasError" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-circle-fill"
+                        style="margin-right: 10px;"></i><strong>{{message}}</strong>
+                    <button type="button" (click)="toggleHasError()" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <form [formGroup]="parameterForm">
+
+                    <div class="mb-3">
+                        <label name="globalFee" class="form-label">Tarifa Global: </label>
+                        <input type="text" class="form-control" name="globalFee" formControlName="globalFee">
+                    </div>
+                    <div class="errors-container"
+                        *ngIf="globalFeeControl.invalid && (globalFeeControl.touched || globalFeeControl.dirty)">
+                        <p class="error-msg" *ngIf="globalFeeControl.hasError('required')">
+                            El campo es obligatorio
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label name="pricePerPound" class="form-label">Precio por libra: </label>
+                        <input type="text" class="form-control" name="pricePerPound" formControlName="pricePerPound">
+                    </div>
+                    <div class="errors-container"
+                        *ngIf="pricePerPoundControl.invalid && (pricePerPoundControl.touched || pricePerPoundControl.dirty)">
+                        <p class="error-msg" *ngIf="pricePerPoundControl.hasError('required')">
+                            El campo es obligatorio
+                        </p>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" (click)="sendParameter()" class="btn btn-primary">Actualizar</button>
+            </div>
+        </div>
+    </div>
+</div>

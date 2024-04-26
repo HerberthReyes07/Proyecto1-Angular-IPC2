@@ -32,6 +32,8 @@ import { ControlPointManagementComponent } from './components/admin/control-poin
 import { ControlPointFormComponent } from './components/admin/control-point-form/control-point-form.component';
 import { DestinationManagementComponent } from './components/admin/destination-management/destination-management.component';
 import { DestinationFormComponent } from './components/admin/destination-form/destination-form.component';
+import { ParameterManagementComponent } from './components/admin/parameter-management/parameter-management.component';
+import { ParameterFormComponent } from './components/admin/parameter-form/parameter-form.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +65,8 @@ import { DestinationFormComponent } from './components/admin/destination-form/de
     ControlPointFormComponent,
     DestinationManagementComponent,
     DestinationFormComponent,
+    ParameterManagementComponent,
+    ParameterFormComponent,
   ],
   imports: [
     BrowserModule,

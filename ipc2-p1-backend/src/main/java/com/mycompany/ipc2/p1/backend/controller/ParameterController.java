@@ -82,13 +82,15 @@ public class ParameterController extends HttpServlet {
         System.out.println(parameterFromJson);
 
         Parameter currentParameter = administratorService.getCurrentParameter();
-
-        administratorService.updateLocalOperationFee(currentParameter.getGlobalOperationFee(), parameterFromJson.getGlobalOperationFee());
+        
+        if (currentParameter.getGlobalOperationFee() != parameterFromJson.getGlobalOperationFee()) {
+            administratorService.updateLocalOperationFee(currentParameter.getGlobalOperationFee(), parameterFromJson.getGlobalOperationFee());
+        }
 
         administratorService.createParameter(parameterFromJson);
         
-        gsonParameter.sendAsJson(response, parameterFromJson);
         response.setStatus(HttpServletResponse.SC_OK);
+        gsonParameter.sendAsJson(response, parameterFromJson);
     }
 
 }

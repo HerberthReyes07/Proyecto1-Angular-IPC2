@@ -1,0 +1,83 @@
+<div class="container mt-2 col-md-6">
+    <div class="card my-5">
+
+        <div class="card text-center">
+            <div class="card-header">
+                <h3>Gestión de Parametros Globales</h3>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <div class="row g-3" [formGroup]="filterForm">
+
+                <div class="col-md-5">
+                    <label for="orderByGlobalFee" class="form-label">Ordenar por Tarifa Global: </label>
+                    <select id="orderByGlobalFee" class="form-select" (change)="filterByGlobalFee()"
+                        formControlName="globalFeeControl">
+                        <option value="0" selected>Cualquiera</option>
+                        <option value="1">Mayor a menor</option>
+                        <option value="2">Menor a mayor</option>
+                    </select>
+                </div>
+
+                <div class="col-md-5">
+                    <label for="orderByPricePerPound" class="form-label">Ordenar por Precio por Libra: </label>
+                    <select id="orderByPricePerPound" class="form-select" (change)="filterByPricePerPound()"
+                        formControlName="pricePerPoundControl">
+                        <option value="0" selected>Cualquiera</option>
+                        <option value="1">Mayor a menor</option>
+                        <option value="2">Menor a mayor</option>
+                    </select>
+                </div>
+
+                <div class="col-md-1">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" style="margin-top: 32px;"
+                            (click)="newParameter()">Actualizar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <br>
+                    <p><strong>Parametro actual: </strong> <i class="bi bi-square-fill"
+                            style="color: #3dd17b; margin-left: 5px;"></i></p>
+                    <div class="card my-4">
+                        <div class="card-body">
+                            <table class="table table-hover table-sm" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Tarifa Global</th>
+                                        <th>Precio por Libra</th>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let p of parametersFiltered; let i = index">
+                                        <ng-container *ngIf="currentParameter.id === p.id">
+                                            <td style="background-color:  #3dd17b ;">{{i + 1}}</td>
+                                            <td style="background-color:  #3dd17b ;">{{p.globalOperationFee | number:
+                                                "1.2-2"}} Q</td>
+                                            <td style="background-color:  #3dd17b ;">{{p.pricePerPound | number:
+                                                "1.2-2"}} Q</td>
+                                        </ng-container>
+                                        <ng-container *ngIf="currentParameter.id !== p.id">
+                                            <td>{{i + 1}}</td>
+                                            <td>{{p.globalOperationFee | number: "1.2-2"}} Q</td>
+                                            <td>{{p.pricePerPound | number: "1.2-2"}} Q</td>
+                                        </ng-container>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-background" *ngIf="isParameterFormOpened">
+    <app-parameter-form [currentParameter]="currentParameter" (toggleFormVisibility)="toggleDestinationFormVisibility()"
+        (actionCompleted)="actionCompleted()"></app-parameter-form>
+</div>

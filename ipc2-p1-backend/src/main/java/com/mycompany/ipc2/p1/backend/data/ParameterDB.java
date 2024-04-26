@@ -57,7 +57,7 @@ public class ParameterDB {
     }
 
     public List<Parameter> getAllParameters() {
-        String query = "SELECT * FROM parametro;";
+        String query = "SELECT * FROM parametro ORDER BY id DESC;";
         List<Parameter> parameters = new ArrayList<>();
 
         try (Statement stmt = connection.createStatement(); ResultSet resultSet = stmt.executeQuery(query)) {
