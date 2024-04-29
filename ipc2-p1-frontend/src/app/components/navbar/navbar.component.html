@@ -12,19 +12,19 @@
                     <ul class="navbar-nav">
                         <ng-container *ngSwitchCase="'ADMINISTRATOR'">
                             <li class="nav-item">
-                                <a class="nav-link" routerLink="admin/gestion/usuarios">Gestionar usuarios</a>
+                                <a class="nav-link" routerLinkActive="active" routerLink="admin/gestion/usuarios">Gestionar usuarios</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" routerLink="admin/gestion/destinos">Gestionar destinos</a>
+                                <a class="nav-link" routerLinkActive="active" routerLink="admin/gestion/destinos">Gestionar destinos</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" routerLink="admin/gestion/rutas">Gestionar rutas</a>
+                                <a class="nav-link" routerLinkActive="active" routerLink="admin/gestion/rutas">Gestionar rutas</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" routerLink="admin/gestion/puntos-control">Gestionar puntos de control</a>
+                                <a class="nav-link" routerLinkActive="active" routerLink="admin/gestion/puntos-control">Gestionar puntos de control</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" routerLink="admin/gestion/parametros">Gestionar parametros</a>
+                                <a class="nav-link" routerLinkActive="active" routerLink="admin/gestion/parametros">Gestionar parametros</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link">
@@ -42,18 +42,18 @@
                         </ng-container>
                         <ng-container *ngSwitchCase="'OPERATOR'">
                             <li class="nav-item">
-                                <a class="nav-link" routerLink="oper/paquetes/procesar">Procesar paquete</a>
+                                <a class="nav-link" routerLinkActive="active" routerLink="oper/paquetes/procesar">Procesar paquete</a>
                             </li>
                         </ng-container>
                         <ng-container *ngSwitchCase="'RECEPTIONIST'">
                             <li class="nav-item">
-                                <a class="nav-link" routerLink="recep/paquetes/entrada">Ingreso paquete</a>
+                                <a class="nav-link" routerLinkActive="active" routerLink="recep/paquetes/entrada">Ingreso paquete</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" routerLink="recep/paquetes/retiro">Retiro paquete</a>
+                                <a class="nav-link" routerLinkActive="active" routerLink="recep/paquetes/retiro">Retiro paquete</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" routerLink="recep/paquetes/localizacion">Consultar localización</a>
+                                <a class="nav-link" routerLinkActive="active" routerLink="recep/paquetes/localizacion">Consultar localización</a>
                             </li>
                         </ng-container>
                     </ul>

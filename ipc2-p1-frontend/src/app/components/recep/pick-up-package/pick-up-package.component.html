@@ -17,12 +17,6 @@
                     <label name="buscarPor" class="form-label">Ingrese un No. Factura o Nit para realizar la búsqueda:</label>
                     <input type="text" (input)="search()" class="form-control" formControlName="searchByControl" placeholder="Ingrese un No. Factura o Nit">
                 </div>
-                <div class="errors-container"
-                    *ngIf="searchByControl.invalid && (searchByControl.touched || searchByControl.dirty)">
-                    <p class="error-msg" *ngIf="searchByControl.hasError('required')">
-                        Para realizar una búsqueda, el campo debe ser válido
-                    </p>
-                </div>
             </form>
             <div class="row">
                 <div class="col">

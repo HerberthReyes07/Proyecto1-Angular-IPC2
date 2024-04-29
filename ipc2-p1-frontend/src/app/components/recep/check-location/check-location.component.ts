@@ -24,7 +24,7 @@ export class CheckLocationComponent implements OnInit {
   filteredLocations!: LocationReport[];
 
   searchForm = new FormGroup({
-    searchByControl: new FormControl('', Validators.required),
+    searchByControl: new FormControl(''),
   });
 
   constructor(private recepService: RecepService) {

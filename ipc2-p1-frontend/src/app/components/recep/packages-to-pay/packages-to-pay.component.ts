@@ -25,6 +25,7 @@ export class PackagesToPayComponent implements OnInit {
   total$ = this.recepService.total$;
   isPaymentMade = false;
   isPaymentAllowed = true;
+  isPackageEliminated = false;
   //showErrorMessage = false;
   //showSuccedMessage = false;
   //errorMessage = '';
@@ -79,6 +80,7 @@ export class PackagesToPayComponent implements OnInit {
     this.recepService.deletePackage(packageToDelete);
 
     this.recepService.packages$.subscribe((data: Package[]) => {
+      this.isPackageEliminated = true;
       if (data.length == 0) {
         this.isPaymentAllowed = false;
       }
@@ -87,10 +89,13 @@ export class PackagesToPayComponent implements OnInit {
 
   closeModal() {
     this.togglePayModalVisibility.emit();
-    //this.paymentMade.emit();
   }
 
   resetForm() {
     this.paymentMade.emit();
+  }
+
+  toggleIsPackageEliminated(){
+    this.isPackageEliminated = !this.isPackageEliminated;
   }
 }

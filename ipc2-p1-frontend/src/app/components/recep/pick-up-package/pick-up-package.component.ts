@@ -20,7 +20,7 @@ export class PickUpPackageComponent implements OnInit {
   pickedUpPackage = false;
 
   searchForm = new FormGroup({
-    searchByControl: new FormControl('', Validators.required),
+    searchByControl: new FormControl(''),
   });
 
   constructor(private recepService: RecepService) {

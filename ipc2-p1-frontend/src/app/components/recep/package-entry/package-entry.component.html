@@ -12,6 +12,11 @@
             <button type="button" (click)="toggleHasError()" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
 
+        <div *ngIf="isPackageAdded || isShipmentCanceled" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill" style="margin-right: 10px;"></i><strong>{{message}}</strong>
+            <button type="button" (click)="toggleAction()" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
         <div class="card text-center">
             <div class="card-header">
                 <h3>Ingresar Paquete</h3>
@@ -86,7 +91,7 @@
                         <button (click)="addPackage()" type="button" class="btn btn-primary mt-2 me-4">Agregar Paquete</button>
                         <button (click)="togglePayModalVisibility()" [disabled]="isPaymentDisabled" type="button" 
                             class="btn btn-success mt-2 me-4">Pagar Envio</button>
-                        <button (click)="clearInfo()" [disabled]="isPaymentDisabled" type="button" class="btn btn-danger mt-2 me-4">Cancelar Envio</button>
+                        <button (click)="cancelShipment()" [disabled]="isPaymentDisabled" type="button" class="btn btn-danger mt-2 me-4">Cancelar Envio</button>
                     </div>
                 </form>
             </div>

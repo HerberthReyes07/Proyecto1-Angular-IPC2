@@ -24,6 +24,9 @@ export class PackageEntryComponent implements OnInit {
   isPaymentDisabled = true;
   message = '';
 
+  isPackageAdded = false;
+  isShipmentCanceled = false;
+
   destinations: Destination[];
   destination: Destination;
 
@@ -104,6 +107,8 @@ export class PackageEntryComponent implements OnInit {
                     this.package.invoiceNo = auxPackage.invoiceNo;
 
                     this.recepService.addPackage({ ...this.package });
+                    this.isPackageAdded = true;
+                    this.message = "Paquete agregado a envío exitosamente!";
                     this.isPaymentDisabled = false;
 
                     const lastNit = this.nitControl.value;
@@ -138,6 +143,12 @@ export class PackageEntryComponent implements OnInit {
 
   }
 
+  cancelShipment(){
+    this.message = "Envío cancelado exitosamente!"
+    this.isShipmentCanceled = true;
+    this.clearInfo();
+  }
+
   validateFields() {
     if (this.nitControl.value === '' || this.destinationControl.value === 'valInicial' || this.weightControl.value === '') {
       return false;
@@ -160,6 +171,11 @@ export class PackageEntryComponent implements OnInit {
 
   toggleHasError() {
     this.hasError = !this.hasError;
+  }
+
+  toggleAction() {
+    this.isPackageAdded = false;
+    this.isShipmentCanceled = false;
   }
 
 }

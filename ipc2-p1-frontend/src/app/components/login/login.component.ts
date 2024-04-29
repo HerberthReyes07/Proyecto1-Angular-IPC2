@@ -47,4 +47,8 @@ export class LoginComponent {
         this.hasError = !this.hasError;
       });
   }
+
+  toggleHasError() {
+    this.hasError = !this.hasError;
+  }
 }

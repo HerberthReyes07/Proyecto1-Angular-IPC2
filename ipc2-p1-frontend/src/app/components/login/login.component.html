@@ -39,7 +39,7 @@
                 <!-- Error alert -->
                 <div *ngIf="hasError" class="alert alert-danger alert-dismissible fade show" role="alert">
                     <strong>Login fallido!</strong> Credenciales incorrectas
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" (click)="toggleHasError()" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
 
                 <!-- Login button -->

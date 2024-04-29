@@ -16,6 +16,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
 
+                <div *ngIf="isPackageEliminated" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill" style="margin-right: 10px;"></i><strong>Paquete eliminado
+                        exitosamente! </strong>
+                    <button type="button" (click)="toggleIsPackageEliminated()" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
                 <h4 style="text-align: right;">No. Factura: <strong>{{ invoiceNo }}</strong></h4>
 
                 <ng-container *ngIf="!isPaymentMade">
